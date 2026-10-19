@@ -1,0 +1,894 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowTrackBy]="rowTrackBy"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  currentPageReportTemplate="{{ isDesktop() ? ('common.page.current_report' | translate) : '' }}"
+  dataKey="id"
+  selectionMode="single"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+        <div class="flex gap-1">
+          <button
+            pButton
+            type="button"
+            (click)="exportAppointment()"
+            *hasPerm="permission.permissionExtAppointment"
+            [pTooltip]="'crm.appointment.tooltip.export' | translate"
+            severity="help"
+            tooltipPosition="top"
+          ><i class="pi pi-download"></i></button>
+        </div>
+      </div>
+      <div class="p-toolbar-group-end">
+        @if (rfFilterModel) {
+          <form [formGroup]="rfFilterModel" novalidate>
+            <p-popover #op>
+              <div
+                [style]="
+              isDesktop()
+                ? { width: '600px' }
+                : { width: '300px', height: '400px', overflow: 'auto' }
+            "
+                class="grid grid-cols-12 gap-4"
+              >
+                @if (isMobile()) {
+                  <div class="col-span-12 md:col-span-6 mt-2">
+                    <p-floatlabel variant="on">
+                      <p-iconfield>
+                        <p-inputicon class="pi pi-search"/>
+                        <input
+                          class="w-full"
+                          autocomplete="off"
+                          formControlName="_keyword"
+                          id="search_keyword"
+                          pInputText
+                          type="text"
+                        />
+                      </p-iconfield>
+                      <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="col-span-12 md:col-span-6">
+                    <p-floatlabel variant="on">
+                      <p-datepicker
+                        (onClear)="clearStartTime()"
+                        [readonlyInput]="true"
+                        [showIcon]="true"
+                        [autofocus]="false"
+                        appendTo="body"
+                        dateFormat="dd/mm/yy"
+                        formControlName="appointment_date"
+                        id="appointment_date_mobile"
+                        selectionMode="range"
+                      >
+                        <ng-template #footer>
+                          <app-date-picker-footer
+                            (rangeChange)="onQuickSelectAppointmentDate($event)"
+                          ></app-date-picker-footer>
+                        </ng-template>
+                      </p-datepicker>
+                      <label for="appointment_date">{{ 'common.label.appointment_date' | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="col-span-12 md:col-span-6">
+                    <p-floatlabel variant="on">
+                      <p-select [showClear]="true"
+                        [options]="customerTypeOptions()"
+                        [resetFilterOnHide]="true"
+                        appendTo="body"
+                        class="w-full"
+                        [emptyFilterMessage]="'common.label.no_results' | translate"
+                        formControlName="customerType"
+                        id="customerType"
+                      >
+                      </p-select>
+                      <label for="customerType">{{ 'crm.appointment.label.customer_type' | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                  <div class="col-span-12 md:col-span-6">
+                    <p-floatlabel variant="on">
+                      <p-select [showClear]="true"
+                        [options]="appointmentStatusOptions()"
+                        [resetFilterOnHide]="true"
+                        appendTo="body"
+                        class="w-full"
+                        [emptyFilterMessage]="'common.label.no_results' | translate"
+                        formControlName="status"
+                        id="status"
+                      >
+                      </p-select>
+                      <label for="status">{{ 'common.label.appointment_status' | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                }
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      [readonlyInput]="true"
+                      [showIcon]="true"
+                      [autofocus]="false"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="appointment_date_first"
+                      id="appointment_date_first"
+                      selectionMode="range"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer
+                          (rangeChange)="onQuickSelectAppointmentDateFirst($event)"
+                        ></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label
+                      for="appointment_date_first">{{ 'common.label.first_appointment_date' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <department-multiselect-from-control
+                      formControlName="_department"
+                    ></department-multiselect-from-control>
+                    <label for="_department">{{ 'common.label.department' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-select [showClear]="true"
+                      [filter]="true"
+                      [options]="customerStatusOptions()"
+                      [resetFilterOnHide]="true"
+                      [style]="{ minWidth: '100%' }"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="_status"
+                      id="_status"
+                    >
+                    </p-select>
+                    <label for="_status">{{ 'common.label.progress' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-customer-category-multiselect-form-control
+                      formControlName="category"
+                    ></app-customer-category-multiselect-form-control>
+                    <label for="category">{{ 'common.label.customer_group' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-appointment-type-multiselect-form-control
+                      formControlName="appointment_type_id">
+                    </app-appointment-type-multiselect-form-control>
+                    <label for="appointment_type_id">{{ 'common.label.appointment_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <group-local-multiselect-from-control
+                      formControlName="_groupLocal"
+                    ></group-local-multiselect-from-control>
+                    <label for="_groupLocal">{{ 'common.label.domestic_region' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <group-country-multiselect-from-control
+                      formControlName="_groupCountry"
+                    ></group-country-multiselect-from-control>
+                    <label for="_groupLocal">{{ 'common.label.international_region' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-select [showClear]="true"
+                      [filter]="true"
+                      [options]="genderOptions()"
+                      [resetFilterOnHide]="true"
+                      [style]="{ minWidth: '100%' }"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="_gender"
+                      id="_gender"
+                    >
+                    </p-select>
+                    <label for="_gender">{{ 'common.label.gender' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-branch-multiselect-form-control formControlName="branch_id">
+                    </app-branch-multiselect-form-control>
+                    <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-source-multiselect-form-control formControlName="source_id"/>
+                    <label for="source_id">{{ 'common.label.source' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-group-source-multiselect-form-control
+                      formControlName="_groupSource"
+                    ></app-group-source-multiselect-form-control>
+                    <label for="groupSource">{{ 'common.label.customer_source_group' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-appointment-is-accepted-multiselect-form-control formControlName="is_accepted"/>
+                    <label for="is_accepted">{{ 'common.label.consultation_status' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-department-user-multiselect
+                      formControlName="convert_id"
+                      [department]="11">
+                    </app-department-user-multiselect>
+                    <label for="convert_id">{{ 'common.label.convert' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-user-multiselect-form-control
+                      formControlName="revenue_id"
+                      [includeNull]="true">
+                    </app-user-multiselect-form-control>
+                    <label for="revenue_id">{{ 'common.label.consultant' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-service-type-multiselect-form-control
+                      formControlName="type_service_id">
+                    </app-service-type-multiselect-form-control>
+                    <label for="type_service_id">{{ 'common.label.service_group_of_interest' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-service-type-multiselect-form-control
+                      formControlName="type_service_accepted_id">
+                    </app-service-type-multiselect-form-control>
+                    <label
+                      for="type_service_accepted_id">{{ 'common.label.accepted_service_group' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-user-multiselect-form-control
+                      formControlName="created_by">
+                    </app-user-multiselect-form-control>
+                    <label for="created_by">{{ 'common.label.user_created' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      (onClear)="clearCreateStartTime()"
+                      [readonlyInput]="true"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="created_at"
+                      id="created_at"
+                      selectionMode="range"
+                      showIcon="true"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer
+                          (rangeChange)="onQuickSelectCreatedAt($event)"
+                        ></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="created_at">{{ 'common.label.appointment_created_at' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+            </p-popover>
+            <div class="flex items-center gap-2 w-full">
+              @if (isDesktop()) {
+                <div class="col-span-12 md:col-span-3">
+                  <p-floatlabel variant="on" class="flex-1 min-w-[180px]">
+                    <p-iconfield>
+                      <p-inputicon class="pi pi-search"/>
+                      <input
+                        class="w-full"
+                        autocomplete="off"
+                        formControlName="_keyword"
+                        id="search_keyword"
+                        pInputText
+                        type="text"
+                      />
+                    </p-iconfield>
+                    <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-3">
+                  <p-floatlabel variant="on" class="flex-1 min-w-[180px]">
+                    <p-select [showClear]="true"
+                      [options]="customerTypeOptions()"
+                      [resetFilterOnHide]="true"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="customerType"
+                      id="customerType"
+                    >
+                    </p-select>
+                    <label for="customerType">{{ 'crm.appointment.label.customer_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-3">
+                  <p-floatlabel variant="on" class="flex-1 min-w-[180px]">
+                    <p-select [showClear]="true"
+                      [options]="appointmentStatusOptions()"
+                      [resetFilterOnHide]="true"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="status"
+                      id="statusDesktop"
+                    >
+                    </p-select>
+                    <label for="statusDesktop">{{ 'common.label.appointment_status' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-3">
+                  <p-floatlabel variant="on" class="flex-1 min-w-[180px]">
+                    <p-datepicker
+                      (onClear)="clearStartTime()"
+                      [showIcon]="true"
+                      hourFormat="24"
+                      class="w-full"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="appointment_date"
+                      id="appointment_date"
+                      selectionMode="range"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer
+                          (rangeChange)="onQuickSelectAppointmentDate($event)"
+                        ></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="appointment_date">{{ 'common.label.appointment_date' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              <button
+                pButton
+                type="button"
+                (click)="op.toggle($event)"
+                [attr.aria-label]="'common.action.filter' | translate"
+                [pTooltip]="'common.action.filter' | translate"
+                severity="info"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              ><i class="pi pi-filter"></i></button>
+              <button
+                pButton
+                type="button"
+                (click)="clearFilter()"
+                [attr.aria-label]="'common.action.clear_filter' | translate"
+                [pTooltip]="'common.action.clear_filter' | translate"
+                severity="warn"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              ><i class="pi pi-filter-slash"></i></button>
+              <button
+                pButton
+                type="button"
+                (click)="resetPage()"
+                [attr.aria-label]="'common.action.refresh' | translate"
+                [pTooltip]="'common.action.reload_page' | translate"
+                severity="secondary"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              ><i class="pi pi-refresh"></i></button>
+              <button
+                pButton
+                type="button"
+                (click)="colsTpl.toggle($event)"
+                [attr.aria-label]="'common.action.view_more' | translate"
+                [pTooltip]="'common.action.view_more' | translate"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              ><i class="pi pi-th-large"></i></button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (visibleColumns().id) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (visibleColumns().codeCustomer) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.customer_code' | translate }}
+        </th>
+      }
+      @if (visibleColumns().codeOldCustomer) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.old_code' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointment_time) {
+        <th class="min-w-[80px]">
+          {{ 'common.label.time' | translate }}
+        </th>
+      }
+      @if (visibleColumns().fullname) {
+        <th class="min-w-[180px]">
+          {{ 'common.label.customer' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointment_code) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.appointment_code' | translate }}
+        </th>
+      }
+      @if (visibleColumns().phone) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.phone' | translate }}
+        </th>
+      }
+      @if (visibleColumns().bookType) {
+        <th class="min-w-[100px]">{{ 'common.label.category' | translate }}</th>
+      }
+      @if (visibleColumns().appointmentType) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.appointment_type' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointment_date) {
+        <th class="min-w-[100px]">
+          {{ 'common.label.appointment_date' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointment_date_first) {
+        <th class="min-w-[140px]">
+          {{ 'common.label.first_appointment_date' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointmentListDate) {
+        <th class="min-w-[180px]">
+          {{ 'common.label.changed_appointment_date' | translate }}
+        </th>
+      }
+      @if (visibleColumns().confirmAppointment) {
+        <th class="min-w-[140px]">
+          {{ 'crm.appointment_list.confirm' | translate }}
+        </th>
+      }
+      @if (visibleColumns().appointment_number) {
+        <th class="min-w-[80px]">
+          {{ 'common.label.appointment_count' | translate }}
+        </th>
+      }
+      @if (visibleColumns().content) {
+        <th class="w-[400px] min-w-[200px]">{{ 'common.label.appointment_content' | translate }}</th>
+      }
+      @if (visibleColumns().contentPrivate) {
+        <th class="min-w-[200px]">{{ 'common.label.internal_note' | translate }}</th>
+      }
+      @if (visibleColumns().checkin_date) {
+        <th class="min-w-[140px]">{{ 'crm.appointment.label.checkin' | translate }}</th>
+      }
+      @if (visibleColumns().checkout_date) {
+        <th class="min-w-[140px]">{{ 'crm.appointment.label.checkout' | translate }}</th>
+      }
+      @if (visibleColumns().typeServiceInterested) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.service_group_of_interest' | translate }}
+        </th>
+      }
+      @if (visibleColumns().orderServiceUsed) {
+        <th class="min-w-[250px]">
+          {{ 'common.label.appointment_service' | translate }}
+        </th>
+      }
+      @if (visibleColumns().source) {
+        <th class="min-w-[200px]">{{ 'common.label.source' | translate }}</th>
+      }
+      @if (visibleColumns().convert_id) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.convert' | translate }}
+        </th>
+      }
+      @if (visibleColumns().revenue_id) {
+        <th class="min-w-[200px]">{{ 'common.label.consultant' | translate }}</th>
+      }
+      @if (visibleColumns().appointmentIsAccepted) {
+        <th class="min-w-[150px]">
+          {{ 'common.label.status' | translate }}
+        </th>
+      }
+      @if (visibleColumns().noteFail) {
+        <th class="min-w-[250px]">
+          {{ 'common.label.reason' | translate }}
+        </th>
+      }
+      @if (visibleColumns().type_service_accepted_id) {
+        <th class="min-w-[200px]">
+          {{ 'crm.appointment_list.service_accepted' | translate }}
+        </th>
+      }
+      @if (visibleColumns().province) {
+        <th class="min-w-[150px]">{{ 'common.label.province' | translate }}</th>
+      }
+      @if (visibleColumns().branch) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.branch' | translate }}
+        </th>
+      }
+      @if (visibleColumns().created_by) {
+        <th class="min-w-[200px]">{{ 'common.label.user_created' | translate }}</th>
+      }
+      @if (visibleColumns().created_at) {
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="min-w-[140px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [style.background-color]="APPOINTMENT_COLOR_STATUS_SELECT[model.status]?.background" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (visibleColumns().id) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (visibleColumns().codeCustomer) {
+        <td [appCopyText]="model.customer?.code">
+          {{ model.customer?.code }}
+        </td>
+      }
+      @if (visibleColumns().codeOldCustomer) {
+        <td [appCopyText]="model.customer?.old_code">
+          {{ model.customer?.old_code || '—' }}
+        </td>
+      }
+      @if (visibleColumns().appointment_time) {
+        <td>
+          {{ model.appointment_dateFormatted ? (model.appointment_dateFormatted.slice(-5) + (model.schedule_time !== null ? (' (+' + model.schedule_time / 60 + 'p)') : '')) : '—' }}
+        </td>
+      }
+      @if (visibleColumns().fullname) {
+        <td>
+          <app-customer-name
+            [id]="model.customer?.id"
+            [customer]="model.customer"
+            [name]="model.customerDisplayName"
+          />
+        </td>
+      }
+      @if (visibleColumns().appointment_code) {
+        <td [appCopyText]="model.code">
+          {{ model.code }}
+        </td>
+      }
+      @if (visibleColumns().phone) {
+        <td>
+          <app-customer-phone [phone]="model.customer?.phone"/>
+        </td>
+      }
+      @if (visibleColumns().bookType) {
+        <td><b>{{ model.bookTypeInfo?.label }}</b></td>
+      }
+      @if (visibleColumns().appointmentType) {
+        <td>{{ model.appointmentTypeLabel || '—' }}</td>
+      }
+      @if (visibleColumns().appointment_date) {
+        <td>
+          {{ model.appointment_dateFormatted?.slice(0, 10) || '—' }}
+        </td>
+      }
+      @if (visibleColumns().appointment_date_first) {
+        <td>
+          {{ model.appointment_date_firstFormatted || '—' }}
+        </td>
+      }
+      @if (visibleColumns().appointmentListDate) {
+        <td>
+          @if (model.appointmentListDate) {
+            @for (date of model.appointmentListDate; track $index) {
+              <p>
+                {{ date?.oldFormatted }} => {{ date?.newFormatted }}
+              </p>
+            }
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (visibleColumns().confirmAppointment) {
+        <td>
+          <p-tag [rounded]="true" [severity]="model.confirmAppointmentInfo?.severity">
+            {{ model.confirmAppointmentInfo?.label }}
+          </p-tag>
+        </td>
+      }
+      @if (visibleColumns().appointment_number) {
+        <td>
+          @if (model.appointment_number) {
+            <p-badge value="{{ model.appointment_number }}"></p-badge>
+          } @else {
+            {{ model.appointment_number || '—' }}
+          }
+        </td>
+      }
+      @if (visibleColumns().content) {
+        <td>
+          <p [innerHTML]="model.content || '—' | sanitizeQuill | safeHtml" appWhitespaceControl
+             class="lightgallery-container prose min-w-[300px] break-words"
+             pswpLightbox></p>
+        </td>
+      }
+      @if (visibleColumns().contentPrivate) {
+        <td>
+          <p [innerHTML]="model.contentPrivate || '—' | sanitizeQuill | safeHtml" appWhitespaceControl
+             class="lightgallery-container prose w-[200px] break-words"
+             pswpLightbox></p>
+        </td>
+      }
+      @if (visibleColumns().checkin_date) {
+        <td>
+          <span class="font-semibold">{{ model.checkin_dateFormatted || '—' }}</span>
+        </td>
+      }
+      @if (visibleColumns().checkout_date) {
+        <td>
+          <span class="font-semibold">{{ model.checkout_dateFormatted || '—' }}</span>
+        </td>
+      }
+      @if (visibleColumns().typeServiceInterested) {
+        <td>{{ model.serviceTypeLabel || '—' }}</td>
+      }
+      @if (visibleColumns().orderServiceUsed) {
+        <td>
+          <span class="font-semibold text-primary" [appCopyText]="model.serviceInfo?.name">
+            {{ model.serviceInfo?.name || '—' }}
+          </span>
+        </td>
+      }
+      @if (visibleColumns().source) {
+        <td>{{ model.sourceLabel || '—' }}</td>
+      }
+      @if (visibleColumns().convert_id) {
+        <td>
+          @if (model.convert_id) {
+            <p-chip label="{{model.convertInfo?.fullname}}" image="{{ model.convertInfo?.avatar }}"
+                    (click)="filterByPosition('convert_id', model.convert_id)"
+                    class="cursor-pointer hover:bg-gray-100"
+                    alt="{{model.convertInfo?.fullname}}"/>
+          } @else {
+            {{ model.convert_id || '—' }}
+          }
+        </td>
+      }
+      @if (visibleColumns().revenue_id) {
+        <td>
+          @if (model.revenue_id) {
+            <p-chip label="{{model.revenue?.fullname}}" image="{{ model.revenue?.avatar }}"
+                    (click)="filterByPosition('revenue_id', model.revenue_id)"
+                    class="cursor-pointer hover:bg-gray-100"
+                    alt="{{model.revenue?.fullname}}"/>
+          } @else {
+            {{ model.revenue_id || '—' }}
+          }
+        </td>
+      }
+      @if (visibleColumns().appointmentIsAccepted) {
+        <td>
+          <div class="flex flex-wrap gap-1">
+            <p-tag
+              [rounded]="true"
+              [style]="{
+                color: model.statusInfo?.color,
+                backgroundColor: model.statusInfo?.background
+              }"
+              [value]="model.statusInfo?.label"
+            />
+            @if (model.is_accepted) {
+              <p-tag
+                [rounded]="true"
+                [severity]="model.appointmentIsAcceptedInfo?.severity"
+                value="{{ model.appointmentIsAcceptedInfo?.name }}"
+              ></p-tag>
+            }
+          </div>
+        </td>
+      }
+      @if (visibleColumns().noteFail) {
+        <td>{{ model.appointmentReasonInfo?.name || '—' }}</td>
+      }
+      @if (visibleColumns().type_service_accepted_id) {
+        <td>{{ model.serviceTypeAcceptedLabel || '—' }}</td>
+      }
+      @if (visibleColumns().province) {
+        <td>{{ model.provinceLabel || '—' }}</td>
+      }
+      @if (visibleColumns().branch) {
+        <td>{{ model.branchLabel || '—' }}</td>
+      }
+      @if (visibleColumns().created_by) {
+        <td>
+          @if (model.created_by) {
+            <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                    alt="{{model.createdByInfo?.fullname}}"/>
+          }
+        </td>
+      }
+      @if (visibleColumns().created_at) {
+        <td>{{ model.created_atFormatted }}</td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            @if (model.status === APPOINTMENT_STATUS_SELECT.APPOINTMENT_STATUS_NOT_CHECKIN) {
+              <p-button
+                (click)="cancelAppoint(model)" icon="pi pi-times" [ariaLabel]="'common.label.cancel_appointment' | translate"
+                *hasPerm="permission.permissionUpdateAppointment"
+                [pTooltip]="'common.label.cancel_appointment' | translate"
+                severity="danger"
+                size="small"
+                tooltipPosition="top"
+                type="button"
+              ></p-button>
+            }
+            @if (model._isCheckinAble) {
+              <p-button
+                (click)="customerCheckin(model)"
+                *hasPerm="permission.permissionUpdateAppointment"
+                icon="pi pi-map-marker" [ariaLabel]="'common.label.customer_arrived' | translate"
+                [pTooltip]="'common.label.customer_arrived' | translate"
+                size="small"
+                severity="warn"
+                tooltipPosition="top"
+              ></p-button>
+            }
+          </p-buttongroup>
+          <p-buttongroup>
+            <p-button
+              (click)="appointmentDetail(model)"
+              icon="pi pi-eye" [ariaLabel]="'common.label.appointment_detail' | translate"
+              [pTooltip]="'common.label.appointment_detail' | translate"
+              severity="info"
+              size="small"
+              tooltipPosition="left"
+            ></p-button>
+            <ng-container *hasPerm="permission.permissionUpdateAppointment">
+              <p-button
+                (click)="updateAppointmentDialog(model)"
+                icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+                [pTooltip]="'common.label.update_appointment' | translate"
+                severity="success"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            </ng-container>
+            <ng-container *hasPerm="permission.permissionDeleteAppointment">
+              <p-button
+                (click)="deleteRecord($event, model.id)"
+                icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                [pTooltip]="'common.label.delete_appointment' | translate"
+                severity="danger"
+                size="small"
+                tooltipPosition="left"
+              ></p-button>
+            </ng-container>
+          </p-buttongroup>
+          @if (model.status === APPOINTMENT_STATUS_SELECT.APPOINTMENT_STATUS_NOT_CHECKIN) {
+            <button
+              pButton
+              type="button"
+              (click)="confirmAppointment(model)"
+              [attr.aria-label]="'crm.appointment.tooltip.confirm_appointment' | translate"
+              [pTooltip]="'crm.appointment.tooltip.confirm_appointment' | translate"
+              [severity]="'help'"
+              size="small"
+              tooltipPosition="left"
+              [iconOnly]="true"
+            ><i class="pi pi-check"></i></button>
+          }
+          <app-customer-timeline-button
+            (clickTimeLine)="timelineCustomer($event.event, $event.id, $event.fullname)"
+            [customer]="model.customer"
+          >
+          </app-customer-timeline-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<!-- Chi tiết lịch hẹn (SlideOver xổ phải) -->
+<!--
+  @defer: panel chi tiết chỉ tải khi người dùng thật sự mở lần đầu — không nằm chung chunk với màn
+  danh sách nữa. `prefetch on idle` kéo sẵn chunk lúc trình duyệt rảnh nên lần bấm đầu vẫn mở ngay.
+  Điều kiện `when` chỉ chuyển false→true một lần; đóng panel KHÔNG gỡ block, `visible` = false là đủ.
+  ⚠ Component phải được dùng DUY NHẤT bên trong @defer, thêm một chỗ dùng ngoài là Angular gộp lại
+  vào chunk chính và tối ưu này im lặng mất tác dụng.
+-->
+@defer (when detail.visible(); prefetch on idle) {
+  <app-appointment-detail-panel
+    [(visible)]="detail.visible"
+    [appointmentId]="detail.id()"
+    [seed]="detail.seed()"
+    (edited)="updateAppointmentDialog($event)"
+  />
+}
+
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

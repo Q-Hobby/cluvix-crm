@@ -1,0 +1,26 @@
+-- Tạo bảng `app_event_log` (keep-set CRM). Idempotent: CREATE TABLE IF NOT EXISTS.
+CREATE TABLE IF NOT EXISTS `app_event_log` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` bigint NOT NULL DEFAULT '0',
+  `level` varchar(10) NOT NULL DEFAULT 'info',
+  `source` varchar(80) NOT NULL DEFAULT '',
+  `event` varchar(80) NOT NULL DEFAULT '',
+  `message` varchar(500) NOT NULL DEFAULT '',
+  `branch_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `ref_type` varchar(40) DEFAULT NULL,
+  `ref_id` bigint unsigned DEFAULT NULL,
+  `request_id` varchar(64) DEFAULT NULL,
+  `error_code` varchar(30) DEFAULT NULL,
+  `data` json DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_ael_branch` (`branch_id`),
+  KEY `fk_ael_user` (`user_id`),
+  KEY `idx_ael_created_at` (`created_at`),
+  KEY `idx_ael_error_code` (`error_code`),
+  KEY `idx_ael_level_time` (`level`,`created_at`),
+  KEY `idx_ael_ref` (`ref_type`,`ref_id`),
+  KEY `idx_ael_source_event_time` (`source`,`event`,`created_at`),
+  CONSTRAINT `fk_ael_branch` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ael_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

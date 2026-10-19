@@ -1,0 +1,32 @@
+<form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+  <div class="flex flex-column items-center mt-2 mb-10 w-full">
+    <p-floatlabel variant="on" class="w-full">
+      <p-select
+        appendTo="body"
+        (onChange)="selectedLanguage($event.value)"
+        [options]="CONFIG_LOCALE_LANGUAGE_OPTIONS"
+        [style]="{ width: '100%' }"
+        class="ng-dirty"
+        [formField]="$any(rootField.locale!)"
+        id="locale"
+        inputId="locale"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'utilities.switch_language.placeholder' | translate">
+        <ng-template #selectedItem let-item>
+          <div class="flex items-center gap-2">
+            <img [class]="flagClass(item.value)" src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [alt]="item.value" />
+            <span>{{ item.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template #item let-item>
+          <div class="flex items-center gap-2">
+            <img [class]="flagClass(item.value)" src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [alt]="item.value" />
+            <span>{{ item.label }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+      <label for="locale">{{ 'utilities.switch_language.language_label' | translate }}</label>
+    </p-floatlabel>
+  </div>
+</form>

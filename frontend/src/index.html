@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="utf-8" />
+  <title>Cluvix Solutions</title>
+  <base href="/" />
+  <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  <meta
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    name="viewport"
+  />
+  <meta name="description"
+        content="Cluvix Solutions cung cấp và phát triển phần mềm chuyển đổi số cho doanh nghiệp" />
+  <meta name="zalo-platform-site-verification" content="PDMuTRJH44XJ-hrpa-upVsFgkbMFd6y2DpKm" />
+  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" href="/assets/icons/favicon-16x16.png" sizes="16x16">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#FF4D8D">
+  <!-- Một kích thước 180×180 là đủ cho iOS hiện nay -->
+  <link rel="apple-touch-icon" href="/assets/icons/apple-icon-180.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <script>
+    // Chrome/Edge bắn `beforeinstallprompt` MỘT lần, rất sớm (trước khi Angular chạy xong
+    // APP_INITIALIZER) ⇒ listener trong PwaInstallService gắn muộn sẽ lỡ mất. Bắt ở đây, giữ lại
+    // cho service đọc (window.__cluvixInstallPrompt) + báo qua event 'cluvix-installprompt'.
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      window.__cluvixInstallPrompt = e;
+      window.dispatchEvent(new Event('cluvix-installprompt'));
+    });
+  </script>
+  <meta name="theme-color" content="#101828">
+
+  <meta content="yes" name="mobile-web-app-capable" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+<noscript
+>Nếu bạn thấy thông báo này, điều đó có nghĩa là
+  <strong>JavaScript đã bị tắt trên trình duyệt của bạn</strong>, vui lòng
+  <strong>bật JavaScript</strong> để ứng dụng này hoạt động.
+  <br />
+  Nếu bạn sử dụng trình duyệt chrome. Nhấn chọn <strong>"Settings"</strong>. Nhấn
+  <strong>"Privacy and security"</strong> trên trình đơn bên trái. Trong
+  <strong>"Privacy and security"</strong>, nhấn lên nút <strong>"Site Settings"</strong>. Cuộn
+  xuống <strong>"JavaScript"</strong> và chọn <strong>"Sites can use Javascript"</strong>.
+</noscript>
+<cluvix>
+  <!-- Initial loading spinner -->
+  <div style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    z-index: 9999;
+  ">
+    <div style="text-align: center;">
+      <div style="height: 65px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+        <div class="loader" style="
+          --c: no-repeat linear-gradient(#7B3F9E, #7B3F9E);
+          background: var(--c), var(--c), var(--c), var(--c), var(--c), var(--c), var(--c), var(--c), var(--c);
+          background-size: 16px 16px;
+          animation: l32-1 1s infinite, l32-2 1s infinite;
+        "></div>
+      </div>
+      <p id="cluvix-boot-loading-text" style="color: #6b7280; font-size: 14px; margin: 0;">Loading...</p>
+    </div>
+  </div>
+  <style>
+    @keyframes l32-1 {
+      0%, 100% { width: 45px; height: 45px; }
+      35%, 65% { width: 65px; height: 65px; }
+    }
+    @keyframes l32-2 {
+      0%, 40%  { background-position: 0 0, 0 50%, 0 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0, 50% 0, 50% 50%; }
+      60%, 100% { background-position: 0 50%, 0 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0, 50% 0, 0 0, 50% 50%; }
+    }
+  </style>
+  <script>
+    // Chạy trước khi Angular bootstrap → chưa có TranslateService.
+    // Fetch thẳng file JSON i18n thật (cùng nguồn TranslateService dùng) thay vì hardcode text trùng lặp ở đây.
+    (function () {
+      var el = document.getElementById('cluvix-boot-loading-text');
+      if (!el) return;
+      // StorageService.saveStorage() lưu qua JSON.stringify() → giá trị raw có dấu ngoặc kép ("vi-VN"), phải JSON.parse lại.
+      var lng = 'vi-VN';
+      try {
+        var raw = localStorage.getItem('lng');
+        if (raw) lng = JSON.parse(raw);
+      } catch (e) {}
+      // Phải DÙNG CHUNG URL với CachedTranslateLoader (cùng ?v=), nếu không sẽ là 2 entry cache khác
+      // nhau => tải trùng ~109 KB gzip mỗi cold load, và bản không-?v= sẽ bị giam khi nginx bật
+      // immutable. Giá trị dưới do prebuild `scripts/inject-version.js` ghi đè mỗi lần build.
+      var I18N_VERSION = '2.2.1792312397356';
+      fetch('./assets/i18n/' + lng + '.json?v=' + I18N_VERSION)
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.common && data.common.label && data.common.label.loading) {
+            el.textContent = data.common.label.loading;
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
+</cluvix>
+</body>
+</html>

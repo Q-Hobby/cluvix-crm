@@ -1,0 +1,68 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12 md:col-span-8">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.name!"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.consultation_status' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 md:col-span-4">
+      <p-inputgroup>
+        <p-floatlabel variant="on">
+          <p-select
+            appendTo="body"
+            [class.ng-invalid]="isFieldInvalid(rootField.severity!)"
+            [options]=TAG_SEVERITY_OPTION
+            class="ng-dirty"
+            emptyFilterMessage="{{ 'common.message.no_data' | translate }}"
+            [formField]="$any(rootField.severity!)"
+            id="severity"
+            inputId="severity"
+          ></p-select>
+          <label for="severity">{{ 'common.label.color' | translate }}</label>
+        </p-floatlabel>
+        <p-tag [severity]="$any(rootField.severity!().value())" [value]="'common.label.color' | translate"/>
+      </p-inputgroup>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+      <textarea
+        [rows]="4"
+        pTextarea
+        class="ng-dirty w-full"
+        [formField]="$any(rootField.desc!)"
+        id="desc"
+      ></textarea>
+        <label for="desc">{{ 'common.label.description' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 inline-flex items-center gap-2">
+      <p-toggleswitch
+        [formField]="rootField.isAccepted!"
+        id="isAccepted"
+        [trueValue]="1" [falseValue]="0"
+      ></p-toggleswitch>
+      <label for="isAccepted" class="min-w-32">{{ 'config.appointment_is_accepted.is_accepted' | translate }}</label>
+      <span class="text-xs text-gray-400">{{ 'config.appointment_is_accepted.is_accepted_desc' | translate }}</span>
+    </div>
+    <div class="col-span-12 inline-flex items-center gap-2">
+      <p-toggleswitch
+        [formField]="rootField.status!"
+        id="status"
+        [trueValue]="1" [falseValue]="0"
+      ></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ rootField.status!().value() === 1 ? ('common.label.show' | translate) : ('common.label.hide' | translate) }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

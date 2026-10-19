@@ -1,0 +1,37 @@
+<div class="sheet_body" style="page-break-inside: avoid; max-height: 100vh; overflow: hidden;">
+  <div class="sheet_body_top" style="page-break-inside: avoid;">
+    <div class="flex items-center justify-between italic">
+      <div class="pl-1">
+        {{ 'common.label.invoice' | translate }}:&nbsp;<span class="invoice_id"> {{ model().code }}</span>
+      </div>
+      <div class="text-sm pr-2">
+        {{ 'common.label.day' | translate }} <span class="font-semibold">{{ orderData().date }}</span> {{ 'print.date_month' | translate }} <span
+        class="font-semibold">{{ orderData().month }}</span> {{ 'print.date_year' | translate }} <span
+        class="font-semibold">{{ orderData().year }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet_body_mid" style="page-break-inside: avoid;">
+    <div class="customer_info">
+      <h3 class="flex items-center justify-center w-full font-semibold">
+        {{ 'common.label.deposit_receipt' | translate | uppercase }}
+      </h3>
+      <app-customer-info-layout [customer]="model().customer"/>
+      <div class="grid">
+        <div class="col-12">
+          {{ 'common.label.amount' | translate }}: <b>{{ model().amountFormatted }}</b> -
+          <b>{{ model().paymentMethodLabel }}</b> -
+          {{ 'common.label.payment_time' | translate }}: <b>{{ model().payment_timeFormatted }}</b>
+        </div>
+      </div>
+
+      <div class="invoice_info">
+        @if (model().note) {
+          {{ 'common.label.note' | translate }}:
+          <span [innerHTML]="model().note | safeHtml" class="whitespace-pre-wrap font-semibold"></span>
+        }
+      </div>
+    </div>
+  </div>
+</div>

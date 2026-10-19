@@ -1,0 +1,1 @@
+../../skill/commands/investigate.md

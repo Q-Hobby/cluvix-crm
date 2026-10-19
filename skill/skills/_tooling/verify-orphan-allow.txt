@@ -1,0 +1,13 @@
+# verify-orphan-allow.txt — file knowledge CỐ Ý không có ai trỏ tới.
+# Mỗi dòng: path tương đối gốc repo. Dòng kết thúc bằng "/" = cả thư mục.
+# Thêm dòng vào đây phải kèm lý do — allow không lý do sẽ thành nơi chôn nợ.
+
+# Bia mộ chỉ đường: người mở đúng đường dẫn CŨ mới đọc nó, nên theo định nghĩa không ai
+# trỏ tới. Bản ở skill/ thì có (HOW_TO_UPDATE.md nhắc), 2 bản này thì không.
+frontend/skill/BMAD-MOVED.md
+mobile/skill/BMAD-MOVED.md
+
+# Thư mục mẫu cấu trúc feature BMAD. skill/bmad/INDEX.md giới thiệu cả THƯ MỤC
+# ("`_example/` — folder mẫu cấu trúc feature"), agent mở folder rồi đọc, không cần
+# link tới từng file con.
+skill/bmad/_example/

@@ -1,0 +1,14 @@
+.item_line_search {
+  border: solid #e9ecef;
+  border-width: 0 0 1px 0;
+}
+
+// appendTo="body" di chuyển dialog panel ra ngoài host — không thể dùng :host ::ng-deep,
+// scope bằng styleClass="global-search-dialog" thay vì DOM ancestry.
+::ng-deep .global-search-dialog .p-dataview .p-dataview-content {
+  padding: 0 !important;
+}
+
+::ng-deep .global-search-dialog .p-dialog-header {
+  padding: unset !important;
+}

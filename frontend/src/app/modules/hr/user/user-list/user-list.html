@@ -1,0 +1,432 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  currentPageReportTemplate="{{ isDesktop() ? ('common.page.current_report' | translate) : '' }}"
+  dataKey="id"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+          <div class="flex gap-2">
+            <button
+              pButton
+              (click)="exportUser()"
+              *hasPerm="permission.permissionExtUser"
+              [pTooltip]="'common.action.export' | translate"
+              severity="help"
+              tooltipPosition="top"
+              type="button"
+            ><i class="pi pi-download"></i></button>
+
+            <button type="button"
+              pButton
+              *hasPerm="permission.permissionExtUser"
+              [pTooltip]="'common.action.import' | translate"
+              tooltipPosition="top"
+              (click)="openImportDialog()"
+            ><i class="pi pi-upload"></i></button>
+            <button type="button"
+              pButton
+              (click)="createRecord()"
+              *hasPerm="permission.permissionCreateUser"
+            ><i class="pi pi-plus"></i><span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span></button>
+          </div>
+      </div>
+      <div class="p-toolbar-group-end">
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <p-popover #op>
+            <div class="grid grid-cols-12 gap-4 !w-[300px]">
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <app-branch-multiselect-form-control formControlName="branch_id">
+                  </app-branch-multiselect-form-control>
+                  <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <p-select [multiple]="true"
+                    [options]="childRole()"
+                    [resetFilterOnHide]="true"
+                    [style]="{ minWidth: '100%' }"
+                    appendTo="body"
+                    class="w-full"
+                    [emptyFilterMessage]="'common.label.no_results' | translate"
+                    formControlName="_role"
+                    id="_role"
+                    optionLabel="label"
+                    optionValue="value"
+                  >
+                  </p-select>
+                  <label for="_role">{{ 'common.label.role' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <p-select [multiple]="true"
+                    [options]="userStatusOptions()"
+                    [resetFilterOnHide]="true"
+                    [style]="{ minWidth: '100%' }"
+                    appendTo="body"
+                    class="w-full"
+                    [emptyFilterMessage]="'common.label.no_results' | translate"
+                    formControlName="status"
+                    id="status"
+                  >
+                  </p-select>
+                  <label for="status">{{ 'common.label.status' | translate }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+          </p-popover>
+          <div class="flex items-center gap-2 w-full">
+            @if (isDesktop()) {
+              <p-floatlabel variant="on">
+                <p-iconfield>
+                  <p-inputicon class="pi pi-search"/>
+                  <input
+                    autocomplete="off"
+                    formControlName="_keyword"
+                    id="search_keyword"
+                    pInputText
+                    type="text"
+                  />
+                </p-iconfield>
+                <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+              </p-floatlabel>
+            }
+            @if (isDesktop()) {
+              <p-floatlabel variant="on" class="flex-1 min-w-[200px]">
+                <department-multiselect-from-control
+                  formControlName="_department">
+                </department-multiselect-from-control>
+                <label for="_department">{{ 'common.label.department' | translate }}</label>
+              </p-floatlabel>
+            }
+            <button
+              pButton
+              (click)="op.toggle($event)"
+              [attr.aria-label]="'common.action.filter' | translate"
+              [pTooltip]="'common.action.filter' | translate"
+              severity="info"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter"></i></button>
+            <button
+              pButton
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter-slash"></i></button>
+            <button type="button"
+              pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-refresh"></i></button>
+            <button
+              pButton
+              (click)="colsTpl.toggle($event)"
+              [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-th-large"></i></button>
+          </div>
+        </form>
+      }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('avatar')()) {
+        <th class="min-w-[60px]">
+          <div class="flex items-center justify-center w-full">{{ 'common.label.avatar' | translate }}</div>
+        </th>
+      }
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('name')()) {
+        <th class="min-w-[200px]">{{ 'common.label.staff' | translate }}</th>
+      }
+      @if (isColVisible('code')()) {
+        <th class="min-w-[120px]">{{ 'hr.user_list.code' | translate }}</th>
+      }
+      @if (isColVisible('nickname')()) {
+        <th class="min-w-[120px]">{{ 'hr.user_list.nickname' | translate }}</th>
+      }
+      @if (isColVisible('genderUser')()) {
+        <th class="min-w-[100px]">{{ 'common.label.gender' | translate }}</th>
+      }
+      @if (isColVisible('phone')()) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.phone' | translate }}
+        </th>
+      }
+      @if (isColVisible('email')()) {
+        <th class="min-w-[150px]">Email</th>
+      }
+      @if (isColVisible('username')()) {
+        <th class="min-w-[150px]">{{ 'common.label.username' | translate }}</th>
+      }
+      @if (isColVisible('description')()) {
+        <th class="min-w-[180px]">{{ 'common.label.role' | translate }}</th>
+      }
+      @if (isColVisible('userStatus')()) {
+        <th class="min-w-[100px]">{{ 'common.label.status' | translate }}</th>
+      }
+      @if (isColVisible('department')()) {
+        <th class="min-w-[150px]">{{ 'common.label.department' | translate }}</th>
+      }
+      @if (isColVisible('branch')()) {
+        <th
+          class="min-w-[170px]"
+          [pTooltip]="'hr.user_list_page.branch_tooltip' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'common.label.branch' | translate }}
+        </th>
+      }
+      @if (isColVisible('created_by')()) {
+        <th class="min-w-[200px]">{{ 'common.label.user_created' | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      @if (isColVisible('updated_by')()) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.user_updated' | translate }}
+        </th>
+      }
+      @if (isColVisible('updated_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.updated_at' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[120px] min-w-[120px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('avatar')()) {
+        <td>
+          @if (model.userProfile?.avatar) {
+            <div class="flex items-center justify-center w-full">
+              <p-avatar
+                (onImageError)="errorHandler($event)"
+                image="{{ model.userProfile?.avatar }}"
+                shape="circle"
+                class="mr-2"
+              ></p-avatar>
+            </div>
+          }
+          @if (!model.userProfile?.avatar) {
+            <div class="flex items-center justify-center w-full">
+              <p-avatar icon="pi pi-user" shape="circle" class="mr-2"></p-avatar>
+            </div>
+          }
+        </td>
+      }
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('name')()) {
+        <td>
+          <span class="font-semibold text-primary">{{ model.userProfile?.fullname | titlecase }}</span>
+        </td>
+      }
+      @if (isColVisible('code')()) {
+        <td>{{ model.userProfile?.code || '—' }}</td>
+      }
+      @if (isColVisible('nickname')()) {
+        <td>
+          {{ model.userProfile?.nickname || '—' | titlecase }}
+        </td>
+      }
+      @if (isColVisible('genderUser')()) {
+        <td>
+          {{ model.genderKey ? (model.genderKey | translate) : model.genderLabel }}
+        </td>
+      }
+      @if (isColVisible('phone')()) {
+        <td>{{ model.userProfile?.phone }}</td>
+      }
+      @if (isColVisible('email')()) {
+        <td>{{ model.email }}</td>
+      }
+      @if (isColVisible('username')()) {
+        <td>{{ model.username }}</td>
+      }
+      @if (isColVisible('description')()) {
+        <td>
+          <b>{{ model.userRole?.description ?? '—' }}</b>
+        </td>
+      }
+      @if (isColVisible('userStatus')()) {
+        <td>
+            <span
+              class="font-semibold px-3 py-[5px] rounded-full shadow-sm text-sm mr-1 mb-1 inline-block"
+              [class]="model.userStatusClass">
+              {{ model.userStatusLabel }}
+            </span>
+        </td>
+      }
+      @if (isColVisible('department')()) {
+        <td>
+          {{ model.departmentInfo || '—' }}
+        </td>
+      }
+      @if (isColVisible('branch')()) {
+        <td>
+          {{ model.branchLabel }}
+        </td>
+      }
+      @if (isColVisible('created_by')()) {
+        <td>
+          @if (model.createdByInfo) {
+            <p-chip label="{{model.createdByInfo.fullname}}" image="{{ model.createdByInfo.avatar }}"
+                    alt="{{model.createdByInfo.fullname}}"/>
+          }
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td>
+          {{ model.created_atFormatted }}
+        </td>
+      }
+      @if (isColVisible('updated_by')()) {
+        <td>
+          @if (model.updatedByInfo) {
+            <p-chip label="{{model.updatedByInfo.fullname}}" image="{{ model.updatedByInfo.avatar }}"
+                    alt="{{model.updatedByInfo.fullname}}"/>
+          }
+        </td>
+      }
+      @if (isColVisible('updated_at')()) {
+        <td>
+          {{ model.updated_atFormatted }}
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            <p-button
+      icon="pi pi-key"
+              (onClick)="resetPassword($event, model.id)"
+              *hasPerm="permission.permissionUpdateUser"
+              [ariaLabel]="'hr.user_list_page.tooltip_reset_password' | translate"
+              [pTooltip]="'hr.user_list_page.tooltip_reset_password' | translate"
+              severity="help"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+
+    ></p-button>
+            <p-button
+      icon="pi pi-pencil"
+              (onClick)="updateRecord(model)"
+              *hasPerm="permission.permissionUpdateUser"
+              [ariaLabel]="'common.action.edit' | translate"
+              [pTooltip]="'common.action.update' | translate"
+              severity="success"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+
+    ></p-button>
+            <p-button
+      icon="pi pi-trash"
+              (onClick)="deleteRecord($event, model.id)"
+              *hasPerm="permission.permissionDeleteUser"
+              [ariaLabel]="'common.action.delete' | translate"
+              [pTooltip]="'common.action.delete' | translate"
+              severity="danger"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+
+    ></p-button>
+          </p-buttongroup>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

@@ -1,0 +1,253 @@
+<p-table
+  #dt
+  (onEditComplete)="onCellEditComplete($event)"
+  (onEditInit)="onCellEditInit($event)"
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  editMode="cell"
+>
+  <ng-template #caption>
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+        <button type="button"
+          (click)="createRecord()"
+          *hasPerm="permission.permissionManageConfig"
+          pButton
+        >
+          <i class="pi pi-plus"></i>
+          <span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span>
+        </button>
+      </div>
+      <div class="p-toolbar-group-end">
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <div class="flex items-center gap-2 w-full">
+            @if (isDesktop()) {
+              <div class="flex-grow">
+                <p-floatlabel variant="on">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input
+                      autocomplete="off"
+                      formControlName="_keyword"
+                      id="search_keyword"
+                      pInputText
+                      type="text"
+                    />
+                  </p-iconfield>
+                  <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                </p-floatlabel>
+              </div>
+            }
+            <button
+              (click)="colsTpl.toggle($event)"
+              [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+              pButton
+              [iconOnly]="true"
+            >
+              <i class="pi pi-th-large"></i>
+            </button>
+          </div>
+        </form>
+      }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('name')()) {
+        <th class="min-w-[200px]">{{ 'common.label.source_group' | translate }}</th>
+      }
+      @if (isColVisible('desc')()) {
+        <th class="min-w-[400px]">{{ 'common.label.description' | translate }}</th>
+      }
+      @if (isColVisible('sourceInfo')()) {
+        <th class="min-w-[500px]">{{ 'common.label.source_2' | translate }}</th>
+      }
+      @if (isColVisible('online')()) {
+        <th class="min-w-[100px]">{{ 'common.label.online_source' | translate }}</th>
+      }
+      @if (isColVisible('status')()) {
+        <th class="min-w-[80px]">{{ 'common.label.status' | translate }}</th>
+      }
+      @if (isColVisible('SortOrder')()) {
+        <th class="min-w-[80px] w-[80px]">{{ 'common.label.sort_order' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="min-w-[80px] w-[80px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [class.tr-disabled]="!model.status" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('name')()) {
+        <td [appCopyText]="model.name"><span
+          class="font-semibold text-primary">{{ model.name }}</span></td>
+      }
+      @if (isColVisible('desc')()) {
+        <td [innerHTML]="model.desc || '—' | safeHtml"></td>
+      }
+      @if (isColVisible('sourceInfo')()) {
+        <td>
+          @if (model.sourceInfo?.length) {
+            @for (item of model.sourceInfo; track item.id; let i = $index) {
+              @if (i > 0) {
+                <span>, </span>
+              }{{ item?.name | titlecase }}
+            }
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (isColVisible('online')()) {
+        <td>
+          <p-toggleswitch
+            (onChange)="checkOnline(model.id)" [(ngModel)]="model.online"
+            [disabled]="checkUpdatePermission()"
+            [falseValue]="0"
+            [trueValue]="1"
+            [pTooltip]="model.online ? ('common.label.online_source' | translate) : ('config.group_source.other_source' | translate)"
+          ></p-toggleswitch>
+        </td>
+      }
+      @if (isColVisible('status')()) {
+        <td>
+          <p-toggleswitch
+            (onChange)="handleStatusChange(model.id)"
+            [(ngModel)]="model.status"
+            [disabled]="checkUpdatePermission()"
+            [falseValue]="0"
+            [trueValue]="1" [pTooltip]="model.status ? ('common.label.show' | translate) : ('common.label.hide' | translate)"
+          ></p-toggleswitch>
+        </td>
+      }
+      @if (isColVisible('SortOrder')()) {
+        <td
+          [pEditableColumnDisabled]="checkUpdatePermission()"
+          [pEditableColumnRowIndex]="index"
+          [pEditableColumn]="model"
+          pEditableColumnField="SortOrder">
+          <p-celleditor>
+            <ng-template #input>
+              <input
+                [(ngModel)]="model.SortOrder"
+                class="w-full"
+                pInputText
+                type="number"
+              />
+            </ng-template>
+            <ng-template #output>
+              @if (model.SortOrder) {
+                <p-badge value="{{ model.SortOrder }}"></p-badge>
+              }
+            </ng-template>
+          </p-celleditor>
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            <p-button
+      icon="pi pi-pencil"
+              (onClick)="updateRecord(model)"
+              *hasPerm="permission.permissionManageConfig"
+              [ariaLabel]="'common.action.edit' | translate"
+              [pTooltip]="'common.action.update' | translate"
+              severity="success"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            
+    ></p-button>
+            <p-button
+      icon="pi pi-trash"
+              (onClick)="deleteRecord($event, model.id)"
+              *hasPerm="permission.permissionManageConfig"
+              [ariaLabel]="'common.action.delete' | translate"
+              [pTooltip]="'common.action.delete' | translate"
+              severity="danger"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            
+    ></p-button>
+          </p-buttongroup>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 10">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

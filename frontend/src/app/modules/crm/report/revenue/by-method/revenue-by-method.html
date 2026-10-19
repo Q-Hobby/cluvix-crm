@@ -1,0 +1,151 @@
+<p-table
+  [columns]="paymentForCols()"
+  [loading]="loading()"
+  [rowHover]="true"
+  [scrollable]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [value]="pivot() ?? []"
+  dataKey="methodId"
+  scrollHeight="flex"
+>
+  <ng-template #caption>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start flex items-center gap-1">
+        <button
+          type="button"
+          pButton
+          [severity]="copied() ? 'success' : 'secondary'"
+          [attr.aria-label]="'common.action.copy' | translate"
+          [pTooltip]="'common.action.copy' | translate"
+          tooltipPosition="top"
+          (click)="copyTable()"
+          [iconOnly]="true"
+        >
+          <i [class]="copied() ? 'pi pi-check' : 'pi pi-copy'"></i>
+        </button>
+        <button
+          type="button"
+          pButton
+          severity="help"
+          [disabled]="exporting()"
+          [attr.aria-label]="'common.tooltip.export_data' | translate"
+          [pTooltip]="'common.tooltip.export_data' | translate"
+          tooltipPosition="top"
+          (click)="triggerExport()"
+          [iconOnly]="true"
+        >
+          <i [class]="exporting() ? 'pi pi-spin pi-spinner' : 'pi pi-download'"></i>
+        </button>
+      </div>
+      <div class="p-toolbar-group-end flex flex-wrap items-center gap-2">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            [formControl]="dateRangeCtrl"
+            inputId="rbm_date_range"
+            selectionMode="range"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+            appendTo="body"
+            showIcon="true"
+          >
+            <ng-template #footer>
+              <app-date-picker-footer (rangeChange)="onQuickSelect($event)" />
+            </ng-template>
+          </p-datepicker>
+          <label for="rbm_date_range">{{ 'common.label.collection_time' | translate }}</label>
+        </p-floatlabel>
+        <button
+          type="button"
+          pButton
+          [attr.aria-label]="'common.action.clear_filter' | translate"
+          severity="warn"
+          [pTooltip]="'common.action.clear_filter' | translate"
+          tooltipPosition="top"
+          (click)="clearFilter()"
+          [iconOnly]="true"
+        >
+          <i class="pi pi-filter-slash"></i>
+        </button>
+        <button
+          type="button"
+          pButton
+          [attr.aria-label]="'common.action.refresh' | translate"
+          severity="secondary"
+          [pTooltip]="'common.action.reload_page' | translate"
+          tooltipPosition="top"
+          (click)="reload()"
+          [iconOnly]="true"
+        >
+          <i class="pi pi-refresh"></i>
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #header let-cols>
+    <tr>
+      <th class="min-w-[180px]">{{ 'common.label.payment_method' | translate }}</th>
+      @for (col of cols; track col.id) {
+        <th class="text-right min-w-[140px] text-sky-600">
+          {{ col.labelKey ? (col.labelKey | translate) : col.label }}
+          @if (isInternalTransfer(col.id)) {
+            <i
+              class="pi pi-info-circle text-xs text-gray-400 ml-1"
+              [pTooltip]="'crm.report.revenue.by_method.transfer_not_in_total' | translate"
+              tooltipPosition="top"
+            ></i>
+          }
+        </th>
+      }
+      <th class="text-right min-w-[140px]">{{ 'common.label.total' | translate }}</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-row let-cols="columns">
+    <tr>
+      <td class="font-medium">{{ methodLabel(row) }}</td>
+      @for (col of cols; track col.id) {
+        <td
+          class="text-right"
+          [class.text-emerald-700]="(row.byPaymentFor[col.id] ?? 0) > 0"
+          [class.text-red-600]="(row.byPaymentFor[col.id] ?? 0) < 0"
+          [class.text-gray-300]="!(row.byPaymentFor[col.id] ?? 0)"
+        >
+          {{ (row.byPaymentFor[col.id] ?? 0) !== 0 ? ((row.byPaymentFor[col.id] ?? 0) | currencyFormat) : '—' }}
+        </td>
+      }
+      <td class="text-right font-semibold">{{ row.total | currencyFormat }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #footer let-cols>
+    @if ((pivot()?.length ?? 0) > 1) {
+      <tr class="font-bold">
+        <td class="uppercase tracking-wide text-xs">{{ 'common.label.total' | translate }}</td>
+        @for (col of cols; track col.id) {
+          <td class="text-right text-emerald-700">{{ colTotal(col.id) | currencyFormat }}</td>
+        }
+        <td class="text-right">{{ grandTotal() | currencyFormat }}</td>
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of [1, 2, 3, 4, 5]; track $index) {
+      <tr class="h-[46px]">
+        @for (_ of [1, 2, 3, 4]; track $index) {
+          <td><p-skeleton /></td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage let-cols>
+    <tr>
+      <td [attr.colspan]="cols.length + 2">
+        <app-empty-message />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

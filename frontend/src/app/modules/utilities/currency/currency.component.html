@@ -1,0 +1,90 @@
+<form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <!-- Số tiền -->
+    <div class="col-span-12 lg:col-span-4 mt-2">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          [class.ng-invalid]="isFieldInvalid(rootField.num!)"
+          [min]="0"
+          [formField]="$any(rootField.num!)"
+          id="num"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+        ></p-inputnumber>
+        <label for="num">{{ 'common.label.amount' | translate }}</label>
+      </p-floatlabel>
+      @if (isFieldInvalid(rootField.num!) && rootField.num!().touched()) {
+        <small class="text-red-500">{{ 'utilities.currency.invalid_amount' | translate }}</small>
+      }
+    </div>
+
+    <!-- Từ đơn vị -->
+    <div class="col-span-12 lg:col-span-4 mt-2">
+      <p-floatlabel variant="on">
+        <p-select
+          appendTo="body"
+          [class.ng-invalid]="isFieldInvalid(rootField.from!)"
+          [options]="CURRENCY_OPTION"
+          [showClear]="true"
+          [emptyFilterMessage]="'common.label.no_results' | translate"
+          filterBy="label"
+          [formField]="$any(rootField.from!)"
+          id="from"
+          inputId="from"
+          optionLabel="label"
+          optionValue="value"
+          resetFilterOnHide="true"
+        ></p-select>
+        <label for="from">{{ 'utilities.currency.from_unit' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Sang đơn vị -->
+    <div class="col-span-12 lg:col-span-4 mt-2">
+      <p-floatlabel variant="on">
+        <p-select
+          appendTo="body"
+          [class.ng-invalid]="isFieldInvalid(rootField.to!)"
+          [options]="CURRENCY_OPTION"
+          [showClear]="true"
+          [emptyFilterMessage]="'common.label.no_results' | translate"
+          filterBy="label"
+          [formField]="$any(rootField.to!)"
+          id="to"
+          inputId="to"
+          optionLabel="label"
+          optionValue="value"
+          resetFilterOnHide="true"
+        ></p-select>
+        <label for="to">{{ 'utilities.currency.to_unit' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Kết quả chuyển đổi -->
+    <div class="col-span-12">
+      <div class="bg-green-50 border border-green-200 rounded-lg px-4 py-2 flex items-center justify-between gap-4 flex-wrap">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <span class="text-sm text-gray-500 whitespace-nowrap">{{ 'utilities.currency.original_value' | translate }}:</span>
+          <span class="font-semibold text-gray-800 truncate">{{ currencyConvert()?.giatri || '—' }}</span>
+        </div>
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <span class="text-sm text-gray-500 whitespace-nowrap">{{ 'utilities.currency.converted_value' | translate }}:</span>
+          <span class="text-lg font-bold text-green-600 truncate" [appCopyText]="currencyConvert()?.giatrichuyendoi">
+            {{ currencyConvert()?.giatrichuyendoi ? (currencyConvert()?.giatrichuyendoi | numberFormat) : '—' }}
+          </span>
+        </div>
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <span class="text-sm text-gray-500 whitespace-nowrap">{{ 'utilities.currency.target_unit' | translate }}:</span>
+          <span class="font-semibold text-gray-800 truncate">{{ currencyConvert()?.giatringuoclai || '—' }}</span>
+        </div>
+      </div>
+    </div>
+  </p-fluid>
+
+  <app-dialog-footer
+    saveLabel="common.label.convert"
+    [isSubmitting]="isSubmitting()"
+    (cancelForm)="cancelSave()"
+    (saveForm)="onSubmit()"/>
+</form>

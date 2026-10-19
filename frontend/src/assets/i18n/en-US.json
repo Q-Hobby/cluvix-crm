@@ -1,0 +1,2183 @@
+{
+  "define": {
+    "commission_type": {
+      "amount": "Fixed amount"
+    },
+    "discount_type": {
+      "vnd": "VND"
+    },
+    "payment_for": {
+      "order": "Service payment",
+      "consignment_refund": "Consignment refund"
+    },
+    "reminder": {
+      "planed": "Planned",
+      "done": "Done",
+      "type": {
+        "chat_fb": "Facebook chat",
+        "task": "Task",
+        "meeting": "Meeting"
+      }
+    },
+    "payment": {
+      "type_deposit": {
+        "promotion": "Promotion deposit",
+        "consignment": "Consignment deposit"
+      }
+    },
+    "user_status": {
+      "pending": "Pending"
+    },
+    "order_plan_type": {
+      "new": "New order",
+      "old": "Old order"
+    },
+    "payment_status": {
+      "refunded": "Refunded"
+    },
+    "unit_category": {
+      "service": "Service unit"
+    },
+    "customer_status": {
+      "stop_care": "Stopped care",
+      "old_system": "Legacy system",
+      "appointment": "Appointment",
+      "cancel_appointment": "Cancelled appointment",
+      "complaint_resolved": "Complaint resolved",
+      "collaborator": "Collaborator",
+      "zalo": "Zalo customer"
+    },
+    "customer_type": {
+      "old": "Existing customer"
+    },
+    "customer_connect": {
+      "disconnected": "Disconnected"
+    },
+    "customer_rank": {
+      "diamond": "Diamond",
+      "titan": "Titan"
+    },
+    "appointment": {
+      "confirm_status": {
+        "not": "Not confirmed",
+        "ok": "Confirmed arrival",
+        "not_ok": "Confirmed not coming"
+      },
+      "status": {
+        "not_checkin": "Not arrived",
+        "checked_out": "Left",
+        "advise": "Consulting"
+      },
+      "schedule_time": {
+        "half_hour": "30 minutes",
+        "one_hour": "1 hour",
+        "one_and_half_hour": "1 hour 30 minutes",
+        "two_hour": "2 hours",
+        "three_hour": "3 hours"
+      },
+      "book_type": {
+        "advance": "Advance booking"
+      }
+    },
+    "note": {
+      "template_type": {
+        "check_up": "Check-up"
+      }
+    },
+    "service": {
+      "category": {
+        "product": "Product",
+        "treatment": "Service package",
+        "fee": "Consultation Fee"
+      },
+      "for": {
+        "adult": "Adult",
+        "child": "Child"
+      }
+    },
+    "permission": {
+      "action": {
+        "list": "List",
+        "extend": "Extend",
+        "manage": "Manage"
+      },
+      "module": {
+        "order_plan": "Order - Service",
+        "customer_image": "Customer image management",
+        "lock_service_used": "Lock used service",
+        "search_customer_global": "Global customer search",
+        "reminder": "Reminder",
+        "crm_report": "CRM reports",
+        "refund_service": "Refund service",
+        "service_used": "Service used"
+      }
+    },
+    "tag_severity": {
+      "secondary": "Secondary",
+      "danger": "Danger",
+      "contrast": "Contrast"
+    }
+  },
+  "config": {
+    "business_profile": {
+      "title": "Business Profile",
+      "update_success": "Business profile updated successfully"
+    },
+    "service_form": {
+      "installment": {
+        "p3": "3 periods",
+        "p6": "6 periods",
+        "p9": "9 periods",
+        "p12": "12 periods",
+        "p15": "15 periods",
+        "p18": "18 periods",
+        "p24": "24 periods"
+      }
+    },
+    "note_template": {
+      "name": "Template name",
+      "content": "Template content"
+    },
+    "card_type": {
+      "extra_description": "Extra description"
+    },
+    "nav": {
+      "system": {
+        "task_options": "Task options",
+        "constants": "Constants",
+        "setting": "Settings"
+      },
+      "appointment": {
+        "consultation_status": "Consultation status",
+        "rejection_reason": "Rejection reason"
+      },
+      "account": {
+        "payment_method": "Payment method",
+        "payment_form": "Payment form",
+        "bank_account": "Bank account"
+      },
+      "custom_form": {
+        "customer": "Customer form",
+        "lead": "Lead form"
+      },
+      "marketing": {
+        "note_template": "Note template",
+        "customer_job": "Customer job",
+        "customer_ethnicity": "Customer ethnicity"
+      },
+      "customer": {
+        "rank_services": "Rank Discount"
+      },
+      "medical_form": {
+        "template_type": "Form type"
+      },
+      "panel": {
+        "system": "System",
+        "customize_form": "Customize Form",
+        "location": "Location",
+        "medical_form": "Form Templates"
+      }
+    },
+    "options": {
+      "business_type": {
+        "beauty_center": "Beauty center",
+        "hospital_private": "Private hospital",
+        "medical_center": "Service center",
+        "private": "Private",
+        "public": "Public",
+        "spa": "Spa",
+        "clinic_special": "Specialized location"
+      },
+      "locale_language": {
+        "vi": "Vietnamese",
+        "en": "English"
+      },
+      "ward_type": {
+        "ward": "Ward",
+        "commune": "Commune"
+      },
+      "tooth_type": {
+        "permanent": "Permanent",
+        "milk": "Temporary"
+      },
+      "tax_type": {
+        "none": "Non-taxable"
+      },
+      "province_type": {
+        "city": "City",
+        "province": "Province"
+      },
+      "kpi_category": {
+        "month": "Monthly target",
+        "person": "Personal target",
+        "group": "Group target",
+        "other": "Other target",
+        "year": "Annual target"
+      },
+      "currency": {
+        "vnd": "Vietnamese dong",
+        "usd": "US dollar",
+        "eur": "Euro",
+        "gbp": "Pound sterling",
+        "rub": "Russian ruble",
+        "cad": "Canadian dollar",
+        "aud": "Australian dollar",
+        "cny": "Chinese yuan",
+        "jpy": "Japanese yen",
+        "sgd": "Singapore dollar",
+        "btc": "Bitcoin",
+        "eth": "Ethereum",
+        "xau": "Gold"
+      }
+    },
+    "group_source": {
+      "other_source": "Other source"
+    },
+    "config_clinic": {
+      "service": {
+        "required_fields_tooltip": "Some required fields are empty",
+        "service_name": "Service/Product/Service package",
+        "num_treatment_unlimited": "Value -1: Unlimited",
+        "min_price": "Min price",
+        "max_price": "Max price",
+        "telesale_commission_tooltip": "Applies to the consultants assigned to the order — paid when the customer pays, split evenly if more than one consultant. Changing the rate here does not affect orders already created. See Accounting report > Consultant commission for details.",
+        "note_min_max": "- Setting different \"Min price\" and \"Max price\" allows the service price to be selected within this range when creating an order.",
+        "note_num_treatment": "- Usage progress usually has 1 session, but for Service package category, it is usually more than 1.",
+        "customer_old": "Returning customer",
+        "customer_new": "New customer",
+        "vnd_or_percent_tooltip": "VND/ %",
+        "commission_consulting_section": "Consulting Commission (locked at order creation)",
+        "select_periods": "Select periods",
+        "allowed_periods": "Allowed periods",
+        "min_deposit_percent": "Minimum deposit (%)",
+        "interest_rate": "Interest rate (%/year)",
+        "period_interval_days": "Interval between periods",
+        "days_suffix": " days",
+        "installment_note_title": "Installment notes",
+        "installment_note_periods": "- Allowed periods: Select periods customers can use for installments (e.g., 3, 6, 12 periods). Staff selects one when creating an order.",
+        "installment_note_min_deposit": "- Minimum deposit: % customer must pay upfront before installment starts. Example: 30% means a 30M service requires 9M minimum.",
+        "installment_note_interest": "- Interest rate: %/year. Set 0% for no interest. Example: 5% means customer pays an additional 5% of remaining value per year.",
+        "installment_warning": "⚠️ Note: Only enable installments for high-value services (10M+) with binding customer contracts.",
+        "time_reminder_tooltip": "Period after which the customer can be contacted to upsell other services.",
+        "in_days": "* In days",
+        "note_time_reminder": "- \"Re-engagement\": Minimum days since the last purchase or use, after which the customer can be re-engaged for this service.",
+        "service_code_old": "Old code",
+        "after_n_days": "After {{days}} days",
+        "clone_dialog": "Clone service",
+        "is_installment_yes": "Allow installment",
+        "is_installment_no": "No installment"
+      },
+      "service_type": {}
+    },
+    "bank_account": {
+      "bank_code": "Bank Code",
+      "account_name": "Account Holder"
+    },
+    "form_customer": {
+      "title": "Customer form",
+      "field_name": "Field name",
+      "col_no_update": "Cannot update",
+      "tooltip_create": "If you check any field below, it will be required when creating a new customer",
+      "tooltip_update": "If you check any field below, it will be required when updating a customer",
+      "tooltip_no_update": "If you check any field below, it cannot be updated when editing a customer",
+      "reset": "Reset",
+      "confirm_reset": "Do you want to reset?"
+    },
+    "form_lead": {
+      "title": "Lead customer form"
+    },
+    "appointment_is_accepted": {
+      "is_accepted": "Counts as agreed",
+      "is_accepted_desc": "This status is counted in closing rate and staff revenue",
+      "not_accepted": "Not counted as agreed"
+    },
+    "appointment_reason": {
+      "care_reminder": "Customer care reminder",
+      "reminder_days": "Calculated in days",
+      "rejection_reason": "Rejection reason",
+      "reminder_tooltip": "Suggested time to follow up with the customer; the more accurate the timing, the higher the chance of closing a deal"
+    },
+    "appointment_type": {
+      "appointment_type": "Appointment type",
+      "is_consulting_no": "Not a consulting appointment",
+      "online_type": "Online appointment"
+    },
+    "customer_ranks": {
+      "rank_name": "Member rank name",
+      "min_points": "Minimum points",
+      "max_points": "Maximum points",
+      "example_title": "Member rank example:",
+      "example_col_priority": "Priority level",
+      "tier_bronze": "Bronze"
+    },
+    "customer_rank_services": {
+      "search_available": "Search available services...",
+      "search_selected": "Search selected services...",
+      "select_at_least_one": "Please select at least one service"
+    },
+    "location": {
+      "group_country": {
+        "name": "International zone"
+      },
+      "group_local": {
+        "name": "Domestic zone"
+      },
+      "location_country": {
+        "code": "Country code",
+        "common_name": "Common name",
+        "formal_name": "Formal name",
+        "capital": "Capital",
+        "telephone_code": "Telephone code",
+        "currency_code": "Currency code"
+      },
+      "location_province": {
+        "code_province": "Province code"
+      },
+      "location_ward": {
+        "name": "Ward/Commune",
+        "name_field": "Ward/Commune name",
+        "code_ward": "Ward code",
+        "type": "Ward type"
+      }
+    },
+    "branch": {
+      "branch_code": "Branch code",
+      "branch_name": "Branch name",
+      "accept_customer": "Accept",
+      "reject_customer": "Not accepting",
+      "appointment_tooltip": "Status indicating whether the branch accepts appointment bookings",
+      "tooltip_update": "Update branch",
+      "tooltip_delete": "Delete branch",
+      "update_success": "Branch updated successfully",
+      "create_success": "Branch created successfully"
+    },
+    "company": {
+      "company_name": "Company name",
+      "company_code": "Company code",
+      "hotline": "Hotline number",
+      "tax_code": "Tax code",
+      "business_type": "Business type",
+      "access_control_title": "Access control",
+      "appearance_title": "Appearance",
+      "currency_symbol": "Symbol",
+      "logo_label": "Brand logo",
+      "current_logo": "Current logo",
+      "drag_drop_logo": "Drag and drop logo here",
+      "weekly_rest_days": "Weekly rest days",
+      "weekly_rest_days_hint": "Select the fixed rest days each week (used for timekeeping/schedule calculations)."
+    },
+    "config_code": {
+      "table_name": "Table name",
+      "infix": "Infix",
+      "col_config": "Config",
+      "tooltip_update": "Update identifier code",
+      "include_branch_code": "Include branch code",
+      "monthly_reset": "Reset serial monthly",
+      "serial_length": "Serial length",
+      "customer_option_notice": "Customer codes currently follow format {{option}} (server variable CUSTOMER_CODE_OPTION), not the settings in this table. The \"customer\" row is only used as the counter and infix."
+    },
+    "unit": {
+      "unit_name": "Unit of measure"
+    },
+    "setting": {
+      "subtitle": "Click on a value cell to edit",
+      "click_to_edit": "Click to edit",
+      "editing": "Editing",
+      "edit_inline": "Edit",
+      "placeholder_value": "Enter value...",
+      "no_data_title": "No data yet",
+      "no_data_desc": "The configuration list will be displayed here",
+      "key_col": "Key"
+    },
+    "option_crm": {
+      "payment_update_title": "Update payment on same day",
+      "payment_update_tooltip": "Allow staff with create payment permission but no update permission to update payments created on the same day",
+      "order_update_title": "Update order on same day",
+      "order_update_tooltip": "Allow staff with create order permission but no update permission to update orders created on the same day",
+      "note_delete_title": "Delete note on same day",
+      "note_delete_tooltip": "Allow staff with create note permission but no delete permission to delete notes created on the same day",
+      "lead_telesale_title": "Lead list of telesale",
+      "lead_telesale_tooltip": "Allow telesale staff to see other telesale customers",
+      "cross_update_title": "Sale cross-update customer",
+      "cross_update_tooltip": "Still allow searching but not editing other sales's customer information",
+      "hide_phone_title": "Hide phone number",
+      "hide_phone_tooltip": "Allow hiding phone numbers, showing only last 4 digits as xxxxxx1234",
+      "select_date_title": "Allow selecting previous dates",
+      "select_date_tooltip": "Instead of today, staff can select previous dates when entering data",
+      "allow_previous_day_title": "Allow selecting yesterday",
+      "allow_previous_day_tooltip": "Allow creating orders/payments dated yesterday — for staff entering data late after midnight",
+      "cross_branch_treatment_title": "Use services purchased at another branch",
+      "cross_branch_treatment_tooltip": "Allow customers to use services purchased at a different branch than where they were bought",
+      "cross_search_title": "Cross-branch search & view",
+      "cross_search_tooltip": "Allow searching and viewing customer data across different branches",
+      "export_phone_title": "Show phone number on export",
+      "export_phone_tooltip": "Allow showing the full customer phone number on export, or restrict to managers only",
+      "opt_all_branch_company": "All branches in company",
+      "opt_allow_change": "Allow",
+      "opt_any_branch_treatment": "Use services at any branch",
+      "opt_deny": "Deny",
+      "opt_export_phone_all": "Show full number",
+      "opt_export_phone_manager_only": "Managers only",
+      "opt_lead_all": "View all",
+      "opt_lead_own_only": "View own only",
+      "opt_own_branch_only": "Own branch only",
+      "opt_pay_by_package_total": "By package total",
+      "opt_pay_per_session_default": "Per session (default)",
+      "opt_require_payment_check_default": "Check payment (default)",
+      "opt_same_branch_only_default": "Same branch only (default)",
+      "opt_show_last4_phone": "Hide, show last 4 digits",
+      "opt_skip_payment_check": "Skip payment check",
+      "payment_by_total_title": "Calculate usage fee by package total",
+      "payment_by_total_tooltip": "Calculate each usage session's amount based on the package's total value instead of per session",
+      "skip_payment_title": "Skip payment check on service use",
+      "skip_payment_tooltip": "Allow service use even if the customer hasn't fully paid"
+    },
+    "customer_category": {
+      "reminder_tooltip": "This is the suggested time to remind customer care follow-ups; the more accurate the timing, the higher the order closing rate"
+    },
+    "ethnicity": {
+      "name": "Ethnicity name",
+      "code": "Ethnicity code"
+    },
+    "job": {
+      "name": "Job name"
+    },
+    "source": {},
+    "accoutant_bank_account": {
+      "dialog_create": "Add bank account",
+      "dialog_update": "Update bank account",
+      "dialog_create_2": "Create bank account"
+    },
+    "system_unit": {
+      "dialog_create": "Quick add unit"
+    },
+    "service": {
+      "import_dialog_title": "Import services",
+      "import_step2_title": "Select file to import",
+      "import_template_hint": "The template has exactly the same columns as the Export file. Departments, service groups, units, brands and tax rates must be typed as an id or an exact name — use Export on the service list to see the ids your company uses."
+    },
+    "security_audit": {
+      "title": "Security audit log",
+      "date_range": "Date range",
+      "allowed_ips": "Allowed IPs (staff)",
+      "allowed_ips_hint": "One IP or CIDR range per line (e.g. 203.0.113.0/24). Empty = no restriction. WARNING: wrong entries can lock out staff (super-users are never blocked).",
+      "allowed_ips_user": "Allowed IPs (this user)",
+      "allowed_ips_user_hint": "Overrides the brand list. Empty = use the brand's list.",
+      "device": "Device",
+      "user_col": "User",
+      "user_id_label": "User ID"
+    },
+    "search": {
+      "placeholder": "Quick search settings… (e.g. source, product, appointment)",
+      "keyboard_hint": "↑↓ navigate · Enter open · Esc clear",
+      "recent": "Recently visited"
+    }
+  },
+  "accountant": {
+    "cash_flow_category": {
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "report_revenue_common": {
+      "payment": "Actual collected",
+      "expected": "Expected income"
+    }
+  },
+  "layout": {
+    "topbar": {
+      "portrait_event": "Event"
+    },
+    "log_menu": {
+      "export": "Export history",
+      "customer": "Customer history",
+      "appointment": "Appointment history",
+      "order_service_used": "Order service history",
+      "login": "Login history",
+      "user": "User History"
+    },
+    "hr_menu": {
+      "staff_root": "Staff management"
+    },
+    "app_menu": {
+      "appointment_list": "Appointment list",
+      "appointment_by_day": "Distribution by day",
+      "appointment_by_hour": "Distribution by hour",
+      "reminder_management": "Reminders",
+      "admin_group": "Administration",
+      "order_management": "Order management"
+    },
+    "app_menuprofile": {
+      "profile_tooltip": "Profile"
+    },
+    "app_topbar": {
+      "search_customer_tooltip": "Search customer",
+      "add_customer_tooltip": "Add customer (⌘Ctrl+C / Alt+C)",
+      "account_menu_tooltip": "My account",
+      "switch_branch_tooltip": "Switch branch",
+      "today_reminder_dialog_header": "Pending reminders",
+      "switch_dialog_header": "Switch",
+      "docs_label": "Guide",
+      "docs_tooltip": "Open the guide for this screen (new tab)",
+      "install_label": "Install app",
+      "install_tooltip": "Install Cluvix on your computer and open it like a regular app",
+      "install_safari_title": "Add Cluvix to your Dock",
+      "install_safari_step1": "In the Safari menu bar, choose File",
+      "install_safari_step2": "Choose Add to Dock, then click Add",
+      "install_chrome_title": "Install Cluvix from your browser",
+      "install_chrome_step1": "Click the Install icon (a screen with an arrow) at the end of the address bar",
+      "install_chrome_step2": "Or open the ⋮ menu → Cast, save, and share → Install page as app"
+    },
+    "update_dialog": {
+      "header": "New Version Available",
+      "body": "A new version is available. Click Update to apply."
+    },
+    "timezone_dialog": {
+      "header": "Timezone / System Time Warning",
+      "body": "Please set your computer timezone to UTC+7 to use the system.",
+      "acknowledge": "Understood"
+    }
+  },
+  "sale": {
+    "lead": {
+      "import_no_file": "No file selected",
+      "import_done_title": "Import complete",
+      "import_created": "Created",
+      "import_skipped": "Skipped"
+    }
+  },
+  "displaycols": {
+    "reception": {
+      "gender_age": "Gender · Age"
+    },
+    "contact": {
+      "total_debt": "Total debt",
+      "total_deposit": "Total deposit"
+    }
+  },
+  "emr": {
+    "reception_list": {
+      "label_history": "History"
+    }
+  },
+  "hr": {
+    "user_list": {
+      "nickname": "Nickname",
+      "code": "Attendance code"
+    },
+    "user_form": {
+      "section_profile": "Profile",
+      "section_profile_desc": "Employee registration info",
+      "section_account": "Account info",
+      "section_personal": "Personal info",
+      "section_organization": "Organization info",
+      "tooltip_generate": "Generate",
+      "fullname": "Employee full name",
+      "nickname": "Employee nickname",
+      "code": "Employee code"
+    },
+    "user_list_page": {
+      "branch_tooltip": "An employee may belong to multiple branches",
+      "tooltip_reset_password": "Reset password",
+      "import_dialog_title": "Import staff",
+      "import_dialog_hint": "Save the passwords below. After closing the dialog you cannot view them again.",
+      "import_step2_title": "Choose a file to import",
+      "import_template_hint": "The template has exactly the same columns as the Export file, so you can export, edit and import it back.",
+      "col_account": "Account",
+      "reset_password_dialog_title": "Reset password",
+      "reset_password_hint": "Enter a new password or click the generate button.",
+      "reset_password_success": "Password reset successfully",
+      "update_personal_success": "User info has been updated"
+    },
+    "role_page": {
+      "create_role_header": "Create role",
+      "tooltip_add_role": "Add role",
+      "no_roles": "No roles yet",
+      "tooltip_reload": "Reload",
+      "empty_state": "Select a role to edit permissions",
+      "loading_permissions": "Loading permissions...",
+      "confirm_delete_header": "Confirm delete",
+      "confirm_delete_msg": "Do you want to delete this role?",
+      "update_perm_success": "Permissions updated successfully!",
+      "tooltip_select_all_check": "Select/Deselect all permissions",
+      "tooltip_select_group_check": "Select/Deselect group",
+      "tooltip_select_row_check": "Select all for this feature",
+      "feature_count": "{{count}} features",
+      "app_module": {
+        "cxCrm": "cxCrm — Customer & Appointments"
+      }
+    },
+    "role_form": {
+      "name_hint": "Only characters a-z",
+      "description": "Permission group name"
+    },
+    "user_profile_form": {
+      "no_name": "No name",
+      "no_department": "Not set",
+      "about": "Short bio",
+      "section_avatar": "Avatar",
+      "no_value_found": "No value found",
+      "section_social": "Social media & tools",
+      "update_success": "Profile updated successfully",
+      "err_max_size": "File size cannot exceed 2MB",
+      "err_invalid_ext": "Only accepted: {{exts}}"
+    },
+    "change_password": {
+      "old_password": "Old password ",
+      "confirm_password": "Confirm password",
+      "success_msg": "Password changed. You will be logged out for security."
+    },
+    "user_devices": {
+      "title": "Logged-in devices",
+      "active": "Active",
+      "unknown_device": "Unknown device",
+      "confirm_revoke": "Log out this device? Its session will be terminated.",
+      "revoked": "Device logged out"
+    },
+    "department": {
+      "head_user_id": "Department head"
+    }
+  },
+  "dashboard": {
+    "crm": {
+      "filter": {
+        "this_quarter": "This quarter",
+        "custom": "Custom",
+        "compare_hint": "Compared with previous period",
+        "range_too_long": "The range can be at most 366 days.",
+        "period": "Reporting period",
+        "ref_day": "Day {{date}}"
+      },
+      "layout": {
+        "customize": "Customize",
+        "add_widget": "Add widget",
+        "preset_menu": "Layout templates",
+        "preset_desc": {
+          "overview": "Standard layout, balanced across revenue, appointments, customer sources and services.",
+          "revenue": "Revenue, branches and services first — for clinic owners and accountants.",
+          "front_desk": "Today’s appointments and consultation status first — for front desk and shift leads.",
+          "marketing": "Customer sources, service groups and customer progress first — for the marketing team."
+        },
+        "chooser_title": "Choose a starting layout",
+        "chooser_desc": "Every template has all the widgets you can view, ordered for a different role. Change it anytime from \"Layout templates\" or Customize.",
+        "chooser_keep": "Keep current layout",
+        "chooser_use": "Use this template",
+        "preset_applied": "Layout template applied",
+        "preset_confirm_title": "Switch to this layout template?",
+        "preset_confirm_message": "Your custom arrangement will be replaced by the selected template. You can still adjust it in Customize.",
+        "preset_confirm_ok": "Switch layout",
+        "preset": {
+          "overview": "Full overview",
+          "revenue": "Revenue & services",
+          "front_desk": "Front desk & appointments",
+          "marketing": "Marketing & growth"
+        },
+        "editing_title": "Customizing layout",
+        "reset": "Restore default",
+        "reset_confirm_title": "Restore default layout?",
+        "reset_confirm_message": "Your personal layout will be removed and the dashboard will use the brand default (or system default) layout.",
+        "reset_done": "Default layout restored",
+        "gallery_title": "Widget library",
+        "search_placeholder": "Search widgets…",
+        "drag_handle": "Drag widget {{name}}",
+        "size_half": "Half width",
+        "size_full": "Full width",
+        "move": "Move",
+        "move_up": "Move up",
+        "move_down": "Move down",
+        "to_main": "Move to main column",
+        "to_side": "Move to side column",
+        "to_top": "Move to top strip",
+        "zone_top": "Top strip",
+        "zone_main": "Main column",
+        "zone_side": "Side column",
+        "empty_title": "Your dashboard has no widgets",
+        "empty_desc": "Add widgets from the library to track the numbers you need.",
+        "hint_title": "Make this dashboard yours",
+        "hint_desc": "Use \"Customize\" to drag, hide or resize widgets, and \"Add widget\" to pick more reports.",
+        "save_brand_default": "Save as brand default",
+        "brand_confirm_title": "Save as brand default?",
+        "brand_confirm_message": "Staff without a personal layout will see this layout on the dashboard. Staff who arranged their own keep their layout.",
+        "saved_brand": "Saved as brand default",
+        "delete_brand_default": "Remove brand default",
+        "delete_brand_confirm_title": "Remove the brand default layout?",
+        "delete_brand_confirm_message": "Staff without a personal layout will return to the system default layout. Personal layouts are kept.",
+        "deleted_brand": "Brand default layout removed",
+        "added": "Added",
+        "no_results": "No results",
+        "unsaved_title": "Unsaved changes",
+        "unsaved_message": "This layout has unsaved changes. Discard them?",
+        "discard": "Discard changes"
+      },
+      "widget": {
+        "other_groups": "Other groups",
+        "period_until_today": "Period start to today",
+        "period_until_day": "Period start to {{date}}",
+        "overview_appointment_info": "Booked, arrived, accepted, cancelled: from period start to the end of the reference day. Remaining in period: after the reference day to period end.",
+        "new_customers_period": "New customers in period",
+        "new_customers_day": "New customers on day",
+        "appointments_created_day": "Appointments created on day",
+        "appointments_due_day": "Appointments due on day",
+        "remaining_in_period": "Remaining in period",
+        "definition": "Metric definition",
+        "view_report": "View detailed report",
+        "empty": "No data for this period",
+        "no_period": "Date range not applied",
+        "additional_stats_info": "Reminders on the reference day. Reminders are not tied to a branch, so this counts the whole brand and ignores the branch filter."
+      },
+      "widgets": {
+        "payment_in_month": {
+          "title": "Revenue by period",
+          "desc": "Sales, revenue, collected, refunds and receivables vs previous period"
+        },
+        "quick_stats": {
+          "title": "Quick stats",
+          "desc": "New customers, appointments, orders and services"
+        },
+        "appointment_accepted_stats": {
+          "title": "Consultation status",
+          "desc": "Appointments by consultation status for the day"
+        },
+        "payment_branch_overview": {
+          "title": "Branch overview",
+          "desc": "Sales, collected, deposits and refunds per branch"
+        },
+        "service_statistics": {
+          "title": "Service statistics",
+          "desc": "Quantity and collected revenue by service"
+        },
+        "source_overview": {
+          "title": "Customer sources",
+          "desc": "New customers by source and source group"
+        },
+        "service_type_accepted": {
+          "title": "Accepted service groups",
+          "desc": "Service groups customers agreed to"
+        },
+        "service_type_interest": {
+          "title": "Service groups of interest",
+          "desc": "Service groups new customers are interested in"
+        },
+        "payment_today": {
+          "title": "Daily revenue",
+          "desc": "Sales, revenue and collected for the reference day"
+        },
+        "overview_appointment": {
+          "title": "Consultation appointments",
+          "desc": "Booked, arrived, accepted, cancelled and upcoming"
+        },
+        "additional_stats": {
+          "title": "Reminders",
+          "desc": "Reminders for the day and how many are done"
+        },
+        "appointment_status": {
+          "title": "Visit status",
+          "desc": "Appointments by consultation status in the period"
+        },
+        "customer_status_overview": {
+          "title": "Customer progress",
+          "desc": "New customers by stage, ticket → completed"
+        },
+        "customer_region": {
+          "title": "Customer regions",
+          "desc": "Customers who accepted services by province"
+        }
+      },
+      "additional_stats": {
+        "reminder_title": "Today's Reminders",
+        "done": "Completed"
+      },
+      "payment_in_month": {
+        "sales_tooltip": "Amount based on customer orders",
+        "refund": "Refund",
+        "refund_tooltip": "Actual deposit or service refund amount"
+      },
+      "quick_stats": {
+        "new_orders": "New Orders",
+        "new_services": "New Services"
+      }
+    }
+  },
+  "accountant_payment": {
+    "label_refund_service_date": "Service refund date"
+  },
+  "crm": {
+    "payment": {
+      "label": {
+        "add_deposit": "Add deposit"
+      },
+      "detail": {
+        "subtotal": "Subtotal"
+      },
+      "tooltip": {
+        "print_custom": "Custom print",
+        "update_payment": "Update payment",
+        "delete_deposit": "Delete deposit",
+        "print_deposit": "Print deposit",
+        "delete_refund_deposit": "Delete refund deposit",
+        "print_refund_deposit": "Print refund deposit",
+        "delete_refund_service": "Delete service refund",
+        "delete_refund_consignment": "Delete consignment refund",
+        "print_refund_consignment": "Print consignment refund",
+        "print_transfer_deposit": "Print transfer deposit",
+        "print_payment": "Print payment"
+      },
+      "form": {
+        "amount_max": "Max {{max}}",
+        "allocation_preview_title": "Estimated allocation (older services paid first)",
+        "amount_total": "Total: {{total}}",
+        "amount_input": "Enter amount",
+        "max": "Max",
+        "method_installment": "Installment method",
+        "installment_type": "Installment type",
+        "card_type": "Card type",
+        "note_payment": "Payment content",
+        "no_service": "No services",
+        "no_installment": "No installments to pay",
+        "deposit_keep_promotion": "Promotion-hold deposit"
+      },
+      "dialog": {
+        "create_deposit": "Add new deposit",
+        "create_installment": "Add new installment"
+      },
+      "message": {
+        "create_payment_success": "Payment created successfully",
+        "create_deposit_success": "Deposit created successfully",
+        "refund_consignment_success": "Consignment refunded successfully",
+        "refund_deposit_success": "Deposit refund created successfully",
+        "transfer_deposit_success": "Deposit transferred successfully",
+        "update_transfer_deposit_success": "Transfer deposit updated successfully",
+        "installment_success": "Installment payment successful",
+        "load_service_failed": "Failed to load service info",
+        "no_service_to_pay": "No services to pay",
+        "select_payment_to_print": "Please select payments to print",
+        "service_not_found_for_max": "⛔ Selected service not found for Max calc",
+        "text_add_deposit": "add deposit",
+        "text_refund_consignment": "refund consignment",
+        "text_refund_deposit": "refund deposit"
+      },
+      "detail_panel": {
+        "title": "Receipt detail",
+        "section_payment": "Payment information",
+        "section_target": "Applied to",
+        "section_allocation": "Allocation across the order",
+        "allocation_hint": "Each service is collected as its own receipt — these are all receipts of this order.",
+        "this_receipt": "This receipt",
+        "no_allocation": "This receipt is not linked to an order",
+        "bank_code": "Bank invoice code",
+        "deposit_after": "Deposit balance after",
+        "insurance": "Insurance covered",
+        "patient_amount": "Customer paid",
+        "collected_on_order": "Collected on order",
+        "refunded_on_order": "Refunded on order",
+        "collected_hint": "Counts payment and deposit-transfer receipts only — same formula as the order detail screen."
+      }
+    },
+    "customer_note_ai_tabs": {
+      "note": "📝 Note",
+      "reason_label": "❌ Reason Not Booked",
+      "att_file": "📄 Documents",
+      "att_audio": "🎵 Audio",
+      "att_video": "🎬 Video"
+    },
+    "report_service_used": {
+      "average_per_service": "Average per service"
+    },
+    "reminder": {
+      "code": "Reminder code",
+      "dialog_create": "Add reminder",
+      "noti_complete_success": "Reminder completed",
+      "noti_invalid_time": "Invalid time entered"
+    },
+    "payment_of_customer": {
+      "payment_time": "Receive/refund date"
+    },
+    "report": {
+      "customer_portrait": {
+        "source": "By customer source",
+        "province": "By province / city",
+        "interested": "By interested service group",
+        "category": "By customer group"
+      },
+      "service": {
+        "note_list": "Note list"
+      },
+      "service_type_stats": {
+        "title": "Agreed service groups",
+        "name": "Service type"
+      },
+      "appointment": {
+        "daily_statistics": "Daily statistics",
+        "distribution_chart": "Distribution chart"
+      },
+      "department": {
+        "ratio": "Ratio",
+        "consulting": "Consulting Dept.",
+        "telesales_online": "Telesales Online",
+        "appointment_effective": "Appointment Effectiveness",
+        "tooltip_appointment": "Appointment is the time the customer scheduled to arrive",
+        "tooltip_arrived_per_appointment": "Arrived / Booked ratio",
+        "tooltip_agreed_per_arrived": "Agreed / Arrived ratio",
+        "h_arrived_per_appointment": "Arrived/Booked",
+        "h_agreed_per_arrived_short": "Agreed/Arrived",
+        "tooltip_average_per_customer": "Revenue ratio per agreed customer"
+      },
+      "list": {
+        "customer_portrait_title": "Customer - Portrait",
+        "service_clinic_title": "Service - Branch",
+        "department_effective_title": "Department effectiveness"
+      },
+      "service_used": {
+        "tooltip_num_service": "Number of customers using the service",
+        "header_num_quantity": "Unit count",
+        "tooltip_num_quantity": "Units used",
+        "tooltip_average": "Average customer spending per service"
+      },
+      "note_list": {
+        "export_tooltip": "Export customer notes"
+      },
+      "appointment_consultation": {
+        "export_tooltip": "Export consultation appointments"
+      },
+      "customer_stats": {
+        "tooltip_appointment_new": "New appointments are appointments created within the selected period",
+        "tooltip_appointment": "Appointments are scheduled consultations within the selected period",
+        "header_new_per_lead": "New / Lead",
+        "header_arrived_per_appointment": "Arrived / Appointment",
+        "h_province": "Province / City"
+      },
+      "appointment_chart": {
+        "month_compare": "Appointments this month vs last month",
+        "consult_appointment": "Consulting appointments",
+        "h_cancel": "Canceled",
+        "h_no_show": "No show",
+        "month_label": "Month {{month}}",
+        "title": "Appointment Chart"
+      },
+      "appointment_stats": {
+        "h_new": "New",
+        "h_returning": "Returning",
+        "h_cancel": "Canceled",
+        "h_arrived_per_appointment": "Arrived/Booked",
+        "h_agreed_per_arrived": "Agreed/Arrived"
+      },
+      "telesales": {
+        "h_comment": "Comment",
+        "h_care_back": "Care Back",
+        "tooltip_care_back": "Re-care for existing customers. Existing customers are those created in previous days.",
+        "h_new_appointment": "New Appt.",
+        "tooltip_new_appointment": "New appointments counted within the selected time period",
+        "h_new_appointment_plus": "New Appt.+",
+        "tooltip_new_appointment_plus": "New appointments from old leads, measuring re-care effectiveness. Included within New Appt.",
+        "tooltip_deposit_count": "Number of customers who placed a deposit to hold a promotion",
+        "h_lead_per_interaction": "Lead/ Int.",
+        "tooltip_lead_per_interaction": "Lead / Interaction ratio",
+        "h_new_per_lead": "New/ Lead",
+        "tooltip_new_per_lead": "Ratio of new appointments created in the selected period to leads generated",
+        "h_new_minus_per_lead": "New-/ Lead",
+        "tooltip_new_minus_per_lead": "Ratio of new appointments from collected leads to those same leads",
+        "h_new_plus_per_care_back": "New+/Care",
+        "tooltip_new_plus_per_care_back": "Ratio of new appointments from re-caring for existing customers to total re-cares",
+        "h_arrived_per_lead": "Arr./ Lead",
+        "tooltip_arrived_per_lead": "Arrived / Lead ratio",
+        "h_arrived_per_interaction": "Arr./ Int.",
+        "tooltip_arrived_per_interaction": "Arrived / Interaction ratio",
+        "h_agreed_per_interaction": "Agreed/ Int.",
+        "tooltip_agreed_per_interaction": "Agreed / Interaction ratio"
+      },
+      "treatment_services": "Service Usage Report",
+      "appointment_statistics": "Appointment Statistics",
+      "branch": {
+        "appointment": "Branch × Appointment"
+      },
+      "branch_appointment": {
+        "total_appointment": "Total Appointments",
+        "cancelled": "Cancelled",
+        "agreed_per_appointment": "Agreed/Appt",
+        "tooltip_agreed_per_appointment": "Agreed / Total Appointments ratio"
+      },
+      "desc": {
+        "branch_statistics": "Customer count, appointments and revenue grouped by branch — compare operational performance across branches.",
+        "customer_source": "Customers, appointments, conversion rate and revenue grouped by customer source — see which channel brings the best leads.",
+        "province_statistics": "Customers, appointments and revenue grouped by customer's province/city — identify high-potential regions.",
+        "country_statistics": "Customers, appointments and revenue grouped by customer's country — analyze international customers.",
+        "customer_interested": "Customers, appointments and revenue grouped by the service group the customer is interested in — understand demand by customer group.",
+        "category_statistics": "Customers, appointments and revenue grouped by customer group/category — support segmentation and targeted care.",
+        "group_source": "Customers, appointments and revenue rolled up by customer source group (a group of multiple sources) — a higher-level view than the per-source report.",
+        "service_type": "Quantity and revenue of confirmed services, grouped by service type — see which service group sells best.",
+        "treatment_services": "Detailed breakdown per individual service used (customer count, visits, amount, discount, refund) — track performance of each service.",
+        "note": "List of notes/interactions logged with customers during care follow-up.",
+        "appointment_statistics": "New, cancelled, arrived and agreed appointment counts per day — track daily appointment trends.",
+        "appointment_chart_scatter": "Daily chart across the month showing appointments, arrivals and closed-service customers — visualize the appointment funnel trend.",
+        "appointment_consultation": "List of every consultation appointment (arrived, cancelled, or otherwise) with check-in results — agreed service group or reject reason, note, and who created/consulted — to review consultation outcomes one by one.",
+        "department_revenue": "Consulting-department performance per staff member: appointments, arrivals, agreements, order value, amount paid, deposits.",
+        "telesales_online": "Online-telesales performance per staff member (online source only): interactions/comments, leads, new appointments, arrivals, agreements, revenue.",
+        "effective_advise": "Ratio of agreed vs. not-agreed customers among arrived appointments — overall consulting close-rate effectiveness.",
+        "branch_appointment": "Consolidated appointment stats per branch: total appointments, arrivals, cancellations, agreements — compare appointment operations across branches."
+      },
+      "revenue": {
+        "payment_type": "Voucher type",
+        "amount_in_out": "Amount in/out",
+        "by_date": {
+          "title": "Revenue by collection date",
+          "accepted_tooltip": "Customers who accepted service (first appointment in period)",
+          "print_tooltip": "Print daily collection report"
+        },
+        "by_method": {
+          "title": "Payment methods",
+          "sheet_name": "Methods by voucher type",
+          "unknown_method": "Unknown",
+          "transfer_not_in_total": "Deposit transfer is an internal entry (deposit → service), not added to Total — the money was counted when the deposit was received"
+        },
+        "branch_receipts": {
+          "title": "Receipts by branch"
+        },
+        "refund": {
+          "title": "Sales deductions",
+          "code": "Deduction voucher code",
+          "amount": "Deduction amount",
+          "type": "Deduction type",
+          "content": "Deduction note",
+          "code_deposit": "Deposit voucher code",
+          "content_deposit": "Deposit voucher note",
+          "date": "Deduction date"
+        },
+        "desc": {
+          "by_date": "Sales, collections, deposits and refunds per day",
+          "by_method": "Totals by payment method and voucher type",
+          "branch_receipts": "Receipts and payments listed by branch",
+          "refund": "Service refund and deposit refund vouchers"
+        }
+      },
+      "debt": {
+        "panel": "Debts",
+        "customer": {
+          "title": "Debts by customer"
+        },
+        "order_plan": {
+          "title": "Debts by order"
+        },
+        "installment": {
+          "title": "Installment debts"
+        },
+        "service": {
+          "title": "Debts by service"
+        },
+        "desc": {
+          "customer": "Customers with outstanding debt: sales, paid, debt and deposit",
+          "order_plan": "Opening receivable, revenue, collected and closing receivable per order",
+          "installment": "Unsettled installment periods, overdue first",
+          "service": "Each service with outstanding debt: incurred, paid, debt"
+        },
+        "label": {
+          "collected_date": "Collected date",
+          "order_created_date": "Order created date",
+          "receivable_begin": "Opening receivable",
+          "revenue_in_period": "Revenue in period",
+          "collected_in_period": "Collected in period",
+          "receivable_end": "Closing receivable",
+          "period": "Period",
+          "due_date": "Due date",
+          "paid_amount": "Paid",
+          "prepay": "Prepayment",
+          "incurred": "Incurred",
+          "customer_deposit": "Customer deposit balance"
+        },
+        "status": {
+          "overdue": "Overdue",
+          "partial": "Partially paid",
+          "unpaid": "Unpaid"
+        }
+      },
+      "staff": {
+        "panel_title": "Staff",
+        "revenue_telesale": "Consultant sales",
+        "revenue_telesale_summary": "Consultant sales summary",
+        "commission_telesale": "Consultant commission",
+        "commission_telesale_summary": "Consultant commission summary",
+        "desc": {
+          "revenue_telesale": "Sales recorded for each consultant per service",
+          "revenue_telesale_summary": "Total sales and count per consultant",
+          "commission_telesale": "Consultant commission per payment",
+          "commission_telesale_summary": "Total collected and commission per consultant"
+        },
+        "amount": "Amount collected",
+        "revenue": "Sales",
+        "commission": "Commission",
+        "confirm_date": "Recorded date",
+        "commission_date": "Commission date",
+        "service_code": "Service code",
+        "count": "Count",
+        "count_chart": "Count by consultant",
+        "revenue_chart": "Sales by consultant",
+        "commission_chart": "Commission by consultant",
+        "unit_times": "times",
+        "unit_currency": "VND"
+      }
+    },
+    "customer_info": {
+      "old_code": "Old customer code",
+      "other_phone": "Other phone",
+      "birthday": "Birthday",
+      "interest": "Interest",
+      "customer_type": "Customer type",
+      "category": "Category",
+      "ad": "Advertisement",
+      "chat": "Chat",
+      "instagram": "Instagram",
+      "viber": "Viber"
+    },
+    "order_service_used": {
+      "payment_pending": "Pending payment"
+    },
+    "order_plan": {
+      "form": {
+        "tab_info": "Order information",
+        "tab_expand": "Expand",
+        "expires_at": "Expires",
+        "total_service": "Total services",
+        "pick_service_placeholder": "Search by service name",
+        "total_payment": "Total payment",
+        "edit_price_in_range": "Edit price within range",
+        "price_not_editable": "Price not editable",
+        "installment_period": "Installment period",
+        "no_installment_services": "No services support installment in this order",
+        "installment_only_enabled": "Only services/packages with \"Installment\" enabled show here",
+        "deposit_min": "Deposit (minimum",
+        "remaining_amount": "Remaining amount",
+        "amount_per_period": "Amount per period",
+        "interest_rate": "Interest rate",
+        "per_year": "%/year",
+        "total_to_pay": "Total to Pay",
+        "outstanding_balance": "Outstanding balance",
+        "tooltip_col_coupon": "(4) = Line discount (legacy value)",
+        "tooltip_col_subtotal": "(5) = (1)×(2)−(3)−(4)",
+        "tooltip_col_total": "(7) = (5)−(6)"
+      },
+      "order_type": "Order type (new/old)",
+      "change_service": {
+        "action": "Change service",
+        "new_service_label": "New service",
+        "reason_label": "Reason (optional)",
+        "success": "Service changed successfully",
+        "no_options": "No other service in the same service group to choose from",
+        "changed_from": "Changed from: {{name}}",
+        "row_removed": "This service line was removed, the service change could not be applied."
+      },
+      "tooltip": {
+        "delete": "Delete order",
+        "detail": "Order detail",
+        "refund": "Refund service",
+        "print": "Print order",
+        "service_locked": "Service is locked",
+        "service_unlocked": "Service is unlocked"
+      },
+      "dialog_note": "Note",
+      "dialog_refund": "Service refund",
+      "dialog_create": "Add order",
+      "noti_create_success": "Order created successfully",
+      "noti_delete_success": "Order deleted successfully",
+      "detail_panel": {
+        "section_money": "Order value & payment",
+        "section_info": "Order information",
+        "section_system": "System information",
+        "order_total": "Order total",
+        "no_service": "No service in this order",
+        "open_service": "View service detail"
+      },
+      "list_all": {
+        "total": "Order value",
+        "tooltip_export": "Download order data"
+      }
+    },
+    "appointment": {
+      "action": {
+        "book": "Book"
+      },
+      "dialog": {
+        "create": "Create appointment"
+      },
+      "tooltip": {
+        "confirm_appointment": "Confirm customer visit?",
+        "copy_appointment": "Copy appointment info",
+        "export": "Export appointments",
+        "view_matrix": "Matrix view",
+        "view_detail": "Detail view",
+        "print_list": "Print list",
+        "book_appointment": "Book appointment"
+      },
+      "list": {
+        "no_appointments": "No appointments",
+        "appointment_hour": "Hour",
+        "time_slot": "Time slot",
+        "detail_list": "Detail list",
+        "appointments": "appointments",
+        "no_appointments_in_slot": "No appointments found in this time slot"
+      },
+      "page": {
+        "by_day": "By day",
+        "by_hour": "By hour"
+      },
+      "detail": {
+        "action_history": "Action history",
+        "appointment_info": "Appointment info",
+        "no_action_history": "No action history",
+        "note_placeholder": "Enter a note about this appointment... (Ctrl+Enter to save)",
+        "checkout_time": "Check-out time",
+        "appointment_count": "Appointment count",
+        "first_appointment_date": "First appointment date",
+        "date_change_history": "Reschedule history",
+        "section_staff": "Assigned staff",
+        "section_source": "Source & campaign",
+        "consultant": "Consultant",
+        "converter": "Converted by",
+        "service_accepted": "Service accepted",
+        "cancelled_note": "This appointment was cancelled"
+      },
+      "duplicate": {
+        "back_msg": "to go back to the previous screen.",
+        "click_label": "Click",
+        "create_keep_msg": "to create a new appointment on <b class=\"p-text-primary\">{{newTime}}{{newBranch}}</b>. The appointment on <b class=\"p-text-primary\">{{oldTime}} , {{oldBranch}}</b> will be <strong class=\"p-text-primary\">kept</strong>.",
+        "creating_msg": "You are creating a new appointment at branch <b class=\"p-text-primary\">{{branch}}</b> at <b class=\"p-text-primary\">{{time}}</b>",
+        "existing_msg": "Customer already has an appointment at branch <b class=\"p-text-primary\">{{branch}}</b> at <b class=\"p-text-primary\">{{time}}</b>",
+        "one_per_day": "A customer can only book 1 appointment per day at a branch",
+        "update_to_msg": "to update appointment from <b class=\"p-text-primary\">{{oldTime}} , {{oldBranch}}</b> to <b class=\"p-text-primary\">{{newTime}} . {{newBranch}}</b>"
+      },
+      "label": {
+        "customer_type": "New / returning?",
+        "checkin": "Checkin",
+        "checkout": "Checkout",
+        "confirm_status": "Confirmation status",
+        "content_customer": "Customer's appointment note",
+        "busy": "Busy",
+        "very_busy": "Very busy"
+      },
+      "checkin": {
+        "error_date_range": "Check-in time must be earlier than or equal to check-out time",
+        "error_out_of_range": "Time is out of allowed range",
+        "error_select_status": "Please select appointment status",
+        "error_select_service_accepted": "Please select accepted service group",
+        "error_select_reason": "Please select rejection reason",
+        "error_check_info": "Please review the information"
+      }
+    },
+    "telesales_online": {
+      "lead_per_interaction": "Lead / Interaction",
+      "appointment_minus_per_lead": "New- / Lead",
+      "appointment_plus_per_cham_lai": "New+ / Re-care",
+      "arrived_per_lead": "Arrived / Lead",
+      "arrived_per_interaction": "Arrived / Interaction",
+      "accepted_per_interaction": "Accepted / Interaction"
+    },
+    "appointment_list": {
+      "confirm": "Confirm appointment",
+      "service_accepted": "Accepted service"
+    },
+    "customer": {
+      "export_data_tooltip": "Export customer data",
+      "filter_customer_type": "New/Old customer?",
+      "refund_service_short": "Refund",
+      "id_card_number": "ID / Passport",
+      "id_card_number_tooltip": "ID card / Passport / Personal ID number",
+      "connect": "Connection",
+      "schedule_time": "Estimated time",
+      "invalid_birthday": "Invalid birthday",
+      "invalid_collected_date": "Invalid collected date",
+      "book_type_pre": "Pre-booked",
+      "create_existing_dialog_title": "Create existing customer",
+      "not_found_title": "Not found",
+      "not_found_message": "Customer does not exist or is outside the scope you are assigned to",
+      "load_failed": "Cannot load customer info",
+      "tag_too_long": "Tag must not exceed 50 characters",
+      "tag_max_count": "Maximum 10 tags",
+      "tag_attach_success": "Tag attached successfully",
+      "tag_attach_failed": "Cannot attach tag",
+      "tag_remove_success": "Tag removed successfully",
+      "tag_remove_failed": "Cannot remove tag",
+      "file_too_large": "Please choose a file no larger than 10MB",
+      "no_appointment_reason_added": "No-appointment reason added",
+      "no_appointment_reason_failed": "Cannot update reason",
+      "camera_access_failed": "Cannot access camera",
+      "create_image_failed": "Cannot create image",
+      "no_value": "None",
+      "days_ago": "{{days}} days ago",
+      "months_ago": "{{months}} months ago",
+      "years_ago": "{{years}} years ago",
+      "create_existing_tooltip": "Create from existing customer",
+      "customer_timeline_tooltip": "View customer timeline",
+      "no_branch": "No branch",
+      "payment_tooltip": "Total amount paid",
+      "progress_tooltip": "Customer journey",
+      "revenue_tooltip": "Total revenue",
+      "update_customer_tooltip": "Update customer information",
+      "upload_avatar": "Upload avatar",
+      "debt_tooltip": "Amount unpaid based on services rendered",
+      "deposit_tooltip": "Customer deposit not yet applied to any service",
+      "deposit_short": "Deposit",
+      "refund_deposit_tooltip": "Refunded deposit amount",
+      "refund_service_tooltip": "Refunded service amount",
+      "last_contact": "Last contact",
+      "points_unit": "pts",
+      "add_tag": "Add tag",
+      "add_tag_placeholder": "Add tag...",
+      "captured_image_alt": "Captured photo",
+      "customer_timeline_title": "Customer timeline",
+      "no_activity": "No activity yet",
+      "duplicate_save": "Save duplicate",
+      "phone_duplicate_blocked": "This phone number already belongs to another customer — each phone number can only be used by one customer.",
+      "switch_appointment_content": "Appointment content",
+      "create_customer_success": "Customer created successfully",
+      "invalid_collected_date_warn": "Invalid received date",
+      "timeline_tooltip": "Customer Timeline",
+      "detail": "Customer Detail",
+      "visit_count": "Visit days",
+      "treatment_count_tooltip": "Total service usage sessions",
+      "visit_count_tooltip": "Unique days customer actually visited",
+      "behavior_group": "Behavior",
+      "tab_contact_extended": "Contact & extended",
+      "extended_info_section": "Extended information",
+      "tab_appointment": "Appointment"
+    },
+    "reminder_list": {
+      "type_filter": "Reminder type",
+      "filter_status": "State",
+      "confirm_done": "Confirm completed?",
+      "actions": "Actions"
+    },
+    "reminder_form": {
+      "remind_type_label": "Reminder type"
+    },
+    "reminder_customer": {
+      "tooltip_delete_reminder": "Delete reminder"
+    },
+    "note_app": {
+      "pinned_header": "Pinned notes",
+      "pinned_badge": "Pinned",
+      "delete_tooltip": "Delete note",
+      "load_more": "Load more",
+      "confirm_delete": "Delete this note?",
+      "pin_failed": "Cannot update pin status"
+    },
+    "note_form": {
+      "add_tooltip": "Add note",
+      "create_success": "Note created successfully",
+      "upload_failed_title": "Image upload failed",
+      "upload_failed_msg": "Removed {{failed}}/{{total}} images. Please review before saving.",
+      "image_unprocessed_title": "Image not processed",
+      "image_unprocessed_msg": "Please try again.",
+      "missing_content_title": "Missing content",
+      "missing_content_msg": "Note is empty after image processing.",
+      "process_failed": "Content processing failed. Please try again."
+    },
+    "treatment_service": {
+      "detail": {
+        "title": "Service usage detail",
+        "section_progress": "Usage progress",
+        "section_finance": "Price & payment",
+        "section_timeline": "Key dates",
+        "discount_reason": "Discount reason",
+        "lock_paused": "Paused",
+        "lock_discount": "Service lock deduction"
+      }
+    },
+    "payment_list": {
+      "title": {
+        "payment": "Payment receipts",
+        "receipts": "Receipts & expenses",
+        "deposit": "Deposit receipts",
+        "consignment": "Consignment receipts",
+        "refund_deposit": "Deposit refunds",
+        "refund_service": "Service refunds"
+      },
+      "export_tooltip": "Export list to Excel",
+      "col": {
+        "code_recv": "Receipt/expense code",
+        "transaction_type": "Transaction type",
+        "payment_channel": "Payment channel",
+        "payment_status": "Payment status",
+        "original_receipt_code": "Original receipt code",
+        "payment_source": "Payment source",
+        "customer_address": "Customer address",
+        "remaining_deposit": "Remaining deposit",
+        "consignment_amount": "Consignment amount",
+        "remaining_consignment": "Remaining consignment",
+        "deposit_date": "Deposit date",
+        "consignment_date": "Consignment date",
+        "refund_deposit_code": "Deposit refund code",
+        "refund_deposit_content": "Deposit refund content",
+        "deposit_code": "Deposit receipt code",
+        "deposit_content": "Deposit receipt content",
+        "payment_time_recv": "Receipt/expense date",
+        "appointment_date": "Appointment date"
+      }
+    },
+    "customer_attachment": {
+      "header_video": "Video · Max {{size}} MB/file",
+      "header_audio": "Audio · Max {{size}} MB/file",
+      "header_file": "Documents · Max {{size}} MB/file",
+      "empty_video": "No videos yet",
+      "empty_audio": "No audio files yet",
+      "empty_file": "No attached documents yet",
+      "play_video": "Play video",
+      "listen": "Listen",
+      "upload_video_title": "Upload video",
+      "upload_audio_title": "Upload audio",
+      "upload_file_title": "Upload documents",
+      "drop_hint": "Drag & drop or",
+      "doc_types": "Images, PDF, Word, Excel, PPT, TXT, ZIP...",
+      "limits": "Max {{size}} MB/file · Max {{count}} files/batch",
+      "valid_count": "{{valid}}/{{max}} valid files",
+      "limit_reached": "Maximum reached",
+      "uploaded": "Uploaded ✓",
+      "max_files_error": "Max {{count}} files/batch",
+      "size_exceeded": "Exceeds the maximum size of {{size}} MB",
+      "confirm_delete_video": "Delete this video?",
+      "confirm_delete_audio": "Delete this audio file?",
+      "confirm_delete_file": "Delete this document?",
+      "history_label": "Attachment"
+    }
+  },
+  "share": {
+    "date_picker": {
+      "m1": "1 month",
+      "m6": "6 months",
+      "y1": "1 year",
+      "y2": "2 years",
+      "y10": "10 years"
+    },
+    "services_autocomplete": {
+      "all": "All services",
+      "customer_ordered": "Customer ordered services",
+      "other": "Other services"
+    }
+  },
+  "common": {
+    "action": {
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "create": "Create",
+      "update": "Update",
+      "delete": "Delete",
+      "save": "Save",
+      "save_and_new": "Save and continue",
+      "cancel": "Cancel",
+      "clear": "Clear",
+      "search": "Search",
+      "filter": "Filter",
+      "clear_filter": "Clear filter",
+      "reload_page": "Reload page",
+      "refresh": "Refresh",
+      "view_more": "View more",
+      "copy": "Copy",
+      "import": "Import",
+      "export": "Export",
+      "add": "Add",
+      "confirm": "Confirm",
+      "print": "Print",
+      "export_excel": "Export Excel",
+      "copy_name": "Copy Name",
+      "remove": "Remove",
+      "back": "Back",
+      "next": "Next",
+      "skip": "Skip",
+      "finish": "Finish",
+      "edit": "Edit",
+      "upload": "Upload",
+      "logout": "Logout",
+      "close": "Close",
+      "reload": "Reload",
+      "show_password": "Show password",
+      "hide_password": "Hide password",
+      "retry": "Retry",
+      "download": "Download",
+      "apply": "Apply",
+      "more_actions": "More actions"
+    },
+    "label": {
+      "payable": "Amount due",
+      "receipt_date": "Receipt date",
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "status": "Status",
+      "sort_order": "Order",
+      "company": "Company",
+      "branch": "Branch",
+      "keyword": "Keyword...",
+      "search_by_keyword": "Search by keyword",
+      "payment_receipt": "Payment receipt",
+      "deposit_receipt": "Deposit receipt",
+      "amount_paid": "Amount paid",
+      "signature": "Signature",
+      "other_address": "Other address",
+      "print_thankyou": "<b>{{CompanyName}}</b> sincerely thanks you for trusting and using our services. You can share your feedback on the quality and attitude of our staff through our hotline: <b>{{Hotline}}</b>, so we can continuously improve our services in the most professional manner.",
+      "actions": "Actions",
+      "note": "Note",
+      "created_at": "Created at",
+      "updated_at": "Updated at",
+      "user_updated": "Updated by",
+      "description": "Description",
+      "no": "No.",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "yes": "Yes",
+      "no_text": "No",
+      "show": "Show",
+      "hide": "Hide",
+      "active": "Active",
+      "inactive": "Inactive",
+      "loading": "Loading...",
+      "position": "Position",
+      "color": "Color",
+      "default": "Default",
+      "display_color": "Display color",
+      "parent": "Parent category",
+      "total": "Total",
+      "no_results": "No results found",
+      "user_created": "Created by",
+      "consultant": "Consultant",
+      "doctor": "Assigned staff",
+      "staff": "Staff",
+      "full_name": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "birthday": "Date of birth",
+      "age": "Age",
+      "age_from": "Age from",
+      "age_to": "Age to",
+      "gender": "Gender",
+      "country": "Country",
+      "province": "Province",
+      "content": "Content",
+      "type": "Type",
+      "category": "Category",
+      "unit": "Unit",
+      "quantity": "Quantity",
+      "amount": "Amount",
+      "revenue": "Revenue",
+      "service": "Service",
+      "progress": "Progress",
+      "start_date": "From date",
+      "month": "Month",
+      "max_size_prefix": "max",
+      "days": "days",
+      "rank": "Membership Rank",
+      "discount_percent": "Discount %",
+      "min_points": "Min Points",
+      "max_points": "Max Points",
+      "customer_group": "Customer Group",
+      "source": "Customer Source",
+      "unit_name": "Unit Name",
+      "appointment": "Appointment",
+      "timezone": "Timezone",
+      "currency": "Currency",
+      "locale": "Number format",
+      "service_group": "Service Group",
+      "unassigned": "Unassigned",
+      "close": "Close",
+      "date": "Date",
+      "treatment_service_code": "Service usage code",
+      "service_code": "Service code",
+      "other": "Other",
+      "saved": "Saved",
+      "method": "Method",
+      "reason": "Reason",
+      "report": "Report",
+      "patient": "Customer",
+      "all": "All",
+      "customer_source_group": "Customer source group",
+      "normal": "Normal",
+      "source_2": "Source",
+      "treatment_progress": "Service usage progress",
+      "add": "(+) Add",
+      "selected": "Selected",
+      "customer_code": "Customer code",
+      "lead": "Lead",
+      "appointment_date": "Appointment date",
+      "qty": "Qty",
+      "password": "Password",
+      "treatment": "Treatment",
+      "history": "History",
+      "department": "Department",
+      "member": "Member",
+      "reminder": "Reminder",
+      "deposit_amount": "Deposit amount",
+      "appointment_code": "Appointment code",
+      "service_source": "Service source",
+      "male": "Male",
+      "female": "Female",
+      "high": "High",
+      "consignment": "Consignment",
+      "order": "Order",
+      "accounting": "Accounting",
+      "discount": "Discount",
+      "position_saved_prev_curr": "Position saved: {{prev}} → {{curr}}",
+      "save_error": "Save error",
+      "refund_date": "Refund date",
+      "coupon_discount": "Line discount",
+      "payment_type": "Payment type",
+      "report_list": "Report list",
+      "coupon": "Coupon",
+      "change_password": "Change password",
+      "avatar": "Avatar",
+      "delete_customer": "Delete customer",
+      "data": "Data",
+      "cancel_appointment": "Cancel appointment",
+      "username": "Username",
+      "dashboard": "Dashboard",
+      "item": "%",
+      "transfer_deposit": "Transfer deposit",
+      "free": "Free",
+      "agreed": "Agreed",
+      "facebook": "Facebook",
+      "low": "Low",
+      "promotion": "Promotion",
+      "reception_examination": "Reception - Processing",
+      "re_engagement": "Re-engagement",
+      "not_booked_reason": "Not booked reason",
+      "installment": "Installment",
+      "consultation_status": "Consultation status",
+      "not_selected": "Not selected",
+      "hour": "Hour",
+      "refund_amount": "Refund amount",
+      "receipt_code": "Receipt code",
+      "average_customer": "Average / Customer",
+      "deposit_type": "Deposit type",
+      "free_service": "Free service",
+      "execution_date": "Execution date",
+      "appointment_detail": "Appointment detail",
+      "yesterday": "Yesterday",
+      "vital_signs": "Vital signs",
+      "orders": "Orders",
+      "today": "Today",
+      "house_number": "House number",
+      "symptoms": "Symptoms",
+      "appointment_note": "Appointment note",
+      "ot": "OT",
+      "new_password": "New password",
+      "select_date": "Select date",
+      "appointment_time": "Appointment time",
+      "service_discount": "Service discount",
+      "card_type": "Card type",
+      "other_discount": "Other discount",
+      "update_reminder": "Update reminder",
+      "update_appointment": "Update appointment",
+      "the_date_the_customer_s_phone_information_was_re": "The date the customer's phone information was received",
+      "invoice": "Invoice",
+      "customer_management": "Customer Management",
+      "service_list": "Service list",
+      "payment_history": "Payment history",
+      "clinic_income": "Branch income",
+      "clinic_expense": "Branch expense",
+      "temporary_deposit": "Temporary deposit",
+      "ticket": "Ticket",
+      "connected": "Connected",
+      "no_rank": "No rank",
+      "silver": "Silver",
+      "gold": "Gold",
+      "planned": "Planned",
+      "general_clinic": "Multi-location chain",
+      "feature": "Feature",
+      "crm": "CRM",
+      "sale": "Sales",
+      "template_name": "Template name",
+      "old_service_code": "Old service code",
+      "age_group": "Age group",
+      "telesale_commission": "Telesale commission",
+      "template_type": "Template type",
+      "identifier_code": "Identifier code",
+      "zalo": "Zalo",
+      "online_source": "Online source",
+      "max_size_mb": "(Max {{size}} MB)",
+      "installment_configuration": "Installment configuration",
+      "service_name": "Service name",
+      "service_category": "Service category",
+      "unlimited": "Unlimited",
+      "select_all": "Select all",
+      "discount_percent_2": "Discount percent",
+      "rank_2": "Rank",
+      "detailed_description": "Detailed description",
+      "unit_category": "Unit category",
+      "creating": "Creating...",
+      "updating": "Updating...",
+      "switching": "Switching...",
+      "deleting": "Deleting...",
+      "logging_out": "Logging out...",
+      "exporting": "Exporting...",
+      "importing": "Importing...",
+      "staff_list": "Staff list",
+      "customer_info": "Customer info",
+      "reward": "Reward",
+      "update_profile": "Update profile",
+      "clear_cache": "Clear cache",
+      "software_info": "Software info",
+      "source_code_agpl": "Source code (AGPL-3.0)",
+      "update_personal_info": "Update personal info",
+      "switch_language": "Switch language",
+      "currency_converter": "Currency converter",
+      "re_exploitation_date": "Re-exploitation date",
+      "appointment_created_at": "Appointment created at",
+      "delete_appointment": "Delete appointment",
+      "body_metrics": "Body metrics",
+      "referrer": "Referrer",
+      "arrived_appointment": "Arrived / Appointment",
+      "deposit": "Deposit",
+      "valid": "Valid",
+      "remaining": "Remaining",
+      "current_address": "Current address",
+      "permanent_address": "Permanent address",
+      "permanent_address_per_documents": "Permanent address (per documents)",
+      "possible_duplicate_appointment": "Possible duplicate appointment",
+      "check_in_time": "Check-in time",
+      "check_out_time": "Check-out time",
+      "visit": "Visit",
+      "contact_info": "Contact info",
+      "missing_service": "Missing service",
+      "please_add_at_least_1_service": "Please add at least 1 service",
+      "warn": "Warning",
+      "expires_at": "Expires at",
+      "previous_month": "Previous month",
+      "in": "In",
+      "update_customer": "Update customer",
+      "treatment_completion_date": "Usage completion date",
+      "deposit_date": "Deposit date",
+      "actual_amount_collected": "Actual amount collected",
+      "refund_deposit_date": "Refund deposit date",
+      "update_transfer_deposit": "Update transfer deposit",
+      "update_deposit": "Update deposit",
+      "payment": "Payment",
+      "capture": "Capture",
+      "retake": "Retake",
+      "customer_count": "Customer count",
+      "service_count": "Service count",
+      "promotion_discount": "Promotion discount",
+      "related_user": "Related user",
+      "agreed_arrived": "Agreed / Arrived",
+      "relatives": "Relatives",
+      "referral_code": "Referral code",
+      "update_order": "Update order",
+      "order_payment": "Order payment",
+      "confirm_customer_arrival": "Confirm customer arrival?",
+      "cannot_load_service_list": "Cannot load service list",
+      "first_appointment_date": "First appointment date",
+      "changed_appointment_date": "Changed appointment date",
+      "appointment_count": "Appointment count",
+      "chat_conversation_link": "Chat conversation link",
+      "ad_id": "Ad ID",
+      "other_phone": "Other phone",
+      "customer_note": "Customer note",
+      "possible_duplicate_customer": "Possible duplicate customer",
+      "last_visit": "Last visit",
+      "times": "times",
+      "mark_as_done": "Mark as done",
+      "reminder_content": "Reminder content",
+      "sales": "Sales",
+      "total_sales": "Total sales",
+      "interested_service_group": "Interested service group",
+      "service_group_of_interest": "Service group of interest",
+      "customer": "Customer",
+      "customer_category": "Customer category",
+      "order_code": "Order code",
+      "consulting_doctor": "Consulting staff",
+      "customer_arrived": "Customer arrived",
+      "check_in": "Check-in",
+      "appointment_type": "Appointment type",
+      "collection_date": "Collection date",
+      "collected_date": "Collected date",
+      "order_date": "Order date",
+      "time": "Time",
+      "domestic_area": "Domestic area",
+      "domestic_region": "Domestic region",
+      "payment_date": "Payment date",
+      "payment_time": "Payment time",
+      "actual_revenue": "Actual revenue",
+      "average": "Average",
+      "medium": "Medium",
+      "payment_method": "Payment method",
+      "drop_image_here": "Drop image here",
+      "accepted": "Accepted",
+      "convert": "Convert",
+      "new_appointment": "New appointment",
+      "refund_deposit": "Refund deposit",
+      "deposit_refund": "Deposit refund",
+      "service_refund": "Service refund",
+      "refund_service": "Refund service",
+      "value": "Value",
+      "clinic": "Single location",
+      "occupation": "Occupation",
+      "job": "Job",
+      "ethnicity": "Ethnicity",
+      "ward_commune": "Ward / Commune",
+      "ward": "Ward",
+      "member_rank": "Member rank",
+      "current_image": "Current image",
+      "updated": "Updated",
+      "appointment_content": "Appointment content",
+      "treatment_service": "Service usage",
+      "unit_price": "Unit price",
+      "debt": "Debt",
+      "international_area": "International area",
+      "international_region": "International region",
+      "day": "Day",
+      "current": "% current",
+      "interaction": "Interaction",
+      "foreign_region": "Foreign region",
+      "role": "Role",
+      "info": "Info",
+      "information": "Information",
+      "add_new": "Add new",
+      "identifier": "Identifier",
+      "province_city": "Province/City",
+      "customer_source": "Customer source",
+      "collection_time": "Collection time",
+      "interest": "Interest",
+      "nickname": "Nickname",
+      "total_amount": "Total amount",
+      "subtotal": "Subtotal",
+      "in_treatment": "In use",
+      "consultation": "Consultation",
+      "start_date_2": "Start date",
+      "result": "Result",
+      "reward_points": "Reward points",
+      "expected_revenue": "Expected Revenue",
+      "position_region": "Position / Region",
+      "previous": "% previous",
+      "connect": "Connect",
+      "visit_date": "Visit date",
+      "accepted_service_group": "Accepted service group",
+      "actor": "Actor",
+      "do_you_want_to_delete": "Do you want to delete?",
+      "warning": "Warning",
+      "partial_payment": "Partial payment",
+      "fully_paid": "Fully paid",
+      "system_config": "System config",
+      "system_configuration": "System configuration",
+      "hr": "HR",
+      "human_resources": "Human resources",
+      "detail": "Detail",
+      "file_size_must_not_exceed_2mb": "File size must not exceed 2MB",
+      "allowed_formats": "Allowed formats: ",
+      "online_appointment_type": "Online appointment type",
+      "zone": "Zone",
+      "configuration": "Configuration",
+      "membership_rank_discount": "Membership rank discount",
+      "member_rank_discount": "Member rank discount",
+      "re_care": "Re-care",
+      "not_booked": "Not booked",
+      "deposit_customer": "Deposit customer",
+      "new_appointment_lead": "New appointment / Lead",
+      "this_month": "This month",
+      "appointment_service": "Appointment service",
+      "take_photo": "Take photo",
+      "service_creation_date": "Service creation date",
+      "check_in_appointment": "Check-in / Appointment",
+      "checkin_appointment": "Checkin/ Appointment",
+      "old_code": "Old code",
+      "reminders": "Reminders",
+      "refund_consignment": "Refund consignment",
+      "phone_call": "Phone call",
+      "disagreed": "Disagreed",
+      "walk_in": "Walk-in",
+      "end": "End",
+      "source_group": "Source group",
+      "service_commission": "Service commission",
+      "consulting_appointment": "Consulting appointment",
+      "add_new_customer": "Add new customer",
+      "download_template": "Download template",
+      "choose_file": "Choose file",
+      "re_care_appointment": "Re-care appointment",
+      "accepted_arrived": "Accepted / Arrived",
+      "comment": "Comment",
+      "basic_info": "Basic info",
+      "contact": "Contact",
+      "internal_note": "Internal note",
+      "note_content": "Note content",
+      "consultation_appointments": "Consultation Appointments",
+      "collect_refund_date": "Collect/refund date",
+      "notice": "Notice",
+      "add_new_order": "Add new order",
+      "expected_time": "Expected time",
+      "notification": "Notification",
+      "complaint": "Complaint",
+      "new_customer": "New customer",
+      "price_info_min_max": "Price info (Min/ Max)",
+      "service_product": "Service / product",
+      "service_product_group": "Service / product group",
+      "account_number": "Account number",
+      "permission": "Permission",
+      "total_remaining": "Total remaining",
+      "appointment_status": "Appointment status",
+      "service_statistics": "Service statistics",
+      "amount_collected_based_on_order_value": "Amount collected based on order value",
+      "amount_not_yet_collected_from_customers_based_on": "Amount not yet collected from customers based on sales. Equals sales minus current revenue",
+      "choose": "Choose",
+      "telesale": "Telesale",
+      "all_branches": "All branches",
+      "face": "Face",
+      "cashier": "Cashier",
+      "sign": "Sign",
+      "action": "Action",
+      "price": "Unit price",
+      "finance": "Finance",
+      "tomorrow": "Tomorrow",
+      "this_year": "This year",
+      "previous_year": "Previous year",
+      "collected": "Collected",
+      "refunded": "Refunded",
+      "overpaid": "Overpaid",
+      "outstanding": "Outstanding",
+      "theme_light": "Light",
+      "theme_dark": "Dark",
+      "care": "Care",
+      "last_7_days": "Last 7 days",
+      "marketing": "Marketing"
+    },
+    "message": {
+      "no_permission": "You do not have permission",
+      "field_required": "This field is required",
+      "confirm_export": "Do you want to download the data?",
+      "export_success": "Export successful",
+      "copy_success": "Copied to clipboard",
+      "copy_failed": "Copy failed, please copy manually",
+      "create_success": "Created successfully",
+      "update_success": "Updated successfully",
+      "no_data": "No data available",
+      "load_error": "Error loading data",
+      "confirm_cancel": "Are you sure you want to cancel?",
+      "export_failed": "Export failed",
+      "form_invalid": "Form is invalid",
+      "too_many_selected": "Please do not select too many",
+      "data_conflict": "Data conflict",
+      "file_too_large": "File too large",
+      "invalid_data": "Invalid data",
+      "retry_later": "Try again later",
+      "unknown_error": "Unknown error",
+      "offline": "You are offline. Please check your network.",
+      "cors_blocked": "Request blocked by CORS/preflight. Check headers and OPTIONS response.",
+      "ssl_error": "SSL error",
+      "ssl_error_detail": "HTTPS certificate is invalid or expired.",
+      "server_unreachable": "Cannot connect to server",
+      "server_unreachable_detail": "URL/API is not responding or is blocked.",
+      "auth_error": "Validation Error",
+      "auth_invalid": "Invalid credentials",
+      "request_invalid": "Invalid request",
+      "offline_detail": "You are offline. Check your network.",
+      "cors_blocked_detail": "Check headers and OPTIONS response.",
+      "extension_blocked": "Blocked by extension",
+      "extension_blocked_detail": "Disable ad-block/privacy for this domain.",
+      "clear_cache_failed": "Failed to clear cache",
+      "file_downloading": "File is being downloaded",
+      "export_file_unavailable": "The export file is no longer available or has expired — please export again",
+      "attachment_unavailable": "The attachment could not be loaded — it may have been removed or you do not have access",
+      "image_too_large_removed": "An image exceeding 10MB was removed from the content",
+      "image_upload_failed_title": "Image upload failed",
+      "image_upload_failed_msg": "Removed {{failed}}/{{total}} images. Please review before saving.",
+      "image_process_failed": "Failed to process images in content. Please try again.",
+      "import_confirm": "Confirm data import?",
+      "import_success": "Data imported successfully",
+      "switch_language_success": "Language switched successfully",
+      "error": "An error occurred",
+      "save_error": "Failed to save data",
+      "saved_position": "Position saved: {{prev}} → {{curr}}",
+      "saved_value": "Value saved: {{prev}} → {{curr}}",
+      "record_not_found": "This record no longer exists or has been deleted",
+      "load_failed": "Could not load data",
+      "data_deleted": "Data has been deleted",
+      "delete_failed": "Delete failed, please try again",
+      "upload_failed": "Upload failed"
+    },
+    "tooltip": {
+      "import_data": "Import data",
+      "export_data": "Export data",
+      "copy_phone": "Copy phone number"
+    },
+    "page": {
+      "current_report": "{first}-{last} of {totalRecords}",
+      "loaded_all": "All loaded"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Invalid email address",
+      "minlength": "Minimum {{min}} characters",
+      "maxlength": "Maximum {{max}} characters",
+      "pattern": "Invalid format",
+      "invalid": "Invalid value",
+      "please_check_required_fields": "Please check the required fields (highlighted in red)"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "active": "Active",
+      "error": "Error",
+      "paid": "Paid",
+      "arrived": "Arrived",
+      "unpaid": "Unpaid",
+      "completed": "Completed",
+      "success": "Success",
+      "locked": "Locked"
+    },
+    "deleted": "Deleted",
+    "weekday": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "search": {
+      "result_count": "{{count}} results"
+    }
+  },
+  "utilities": {
+    "currency": {
+      "from_unit": "From currency",
+      "to_unit": "To currency",
+      "original_value": "Original value",
+      "converted_value": "Converted",
+      "target_unit": "Target unit",
+      "invalid_amount": "Please enter a valid amount",
+      "convert_success": "Converted successfully"
+    },
+    "command_menu": {
+      "placeholder": "Search for a command...",
+      "aria_label": "Command menu"
+    },
+    "global_search": {
+      "open_new_tab": "Open in new tab",
+      "no_customer_found": "No customer found",
+      "dialog": "Add customer",
+      "recent": "Recent",
+      "favourite": "Favourite"
+    },
+    "popup_other_branch": {
+      "description": "You are not in the same branch when saving this {{textTitle}}!!!",
+      "save_note": "If you click Save, the system will automatically save {{textTitle}}"
+    },
+    "switch_branch": {
+      "branch_note": "(*) Only applies to appointment list filter"
+    },
+    "switch_language": {
+      "placeholder": "Select language",
+      "language_label": "Language"
+    },
+    "dialog_create": "Add customer",
+    "export_options_dialog": {
+      "header": "Select export columns",
+      "selected_label": "Export visible columns",
+      "selected_desc": "Only export the columns currently shown in your table.",
+      "all_label": "Export all columns",
+      "all_desc": "Export all available columns regardless of what is currently displayed."
+    }
+  },
+  "auth": {
+    "accessdenied": {
+      "title": "Access Denied",
+      "message": "You do not have permission to access this page",
+      "dashboard_label": "Go to Dashboard",
+      "back_label": "Go Back"
+    },
+    "login": {
+      "title": "Login",
+      "heading": "The all-in-one business management platform",
+      "subtitle": "Sign in to continue",
+      "success": "Login Successful",
+      "submitting": "Logging in...",
+      "verifying": "Verifying...",
+      "syncing": "Syncing data...",
+      "tagline": "From reception to service to billing — run it all on one system",
+      "feature_security_title": "Enterprise-grade data security",
+      "feature_security_desc": "Customer data encrypted and protected to industry compliance standards",
+      "feature_multibranch_title": "Multi-branch, multi-sector",
+      "feature_multibranch_desc": "Manage multiple branches centrally in one system",
+      "feature_care_title": "Built for your team",
+      "feature_care_desc": "Streamlining operations and customer care",
+      "security_badge": "Your data is encrypted and secured",
+      "rate_limited": "Too many attempts. Please try again in {{seconds}}s"
+    },
+    "notfound": {
+      "heading": "NOT FOUND",
+      "message": "The page you are looking for does not exist.",
+      "home_label": "Go Home"
+    },
+    "twofa": {
+      "menu": "Two-factor auth",
+      "setup_title": "Two-factor authentication (2FA)",
+      "setup_desc": "Scan the QR with Google Authenticator / Authy, then enter the 6-digit code to confirm.",
+      "enter_code": "Enter the 6-digit code from your authenticator",
+      "code_placeholder": "6-digit code",
+      "remember_device": "Trust this device (don't ask again)",
+      "verify": "Verify",
+      "done": "Done",
+      "manual_hint": "Or enter the secret manually:",
+      "backup_title": "Backup codes",
+      "backup_warn": "Save these somewhere safe. Each works once if you lose your device. They will NOT be shown again.",
+      "enabled_state": "2FA is enabled",
+      "disable": "Disable 2FA",
+      "disabled_ok": "2FA disabled",
+      "invalid_code": "Invalid code",
+      "policy_title": "2FA policy",
+      "require_all": "Require for whole company",
+      "require_roles": "Require for roles",
+      "require_roles_hint": "Leave empty if company-wide is on",
+      "trust_days": "Device trust days",
+      "trust_days_hint": "0 = always ask 2FA (shared terminals)",
+      "rate_limited": "Too many incorrect codes. Please try again in {{seconds}}s"
+    },
+    "onboarding": {
+      "step_company_desc": "Your brand's name, code, hotline, email and address.",
+      "step_branch_desc": "Your first branch."
+    },
+    "force_password": {
+      "title": "Password change required",
+      "desc": "Your account is using the default password or a password set by an administrator. Please change your password before continuing. After changing it you will be signed out and must sign in again with the new password.",
+      "change": "Change password",
+      "logout": "Sign out"
+    }
+  },
+  "history": {
+    "log": {
+      "col_changes": "Changes"
+    },
+    "export": {
+      "col_ip": "IP Address",
+      "col_browser": "Browser"
+    },
+    "login_history": {
+      "event_login_success": "Login success",
+      "event_login_failed": "Login failed",
+      "event_login_no_fingerprint": "Missing fingerprint",
+      "event_new_device": "New device",
+      "event_logout": "Logout",
+      "event_2fa_challenge": "2FA challenge",
+      "event_2fa_failed": "2FA failed"
+    }
+  },
+  "currency": {
+    "same_unit_error": "Conversion units cannot be the same"
+  },
+  "appointment": {
+    "label": {
+      "consultation_type": "Consultation Type"
+    }
+  },
+  "print": {
+    "cash_flow_report_title": "DETAILED REPORT OF RECEIPTS, PAYMENTS AND FUND TRANSFERS",
+    "appointment_count": "{{count}} appointments",
+    "date_month": "Month",
+    "date_year": "Year",
+    "note": "Note",
+    "refund_consignment_title": "Refund Consignment Receipt",
+    "refund_deposit_title": "Refund Deposit Receipt",
+    "refund_service_title": "Refund Service Receipt",
+    "revenue_by_day": "Daily Revenue",
+    "income_expense": "Income/Expense",
+    "no_appointments_today": "No appointments today",
+    "appointment_list_by_hour": "Appointment List by Hour",
+    "appointment_time": "Time",
+    "appointment_type": "Type",
+    "appointment_service": "Service",
+    "appointment_content": "Content",
+    "printed_at": "Printed at:"
+  }
+}

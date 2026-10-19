@@ -1,0 +1,135 @@
+@if (renderedHtml()) {
+  <!-- Template cấu hình từ admin -->
+  <div class="sheet_body" [innerHTML]="renderedHtml() | safeHtml"></div>
+} @else {
+<div class="sheet_body">
+  <div class="sheet_body_top">
+    <div class="flex items-center justify-between italic">
+      <div class="pl-1">
+        {{ 'common.label.invoice' | translate }}: <span class="invoice_id">{{ model().payment?.code }}</span>
+      </div>
+      <div class="text-sm pr-2">
+        {{ 'common.label.day' | translate }} <span class="font-semibold">{{ orderData().date }}</span> {{ 'print.date_month' | translate }} <span
+        class="font-semibold">{{ orderData().month }}</span> {{ 'print.date_year' | translate }} <span
+        class="font-semibold">{{ orderData().year }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet_body_mid">
+    <div class="customer_info">
+      <h3 class="flex items-center justify-center w-full font-semibold">
+        {{ 'common.label.payment_receipt' | translate | uppercase }}
+      </h3>
+      <app-customer-info-layout [customer]="model().payment?.customer"/>
+    </div>
+
+    <div class="invoice_info">
+      <p-table [showLoader]="false" [value]="models()" class="services p-datatable-gridlines">
+        <ng-template #header>
+          <tr>
+            <th class="whitespace-nowrap">
+              {{ 'common.label.service' | translate }}
+            </th>
+            <th class="text-center whitespace-nowrap">
+              {{ 'common.label.quantity' | translate }}<i class="pCalculator block">(1)</i>
+            </th>
+            <th>
+              {{ 'common.label.unit_price' | translate }}<i class="pCalculator block">(2)</i>
+            </th>
+            <th>
+              {{ 'common.label.subtotal' | translate }}<i class="pCalculator block">(3)=(1)x(2)</i>
+            </th>
+            <th>
+              {{ 'common.label.discount' | translate }}<i class="pCalculator block">(4)</i>
+            </th>
+            <th>
+              {{ 'crm.order_plan.form.total_to_pay' | translate }}<i class="pCalculator block">(5)=(3)-(4)</i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-item>
+          <tr>
+            <td>
+              {{ item.payment?.orderServiceUsed?.service?.name }}
+            </td>
+            <td>{{ item.payment?.orderServiceUsed?.quantity }}</td>
+            <td class="text-right">
+              {{ item.payment?.orderServiceUsed?.unit_price | numberFormat }}
+            </td>
+            <td class="text-right">
+              {{
+                item.payment?.orderServiceUsed?.unit_price *
+                item.payment?.orderServiceUsed?.quantity | numberFormat
+              }}
+            </td>
+            <td class="text-right">
+              @if (item.payment?.orderServiceUsed?.service_discount_type ===
+              SERVICE_DISCOUNT_TYPE_SELECT.SERVICE_DISCOUNT_TYPE_PERCENT) {
+                <span
+                >
+                {{
+                    +(
+                      item.payment?.orderServiceUsed?.quantity *
+                      item.payment?.orderServiceUsed?.unit_price *
+                      (item.payment?.orderServiceUsed?.service_discount / 100)
+                    ) +
+                    +item.payment?.orderServiceUsed?.discount_other +
+                    +item.payment?.orderServiceUsed?.discount | numberFormat
+                  }}
+              </span>
+              }
+              @if (item.payment?.orderServiceUsed?.service_discount_type ===
+              SERVICE_DISCOUNT_TYPE_SELECT.SERVICE_DISCOUNT_TYPE_CURRENCY) {
+                <span
+                >
+                {{
+                    +item.payment?.orderServiceUsed?.service_discount +
+                    +item.payment?.orderServiceUsed?.discount_other +
+                    +item.payment?.orderServiceUsed?.discount | numberFormat
+                  }}
+              </span>
+              }
+            </td>
+            <td class="text-right">
+              {{ item.payment?.orderServiceUsed?.totalEnd | currencyFormat }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template #footer>
+          @for (item of model().historyPayment; track $index) {
+            <tr class="font-semibold">
+              <td class="!text-right" colspan="5">
+                {{ item.text }}
+              </td>
+              <td class="text-right">
+                {{ item.amount | currencyFormat }}
+              </td>
+            </tr>
+          }
+          <tr class="font-semibold">
+            <td colspan="5" style="border-right: 0; border-top: 0">
+              <span class="block text-right">{{ 'crm.order_plan.form.outstanding_balance' | translate }}</span>
+            </td>
+            <td class="text-right">
+              {{
+                model().payment?.orderServiceUsed?.totalEnd -
+                model().totalPayment -
+                +model().payment?.orderServiceUsed?.refundServiceUsed | currencyFormat
+              }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      @if (model().payment?.note) {
+        <div>
+          <p class="font-italic font-bold">{{ 'print.note' | translate }}</p>
+          <span [innerHTML]="model().payment?.note | safeHtml" class="whitespace-pre-wrap"></span>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+}
+

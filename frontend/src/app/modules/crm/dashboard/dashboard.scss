@@ -1,0 +1,96 @@
+@media screen and (max-width: 40em) {
+  .mobile {
+    display: unset !important;
+  }
+
+  .mobile_span_accountant {
+    width: unset !important;
+  }
+}
+
+.red {
+  color: red;
+}
+
+.ant-empty {
+  margin: 10px 0;
+  color: rgba(0, 0, 0, 0.25);
+  font-size: 1.0769rem;
+  line-height: 1.5715;
+  text-align: center;
+}
+
+.min-w-22rem {
+  min-width: 22.61rem;
+}
+
+// ── Chế độ "Tuỳ chỉnh" (story-10, architecture §5). Màu = token PrimeNG ⇒ đúng cả dark mode (B.18). ──
+.dash-editing .dash-item {
+  outline: 2px dashed color-mix(in srgb, var(--p-primary-color) 45%, transparent);
+  outline-offset: 4px;
+  border-radius: 0.75rem;
+}
+
+// Vùng rỗng khi đang sửa vẫn phải có chỗ để thả vào.
+.dash-editing .dash-zone {
+  min-height: 6rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--p-primary-color) 4%, transparent);
+}
+
+// Khung giữ chỗ = bản clone của chính khối (CDK tự khớp cao + cột) ⇒ giấu nội dung, chỉ còn khung nét đứt.
+// Tiền tố `.dash-editing` để thắng specificity của `.dash-editing .dash-item` ở trên (QA story-10 D2).
+.dash-editing .dash-item.cdk-drag-placeholder {
+  outline: 2px dashed var(--p-primary-color);
+  outline-offset: 4px;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--p-primary-color) 8%, transparent);
+}
+
+// Sắp xếp lại ~200ms.
+.dash-zone.cdk-drop-list-dragging .dash-item:not(.cdk-drag-placeholder),
+.dash-item.cdk-drag-animating {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// Khối mới thêm: nhấp nháy viền nhẹ.
+.dash-flash {
+  border-radius: 0.75rem;
+  animation: dash-flash 1.4s ease-out;
+}
+
+@keyframes dash-flash {
+  0%, 60% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 55%, transparent); }
+  100% { box-shadow: 0 0 0 3px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-zone.cdk-drop-list-dragging .dash-item:not(.cdk-drag-placeholder),
+  .dash-item.cdk-drag-animating {
+    transition: none;
+  }
+  .dash-flash {
+    animation: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 55%, transparent);
+  }
+}
+
+// Bản xem trước khi kéo được CDK gắn vào <body> nhưng là cloneNode của host zone-item đặt trong template chủ ⇒ vẫn mang _ngcontent chủ, selector scoped vẫn khớp.
+.dash-drag-preview {
+  opacity: 0.6;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.18);
+  border-radius: 0.75rem;
+  pointer-events: none;
+}
+
+// Thanh lọc / thanh "Đang tuỳ chỉnh" dính NGAY DƯỚI topbar cố định của layout (topbar z-999 che mất nếu `top: 0`).
+// Thanh "Đang tuỳ chỉnh" ở template chủ dùng rule này; thanh lọc (component con) có rule riêng ở shell/dashboard-filter-bar.scss.
+// Bám đúng `padding-top` của `.layout-content-wrapper` trong assets/layout: 4rem; menu ngang (≥ 992px) 7rem.
+.dash-sticky {
+  top: 4rem;
+}
+@media screen and (min-width: 992px) {
+  :host-context(.layout-horizontal) .dash-sticky {
+    top: 7rem;
+  }
+}

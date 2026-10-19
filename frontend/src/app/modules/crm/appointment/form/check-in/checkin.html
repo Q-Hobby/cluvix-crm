@@ -1,0 +1,108 @@
+<form novalidate>
+    <p-fluid class="grid grid-cols-12 gap-6 p-fluid pt-2">
+
+      <!-- CHECK-IN -->
+      <p-divider align="left" class="col-span-12 !m-0">
+        <span class="text-red-500 font-semibold">Check-in</span>
+      </p-divider>
+
+      <div class="col-span-12 lg:col-span-4">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            [maxDate]="maxDate"
+            [showButtonBar]="true"
+            [showClear]="true"
+            [showIcon]="true"
+            [showTime]="true"
+            [autofocus]="false"
+            dateFormat="dd/mm/yy"
+            appendTo="body"
+            [formField]="$any(rootField.checkin_date!)"
+            id="checkin_date"
+            inputId="checkin_date"
+          ></p-datepicker>
+          <label for="checkin_date">{{ 'common.label.check_in_time' | translate }}</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- CHECK-OUT -->
+      <p-divider align="left" class="col-span-12 !m-0">
+        <span class="text-red-500 font-semibold">Check-out</span>
+      </p-divider>
+
+      <div class="col-span-12 lg:col-span-4">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            [maxDate]="maxDate"
+            [showButtonBar]="true"
+            [showIcon]="true"
+            [showTime]="true"
+            dateFormat="dd/mm/yy"
+            appendTo="body"
+            [formField]="$any(rootField.checkout_date!)"
+            id="checkout_date"
+            inputId="checkout_date"
+          ></p-datepicker>
+          <label for="checkout_date">{{ 'common.label.check_out_time' | translate }}</label>
+        </p-floatlabel>
+      </div>
+
+      @if (appointment()?.appointment_type_id === APPOINTMENT_TYPE_SELECT.APPOINTMENT_TYPE_TU_VAN) {
+        <div class="col-span-12 lg:col-span-4">
+          <p-floatlabel variant="on">
+            <app-appointment-is-accepted-autocomplete-form-control
+              [formField]="$any(rootField.is_accepted!)"
+              class="ng-dirty"
+            ></app-appointment-is-accepted-autocomplete-form-control>
+            <label for="is_accepted">{{ 'common.label.appointment_status' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+
+      @if (isAccepted) {
+        <div class="col-span-12 lg:col-span-4">
+          <p-floatlabel variant="on">
+            <app-service-type-form-control
+              [formField]="$any(rootField.type_service_accepted_id!)"
+              class="ng-dirty"
+            ></app-service-type-form-control>
+            <label>{{ 'common.label.accepted_service_group' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+
+      @if (isRejectedOrOther) {
+        <div class="col-span-12 lg:col-span-4">
+          <p-floatlabel variant="on">
+            <app-appointment-reason-autocomplete-form-control
+              [formField]="$any(rootField.appointment_reason_id!)"
+              class="ng-dirty"
+            ></app-appointment-reason-autocomplete-form-control>
+            <label for="appointment_reason_id">{{ 'common.label.reason' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+
+
+      <!-- NOTE -->
+      <div class="col-span-12">
+        <p-floatlabel variant="on">
+                  <textarea
+                    pTextarea
+                    [formField]="$any(rootField.noteAppointment!)"
+                    id="noteAppointment"
+                    rows="3"
+                    class="ng-dirty w-full"
+                  ></textarea>
+          <label for="noteAppointment">{{ 'common.label.appointment_note' | translate }}</label>
+        </p-floatlabel>
+      </div>
+
+    </p-fluid>
+
+    <app-dialog-footer
+      [isSubmitting]="isSubmitting()"
+      (cancelForm)="closeForm($event)"
+      (saveForm)="onSubmit()"
+    />
+  </form>

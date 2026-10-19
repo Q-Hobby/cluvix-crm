@@ -1,0 +1,64 @@
+<div class="grid_tab">
+  <div
+    [style]="{ width: '100%', minHeight: 'calc(100vh - ' + tableConfig() + 'px)', maxHeight: 'calc(100vh - ' + tableConfig() + 'px)' }"
+    class="card overflow-auto mt-5 p-4">
+    <div class="grid grid-cols-12 gap-6">
+
+      <div *hasPerm="[permission.permissionManageCrmReport]"
+           class="col-span-12 md:col-span-6 lg:col-span-4">
+
+        <app-report-panel
+          [items]="revenueItems"
+          icon="pi pi-wallet"
+          [title]="'common.label.revenue' | translate"
+        />
+        <app-report-panel
+          [items]="debtItems"
+          icon="pi pi-money-bill"
+          [title]="'crm.report.debt.panel' | translate"
+        />
+        <app-report-panel
+          [items]="staffItems"
+          icon="pi pi-id-card"
+          [title]="'crm.report.staff.panel_title' | translate"
+        />
+      </div>
+
+      <div *hasPerm="[permission.permissionManageCrmReport]"
+           class="col-span-12 md:col-span-6 lg:col-span-4">
+
+        <app-report-panel
+          [items]="customerPortraitItems"
+          icon="pi pi-users"
+          [title]="'crm.report.list.customer_portrait_title' | translate"
+        />
+        <app-report-panel
+          [items]="appointmentItems"
+          icon="pi pi-calendar"
+          [title]="'common.label.appointment' | translate"
+        />
+      </div>
+
+      <div *hasPerm="[ permission.permissionManageCrmReport ]"
+           class="col-span-12 md:col-span-6 lg:col-span-4">
+
+        <app-report-panel
+          [items]="serviceClinicItems"
+          icon="pi pi-briefcase"
+          [title]="'crm.report.list.service_clinic_title' | translate"
+        />
+
+        <app-report-panel
+          [items]="departmentEffectiveItems"
+          icon="pi pi-chart-line"
+          [title]="'crm.report.list.department_effective_title' | translate"
+        />
+        <app-report-panel
+          [items]="branchItems"
+          icon="pi pi-sitemap"
+          [title]="'common.label.branch' | translate"
+        />
+      </div>
+    </div>
+  </div>
+</div>

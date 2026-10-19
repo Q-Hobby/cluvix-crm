@@ -1,0 +1,21 @@
+<div class="p-2 text-center mt-1">
+  <div class="text-900 font-medium mb-2 text-2xl">
+    {{ 'utilities.popup_other_branch.description' | translate: { textTitle: textTitle } }}
+  </div>
+</div>
+<div class="sticky bottom-0 z-50 bg-white border-t border-gray-200 mt-4 py-3 pr-3 text-right rounded-b-xl gap-4">
+  <button (click)="ref.close(false)" class="mr-2" pButton severity="secondary" type="button">
+    <i class="pi pi-arrow-left"></i>
+    <span>{{ 'common.action.cancel' | translate }}</span>
+  </button>
+  <button
+    (click)="ref.close(true)"
+    pButton
+    [pTooltip]="'utilities.popup_other_branch.save_note' | translate: { textTitle: textTitle }"
+    severity="success"
+    type="submit"
+  >
+    <i class="pi pi-plus"></i>
+    <span>{{ 'common.action.add' | translate }}</span>
+  </button>
+</div>

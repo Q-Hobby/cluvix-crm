@@ -1,0 +1,30 @@
+:host ::ng-deep .p-inputgroup:has(> p-button:last-child) .p-button {
+  height: 100%;
+}
+
+::ng-deep .payment-listbox .p-listbox-list-wrapper {
+  max-height: 290px;
+}
+
+::ng-deep .payment-listbox .p-listbox-item {
+  white-space: normal !important;
+  padding: 10px 12px;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  word-wrap: break-word;
+  min-height: auto;
+}
+
+::ng-deep .payment-listbox .p-listbox-item .p-checkbox {
+  margin-right: 10px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+::ng-deep .payment-listbox .p-listbox-item-text {
+  flex: 1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

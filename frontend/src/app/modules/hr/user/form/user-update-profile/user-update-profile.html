@@ -1,0 +1,371 @@
+<form novalidate>
+  <div class="grid grid-cols-12 gap-6">
+
+    <!-- Left Sidebar - Profile Info -->
+    <div class="col-span-12 lg:col-span-3">
+      <div class="sticky top-4">
+        <div
+          class="bg-white dark:bg-surface-800 p-6 rounded-xl border border-gray-200 dark:border-surface-600 shadow-sm">
+          @if (model(); as m) {
+            <!-- Avatar Section -->
+            <div class="flex flex-col items-center mb-6">
+              @if (m.avatar) {
+                <div class="relative mb-4">
+                  <div
+                    [style.background-image]="'url(' + m.avatar + ')'"
+                    class="w-32 h-32 rounded-full bg-cover bg-center border-4 border-blue-100 dark:border-blue-900/30 shadow-lg"
+                  ></div>
+                  <div
+                    class="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full border-4 border-white dark:border-surface-800 flex items-center justify-center">
+                    <i class="pi pi-check text-white text-sm"></i>
+                  </div>
+                </div>
+              }
+              <div class="text-center">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  {{ m.fullname || ('hr.user_profile_form.no_name' | translate) }}
+                </h3>
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold">
+                  <i class="pi pi-id-card text-xs"></i>
+                  ID: {{ m.user_id }}
+                </span>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-200 dark:border-surface-600 pt-4 space-y-3">
+              <div class="flex items-start gap-2">
+                <div
+                  class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center flex-shrink-0">
+                  <i class="pi pi-sitemap text-purple-600 dark:text-purple-400 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">{{ 'common.label.department' | translate }}</p>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    {{ getDepartmentLabel(m.departmentList ?? null) || ('hr.user_profile_form.no_department' | translate) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Content - Form Fields -->
+    <div class="col-span-12 lg:col-span-9">
+      <div class="bg-white dark:bg-surface-800 rounded-xl border border-gray-200 dark:border-surface-600 shadow-sm">
+
+        <!-- Basic Information Section -->
+        <div class="p-6 border-b border-gray-200 dark:border-surface-600">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+              <i class="pi pi-user text-blue-600 dark:text-blue-400"></i>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ 'common.label.basic_info' | translate }}</h4>
+          </div>
+
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12">
+              <p-floatlabel variant="on">
+                <input
+                  [class.ng-invalid]="isFieldInvalid(rootField.fullname!)"
+                  [fluid]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.fullname!)"
+                  id="fullname"
+                  pInputText
+                  type="text"
+                />
+                <label for="fullname">
+                  <i class="pi pi-user mr-2"></i>{{ 'common.label.full_name' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12">
+              <p-floatlabel variant="on">
+                <textarea
+                  class="ng-dirty w-full"
+                  cols="10"
+                  [formField]="$any(rootField.about!)"
+                  id="about"
+                  pTextarea
+                  rows="3"
+                  style="resize: none"
+                ></textarea>
+                <label for="about">
+                  <i class="pi pi-file-edit mr-2"></i>{{ 'hr.user_profile_form.about' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar Upload Section -->
+        <div class="p-6 border-b border-gray-200 dark:border-surface-600">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center">
+              <i class="pi pi-image text-indigo-600 dark:text-indigo-400"></i>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ 'hr.user_profile_form.section_avatar' | translate }}</h4>
+          </div>
+
+          <p-fileupload
+            #fileUpload
+            (onSelect)="onImageSelect($event)"
+            (onRemove)="onImageRemove()"
+            (onClear)="onImageClear()"
+            [customUpload]="true"
+            [maxFileSize]="CONFIG_FILE_SELECT.CONFIG_FILE_MAX_SIZE"
+            [multiple]="false"
+            [showUploadButton]="false"
+            [showCancelButton]="false"
+            accept="image/*"
+            name="avatarFile"
+          >
+            <ng-template #content let-files let-removeFileCallback="removeFileCallback">
+              @if ((files?.length ?? 0) > 0 || srcImageUpload) {
+                <div
+                  class="flex items-center justify-between p-4 border-2 border-gray-200 dark:border-surface-600 rounded-xl bg-gray-50 dark:bg-surface-700/30">
+                  <div class="flex items-center gap-4">
+                    <div class="relative w-20 h-20 flex-shrink-0">
+                      @if (imageLoading() && !files?.length) {
+                        <p-skeleton width="5rem" height="5rem" borderRadius="0.5rem" class="absolute inset-0"/>
+                      }
+                      <img
+                        [src]="files?.length ? files[0].objectURL : srcImageUpload"
+                        [alt]="files?.length ? files[0].name : ('common.label.current_image' | translate)"
+                        [class.opacity-0]="imageLoading() && !files?.length"
+                        (load)="onImageLoad()"
+                        (error)="onImageLoad()"
+                        class="w-20 h-20 object-cover rounded-lg shadow-sm transition-opacity duration-200"
+                      />
+                    </div>
+                    <div>
+                      @if (files?.length) {
+                        <div class="font-semibold text-gray-900 dark:text-white mb-1">{{ files[0].name }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ formatSize(files[0].size) }}</div>
+                      } @else if (imageLoading()) {
+                        <p-skeleton width="10rem" height="1.25rem" class="mb-2"/>
+                        <p-skeleton width="5rem" height="1rem"/>
+                      } @else {
+                        <div class="font-semibold text-gray-900 dark:text-white mb-1">{{ 'common.label.current_image' | translate }}</div>
+                        <div class="inline-flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
+                          <i class="pi pi-check-circle"></i>
+                          <span>{{ 'common.label.saved' | translate }}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <button type="button"
+                    pButton
+                    (click)="files?.length ? removeFileCallback(0) : clearExistingImage()"
+                    [rounded]="true"
+                    [text]="true"
+                    [attr.aria-label]="'common.action.remove' | translate"
+                    severity="danger"
+                    [iconOnly]="true"
+                  ><i class="pi pi-times"></i></button>
+                </div>
+              }
+            </ng-template>
+
+            <ng-template #empty>
+              @if (!srcImageUpload) {
+                <div
+                  class="flex flex-col items-center justify-center py-12 border-2 border-dashed border-gray-300 dark:border-surface-600 rounded-xl bg-gray-50 dark:bg-surface-700/30">
+                  <div
+                    class="w-16 h-16 rounded-full bg-gray-200 dark:bg-surface-600 flex items-center justify-center mb-4">
+                    <i class="pi pi-cloud-upload text-3xl text-gray-400 dark:text-gray-500"></i>
+                  </div>
+                  <p class="text-gray-700 dark:text-gray-300 font-medium mb-1">{{ 'common.label.drop_image_here' | translate }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ CONFIG_FILE_SELECT.CONFIG_FILE_ALLOW_EXT.join(', ').toUpperCase() }}
+                    {{ 'common.label.max_size_mb' | translate: { size: (CONFIG_FILE_SELECT.CONFIG_FILE_MAX_SIZE / 1024 / 1024).toFixed(0) } }}
+                  </p>
+                </div>
+              }
+            </ng-template>
+          </p-fileupload>
+
+          @if (uploadError()) {
+            <div class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p class="text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+                <i class="pi pi-exclamation-circle"></i>
+                {{ uploadError() }}
+              </p>
+            </div>
+          }
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="p-6 border-b border-gray-200 dark:border-surface-600">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
+              <i class="pi pi-phone text-green-600 dark:text-green-400"></i>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ 'common.label.contact_info' | translate }}</h4>
+          </div>
+
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <input
+                  [class.ng-invalid]="isFieldInvalid(rootField.phone!)"
+                  [fluid]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.phone!)"
+                  id="phone"
+                  pInputText
+                  type="text"
+                />
+                <label for="phone">
+                  <i class="pi pi-phone mr-2"></i>{{ 'common.label.phone' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <p-select
+                  appendTo="body"
+                  [class.ng-invalid]="isFieldInvalid(rootField.gender!)"
+                  [options]="genderOptions()"
+                  class="ng-dirty w-full"
+                  [emptyFilterMessage]="'hr.user_profile_form.no_value_found' | translate"
+                  filter="true"
+                  filterBy="label"
+                  [formField]="$any(rootField.gender!)"
+                  id="gender"
+                  optionLabel="label"
+                  optionValue="value"
+                  resetFilterOnHide="true"
+                ></p-select>
+                <label for="gender">
+                  <i class="pi pi-users mr-2"></i>{{ 'common.label.gender' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <p-datepicker
+                  [maxDate]="maxDate"
+                  appendTo="body"
+                  class="ng-dirty"
+                  dateFormat="dd/mm/yy"
+                  [formField]="$any(rootField.birthday!)"
+                  id="birthday"
+                  inputId="birthday"
+                  showIcon="true"
+                ></p-datepicker>
+                <label for="birthday">
+                  <i class="pi pi-calendar mr-2"></i>{{ 'common.label.birthday' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <app-branch-form-control
+                  [class.ng-invalid]="isFieldInvalid(rootField.branchOffice_id!)"
+                  [activeOnly]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.branchOffice_id!)"/>
+                <label for="branchOffice_id">
+                  <i class="pi pi-building mr-2"></i>{{ 'common.label.branch' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12">
+              <p-floatlabel variant="on">
+                <input
+                  [class.ng-invalid]="isFieldInvalid(rootField.address!)"
+                  [fluid]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.address!)"
+                  id="address"
+                  pInputText
+                  type="text"
+                />
+                <label for="address">
+                  <i class="pi pi-map-marker mr-2"></i>{{ 'common.label.address' | translate }}
+                </label>
+              </p-floatlabel>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Media Section -->
+        <div class="p-6">
+          <div class="flex items-center gap-2 mb-6">
+            <div class="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center">
+              <i class="pi pi-share-alt text-purple-600 dark:text-purple-400"></i>
+            </div>
+            <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ 'hr.user_profile_form.section_social' | translate }}</h4>
+          </div>
+
+          <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <input
+                  [class.ng-invalid]="isFieldInvalid(rootField.facebook!)"
+                  [fluid]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.facebook!)"
+                  id="facebook"
+                  pInputText
+                  type="text"
+                />
+                <label for="facebook">
+                  <i class="pi pi-facebook mr-2"></i>Facebook URL
+                </label>
+              </p-floatlabel>
+            </div>
+
+            <div class="col-span-12 md:col-span-6">
+              <p-floatlabel variant="on">
+                <input
+                  [class.ng-invalid]="isFieldInvalid(rootField.telegram!)"
+                  [fluid]="true"
+                  class="ng-dirty"
+                  [formField]="$any(rootField.telegram!)"
+                  id="telegram"
+                  pInputText
+                  type="text"
+                />
+                <label for="telegram">
+                  <i class="pi pi-send mr-2"></i>Telegram Account ID
+                </label>
+              </p-floatlabel>
+            </div>
+
+            @if (userRoleName() === RoleDef.telesales) {
+              <div class="col-span-12 md:col-span-6">
+                <p-floatlabel variant="on">
+                  <input
+                    [class.ng-invalid]="isFieldInvalid(rootField.id_pancake!)"
+                    [fluid]="true"
+                    class="ng-dirty"
+                    [formField]="$any(rootField.id_pancake!)"
+                    id="id_pancake"
+                    pInputText
+                    type="text"
+                  />
+                  <label for="id_pancake">
+                    <i class="pi pi-link mr-2"></i>ID Pancake
+                  </label>
+                </p-floatlabel>
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)" (saveForm)="onSubmit()"/>
+</form>

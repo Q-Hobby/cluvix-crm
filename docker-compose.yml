@@ -1,0 +1,137 @@
+# Môi trường DEV bằng Docker (source mount, hot reload) — KHÔNG dùng để deploy production.
+# Hướng dẫn đầy đủ: DOCKER.md
+#
+#   cp .env.docker.example .env.docker      # rồi sửa TOKEN_SECRET / TOTP_ENC_KEY
+#   docker compose --env-file .env.docker up --build
+#
+# Port trên HOST cố ý lệch port chuẩn để chạy song song được với bản chạy trực tiếp
+# trên máy (air 8011, ng serve 4211, MySQL 3306, Redis 6379):
+#   frontend 14211 · backend 18011 · mysql 13306 · redis 16379
+
+services:
+  mysql:
+    image: mysql:9.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-cluvix_crm_docker}
+    # Khớp collation chuẩn dự án (utf8mb4_unicode_ci), không dùng mặc định utf8mb4_0900_ai_ci.
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports:
+      - "${MYSQL_HOST_PORT:-13306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "${REDIS_HOST_PORT:-16379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # Mọi biến cấu hình đặt TƯỜNG MINH ở đây (kể cả giá trị rỗng): ./backend được mount vào
+    # /app nên nếu bạn có backend/.env trên máy host, godotenv sẽ đọc nó cho những biến
+    # CHƯA có trong môi trường container (ví dụ TLS_CERT trỏ file host) — đặt rỗng ở đây để chặn.
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_CODE: ${APP_CODE:-CluvixCRMDocker}
+      # 0.0.0.0 để port-mapping của Docker vào được; mặc định code là 127.0.0.1.
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: "8011"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASS: ${MYSQL_ROOT_PASSWORD:-root}
+      DB_NAME: ${DB_NAME:-cluvix_crm_docker}
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: ""
+      REDIS_DB_CACHE: "4"
+      REDIS_DB_AUTH: "5"
+      TOKEN_SECRET: ${TOKEN_SECRET:-dev-only-token-secret-change-me}
+      TOTP_ENC_KEY: ${TOTP_ENC_KEY:-}
+      # APP_ENV=dev phản chiếu mọi Origin; chỉ cần khi đổi sang APP_ENV=prod.
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:14211}
+      PERM_ENFORCE: ${PERM_ENFORCE:-true}
+      # Không TLS trong container (rỗng cả 2 ⇒ HTTP thường, xem internal/bootstrap/app.go).
+      TLS_CERT: ""
+      TLS_KEY: ""
+      DOWNLOAD_URL: ${DOWNLOAD_URL:-http://localhost:14211}
+      # Storage: mặc định local (backend/storage/uploads public tại /uploads, backend/storage/private
+      # riêng tư). STORAGE_DRIVER đặt tường minh để backend/.env của máy host (có thể chứa S3_*) không
+      # làm driver bị suy ra s3.
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      STORAGE_PATH: ./storage/uploads
+      STORAGE_PRIVATE_PATH: ./storage/private
+      STORAGE_PUBLIC_PREFIX: /uploads
+      STORAGE_PUBLIC_BASE: ${STORAGE_PUBLIC_BASE:-}
+      # Khoá HMAC ký URL ngắn hạn xem/phát file đính kèm (driver local). Trống + APP_ENV=dev ⇒ khoá dev;
+      # APP_ENV=prod BẮT BUỘC (≥32 ký tự). TTL mặc định 5m, trần 15m.
+      STORAGE_SIGNING_KEY: ${STORAGE_SIGNING_KEY:-}
+      STORAGE_SIGNED_URL_TTL: ${STORAGE_SIGNED_URL_TTL:-}
+      S3_KEY: ${S3_KEY:-}
+      S3_SECRET: ${S3_SECRET:-}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_PRIVATE_BUCKET: ${S3_PRIVATE_BUCKET:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_REGION: ${S3_REGION:-}
+      S3_CDN: ${S3_CDN:-}
+      S3_FOLDER: ${S3_FOLDER:-}
+      S3_PUBLIC_ACL: ${S3_PUBLIC_ACL:-}
+      TG_BOT_TOKEN: ""
+      TG_CHAT_ID: ""
+    ports:
+      - "${BACKEND_HOST_PORT:-18011}:8011"
+    volumes:
+      - ./backend:/app
+      - backend-gomod-cache:/go/pkg/mod
+      - backend-gobuild-cache:/root/.cache/go-build
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8011/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      # Lần đầu phải biên dịch toàn bộ module Go + chạy migration — có thể mất vài phút.
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_HOST_PORT:-14211}:4211"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+      - frontend-ng-cache:/app/.angular
+
+volumes:
+  mysql-data:
+  redis-data:
+  backend-gomod-cache:
+  backend-gobuild-cache:
+  frontend-node-modules:
+  frontend-ng-cache:

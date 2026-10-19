@@ -1,0 +1,222 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="p-toolbar-group-start"></div>
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <p-popover #op>
+            <div class="grid grid-cols-12 gap-4 !w-[300px]">
+              @if (isMobile()) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      (onClear)="clearStartTime()"
+                      [readonlyInput]="true"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="_created_at"
+                      id="_created_at_mobile"
+                      selectionMode="range"
+                      showIcon="true"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer
+                          (rangeChange)="onQuickSelect($event)"
+                        ></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="_created_at_mobile">{{ 'common.label.select_date' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              <div class="col-span-12">
+                <p-floatlabel variant="on" class="flex">
+                  <app-appointment-type-multiselect-form-control
+                    formControlName="appointment_type_id">
+                  </app-appointment-type-multiselect-form-control>
+                  <label for="appointment_type_id">{{ 'common.label.appointment_type' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <div class="col-span-12">
+                <p-floatlabel variant="on" class="flex">
+                  <app-branch-multiselect-form-control formControlName="branch_id">
+                  </app-branch-multiselect-form-control>
+                  <label>{{ 'common.label.branch' | translate }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+          </p-popover>
+          <div class="flex items-center gap-2 w-full">
+            @if (isDesktop()) {
+              <p-floatlabel variant="on">
+                <p-datepicker
+                  (onClear)="clearStartTime()"
+                  [readonlyInput]="true"
+                  appendTo="body"
+                  dateFormat="dd/mm/yy"
+                  formControlName="_created_at"
+                  id="_created_at"
+                  selectionMode="range"
+                  showIcon="true"
+                >
+                  <ng-template #footer>
+                    <app-date-picker-footer
+                      (rangeChange)="onQuickSelect($event)"
+                    ></app-date-picker-footer>
+                  </ng-template>
+                </p-datepicker>
+                <label for="_created_at">{{ 'common.label.select_date' | translate }}</label>
+              </p-floatlabel>
+            }
+            <button
+              (click)="op.toggle($event)"
+              [attr.aria-label]="'common.action.filter' | translate"
+              [pTooltip]="'common.action.filter' | translate"
+              severity="info"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-filter"></i></button>
+            <button
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-filter-slash"></i></button>
+            <button
+              (click)="getList()"
+              type="button" [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-refresh"></i></button>
+          </div>
+        </form>
+      }
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[140px]">{{ 'common.label.date' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'crm.report.appointment_stats.h_new' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'crm.report.appointment_stats.h_returning' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'common.label.appointment' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'crm.report.appointment_stats.h_cancel' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'common.status.arrived' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'common.label.agreed' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'crm.report.appointment_stats.h_arrived_per_appointment' | translate }}</th>
+      <th class="min-w-[120px]">{{ 'crm.report.appointment_stats.h_agreed_per_arrived' | translate }}</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr>
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>
+        <b>{{ model.dayCreate * 1000 | customDate }}</b>
+      </td>
+      <td>{{ model.numAppNew }}</td>
+      <td>{{ model.numAppNewPlus }}</td>
+      <td>{{ model.numAppDate }}</td>
+      <td>{{ model.numAppCancel }}</td>
+      <td>{{ model.numAppDen }}</td>
+      <td>{{ model.numAppDenOk }}</td>
+      <td>{{ model.numAppDenNumAppDate.toFixed(2) }}%</td>
+      <td>{{ model.numAppDenOkNumAppDen.toFixed(2) }}%</td>
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td colspan="2"></td>
+      <td>
+        <b>{{ modelsTotal().numAppNew }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppNewPlus }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppDate }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppCancel }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppDen }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppDenOk }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().numAppDenNumAppDate.toFixed(2) }}%</b>
+      </td>
+      <td>
+        <b>
+          {{ modelsTotal().numAppDenOkNumAppDen.toFixed(2) }}%
+        </b>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (num of 30 | toArray; track $index) {
+      <tr class="h-[46px]">
+        @for (col of 10 | toArray; track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="10">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

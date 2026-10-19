@@ -1,0 +1,17 @@
+{
+  "common": {"create": "Tạo mới"},
+  "module": {"crm": "CRM", "config": "Cấu hình", "zalo": "Zalo"},
+  "x": {
+    "customer_list": "Khách hàng",
+    "customer_detail": "Chi tiết khách hàng",
+    "group": "Nhóm",
+    "reception": "Tiếp đón",
+    "exam": "Khám",
+    "income": "Thu nhập",
+    "sms": "SMS",
+    "tpl_list": "Mẫu in",
+    "tpl_detail": "Chi tiết mẫu in",
+    "zalo_user": "Người dùng Zalo",
+    "camp": "Chiến dịch"
+  }
+}

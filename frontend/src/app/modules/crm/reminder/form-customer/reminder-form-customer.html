@@ -1,0 +1,66 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <textarea
+          [class.ng-invalid]="isFieldInvalid(rootField.note!)"
+          [rows]="4"
+          pTextarea
+          class="ng-dirty w-full"
+          [autofocus]="true"
+          [formField]="$any(rootField.note!)"
+          id="note"
+        >
+        </textarea>
+        <label for="note">{{ 'common.label.reminder_content' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <p-datepicker
+          (keydown.enter)="handleKeyPress($any($event))"
+          (onInput)="inputDate($event)"
+          [class.ng-invalid]="isFieldInvalid(rootField.start_time!)"
+          [showTime]="true"
+          appendTo="body"
+          class="ng-dirty"
+          dateFormat="dd/mm/yy"
+          [formField]="$any(rootField.start_time!)"
+          id="start_time"
+          inputId="start_time"
+          showIcon="true"
+        ></p-datepicker>
+        <label for="start_time">{{ 'common.label.time' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <p-select
+          appendTo="body"
+          [class.ng-invalid]="isFieldInvalid(rootField.type!)"
+          [options]="reminderTypeOptions()"
+          [showClear]="true"
+          class="ng-dirty"
+          emptyFilterMessage="{{ 'common.message.no_data' | translate }}"
+          filterBy="label"
+          [formField]="$any(rootField.type!)"
+          id="type"
+          inputId="type"
+          optionLabel="label"
+          optionValue="value"
+          resetFilterOnHide="true"
+        ></p-select>
+        <label for="type">{{ 'crm.reminder_form.remind_type_label' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <app-user-multiselect-form-control
+          [formField]="rootField.relatedUser!">
+        </app-user-multiselect-form-control>
+        <label for="relatedUser">{{ 'common.label.related_user' | translate }}</label>
+      </p-floatlabel>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)" (saveForm)="onSubmit()"/>
+</form>

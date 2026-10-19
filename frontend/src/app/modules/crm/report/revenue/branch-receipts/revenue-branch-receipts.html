@@ -1,0 +1,358 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  [columns]="cols()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  [filterDelay]="0"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+        <button
+          pButton
+          (click)="exportExcel()"
+          [disabled]="isSubmitting()"
+          [attr.aria-label]="'common.tooltip.export_data' | translate"
+          [pTooltip]="'common.tooltip.export_data' | translate"
+          severity="help"
+          type="button"
+          [iconOnly]="true"
+        >
+          <i class="pi pi-download"></i>
+        </button>
+      </div>
+      <div class="p-toolbar-group-end">
+        @if (rfFilterModel) {
+          <form [formGroup]="rfFilterModel" novalidate>
+            <p-popover #op>
+              <div class="grid grid-cols-12 gap-4 !w-[300px]">
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-select
+                      [multiple]="true"
+                      [options]="PAYMENT_FOR_OPTION"
+                      appendTo="body"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="payment_for"
+                      inputId="rbr_payment_for"
+                      resetFilterOnHide="true"
+                      class="w-full"
+                    ></p-select>
+                    <label for="rbr_payment_for">{{ 'crm.report.revenue.payment_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-payment-method-multiselect-form-control formControlName="method" />
+                    <label for="method">{{ 'common.label.payment_method' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-payment-type-multiselect-form-control formControlName="card_type_id" />
+                    <label for="card_type_id">{{ 'crm.payment.form.card_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-branch-multiselect-form-control formControlName="branch_id"></app-branch-multiselect-form-control>
+                    <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                @if (isMobile()) {
+                  <div class="col-span-12">
+                    <p-floatlabel variant="on">
+                      <p-datepicker
+                        [readonlyInput]="true"
+                        appendTo="body"
+                        dateFormat="dd/mm/yy"
+                        formControlName="payment_time"
+                        inputId="rbr_payment_time_mobile"
+                        selectionMode="range"
+                        showIcon="true"
+                      >
+                        <ng-template #footer>
+                          <app-date-picker-footer (rangeChange)="onQuickSelect($event)"></app-date-picker-footer>
+                        </ng-template>
+                      </p-datepicker>
+                      <label for="rbr_payment_time_mobile">{{ 'common.label.collection_time' | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                }
+              </div>
+            </p-popover>
+            <div class="flex items-center gap-2 w-full">
+              @if (isDesktop()) {
+                <div class="flex-grow">
+                  <p-floatlabel variant="on">
+                    <p-iconfield>
+                      <p-inputicon class="pi pi-search" />
+                      <input autocomplete="off" formControlName="_keyword" id="rbr_keyword" pInputText type="text" />
+                    </p-iconfield>
+                    <label for="rbr_keyword">{{ 'common.label.keyword' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <p-floatlabel variant="on">
+                  <p-datepicker
+                    [readonlyInput]="true"
+                    appendTo="body"
+                    dateFormat="dd/mm/yy"
+                    formControlName="payment_time"
+                    inputId="rbr_payment_time"
+                    selectionMode="range"
+                    showIcon="true"
+                  >
+                    <ng-template #footer>
+                      <app-date-picker-footer (rangeChange)="onQuickSelect($event)"></app-date-picker-footer>
+                    </ng-template>
+                  </p-datepicker>
+                  <label for="rbr_payment_time">{{ 'common.label.collection_time' | translate }}</label>
+                </p-floatlabel>
+              }
+              <button
+                pButton
+                (click)="op.toggle($event)"
+                [attr.aria-label]="'common.action.filter' | translate"
+                [pTooltip]="'common.action.filter' | translate"
+                severity="info"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-filter"></i>
+              </button>
+              <button
+                pButton
+                (click)="clearFilter()"
+                [attr.aria-label]="'common.action.clear_filter' | translate"
+                [pTooltip]="'common.action.clear_filter' | translate"
+                severity="warn"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-filter-slash"></i>
+              </button>
+              <button
+                type="button"
+                pButton
+                (click)="resetPage()"
+                [attr.aria-label]="'common.action.refresh' | translate"
+                [pTooltip]="'common.action.reload_page' | translate"
+                severity="secondary"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-refresh"></i>
+              </button>
+              <button
+                pButton
+                (click)="colsTpl.toggle($event)"
+                [attr.aria-label]="'common.action.view_more' | translate"
+                [pTooltip]="'common.action.view_more' | translate"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-th-large"></i>
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('customer_code')()) {
+        <th class="min-w-[150px]">{{ 'common.label.customer_code' | translate }}</th>
+      }
+      @if (isColVisible('customer_id')()) {
+        <th class="min-w-[180px]">{{ 'common.label.customer' | translate }}</th>
+      }
+      @if (isColVisible('serviceUsedCode')()) {
+        <th class="min-w-[150px]">{{ 'common.label.treatment_service_code' | translate }}</th>
+      }
+      @if (isColVisible('service')()) {
+        <th class="min-w-[250px]">{{ 'common.label.service' | translate }}</th>
+      }
+      @if (isColVisible('quantity')()) {
+        <th class="min-w-[60px]">{{ 'common.label.quantity' | translate }}</th>
+      }
+      @if (isColVisible('method')()) {
+        <th class="min-w-[120px]">{{ 'common.label.payment_method' | translate }}</th>
+      }
+      @if (isColVisible('amount')()) {
+        <th class="min-w-[120px]">{{ 'crm.report.revenue.amount_in_out' | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      @if (isColVisible('branch_id')()) {
+        <th class="min-w-[200px]">{{ 'common.label.branch' | translate }}</th>
+      }
+      @if (isColVisible('address')()) {
+        <th class="min-w-[300px]">{{ 'common.label.address' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[50px] min-w-[50px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('customer_code')()) {
+        <td [appCopyText]="model.customer?.code">{{ model.customer?.code }}</td>
+      }
+      @if (isColVisible('customer_id')()) {
+        <td>
+          @if (model.customer_id) {
+            <app-customer-name [id]="model.customer?.id" [customer]="model.customer" [name]="model.customerDisplayName" />
+          }
+        </td>
+      }
+      @if (isColVisible('serviceUsedCode')()) {
+        <td [appCopyText]="model.orderServiceUsed?.code">{{ model.orderServiceUsed?.code || '—' }}</td>
+      }
+      @if (isColVisible('service')()) {
+        <td [appCopyText]="model.serviceInfo?.name">
+          @if (model.serviceInfo?.name) {
+            <span class="font-semibold text-primary">{{ model.serviceInfo?.name }}</span>
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (isColVisible('quantity')()) {
+        <td>
+          @if (model.orderServiceUsed?.quantity) {
+            <p-badge severity="warn" [value]="model.orderServiceUsed?.quantity" />
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (isColVisible('method')()) {
+        <td>
+          <b>{{ model.paymentMethodLabel || '—' }}</b>
+        </td>
+      }
+      @if (isColVisible('amount')()) {
+        <td>
+          <span class="text-blue-500">{{ model.amountFormatted }}</span>
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td>{{ model.created_atFormatted }}</td>
+      }
+      @if (isColVisible('branch_id')()) {
+        <td>{{ model.branchLabel || '—' }}</td>
+      }
+      @if (isColVisible('address')()) {
+        <td>{{ model.customer?.address || '—' }}</td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <app-customer-timeline-button
+            (clickTimeLine)="timelineCustomer($event.event, $event.id, $event.fullname)"
+            [customer]="model.customer"
+          ></app-customer-timeline-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td></td>
+      @if (isColVisible('customer_code')()) {
+        <td></td>
+      }
+      @if (isColVisible('customer_id')()) {
+        <td></td>
+      }
+      @if (isColVisible('serviceUsedCode')()) {
+        <td></td>
+      }
+      @if (isColVisible('service')()) {
+        <td></td>
+      }
+      @if (isColVisible('quantity')()) {
+        <td></td>
+      }
+      @if (isColVisible('method')()) {
+        <td></td>
+      }
+      @if (isColVisible('amount')()) {
+        <td>
+          <b class="text-blue-500">{{ amountTotal() | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td></td>
+      }
+      @if (isColVisible('branch_id')()) {
+        <td></td>
+      }
+      @if (isColVisible('address')()) {
+        <td></td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn></td>
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

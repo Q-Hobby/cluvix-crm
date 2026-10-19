@@ -1,0 +1,7 @@
+node_modules
+dist
+.angular
+deploy
+*.pem
+.git
+.idea

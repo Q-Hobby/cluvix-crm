@@ -1,0 +1,21 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "crm-be",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd backend && air"],
+      "port": 8011,
+      "autoPort": false,
+      "url": "https://localhost:8011"
+    },
+    {
+      "name": "crm-fe",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "start"],
+      "port": 4211,
+      "autoPort": false,
+      "url": "https://localhost:4211"
+    }
+  ]
+}

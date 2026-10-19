@@ -1,0 +1,130 @@
+<form novalidate>
+    <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+      <div class="col-span-12 lg:col-span-4">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            [class.ng-invalid]="isFieldInvalid(rootField.amount!)"
+            [min]="0"
+            [readonly]="true"
+            class="ng-dirty"
+            [formField]="$any(rootField.amount!)"
+            id="amount"
+          ></p-inputnumber>
+          <label for="amount">{{ 'common.label.amount' | translate }}</label>
+        </p-floatlabel>
+      </div>
+      @if (model().payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT) {
+        <div
+          class="col-span-12 lg:col-span-4 mt-2"
+        >
+          <p-floatlabel variant="on">
+            <p-datepicker
+              [class.ng-invalid]="isFieldInvalid(rootField.payment_of_date!)"
+              [maxDate]="maxPaymentTime"
+              [minDate]="minPaymentTime"
+              [showTime]="true"
+              appendTo="body"
+              class="ng-dirty"
+              dateFormat="dd/mm/yy"
+              [formField]="$any(rootField.payment_of_date!)"
+              id="payment_of_date"
+              showIcon="true"
+            ></p-datepicker>
+            <label for="payment_of_date">{{ 'common.label.payment_date' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      } @else {
+        <ng-container [ngTemplateOutlet]="receipts"></ng-container>
+      }
+      <ng-template #receipts>
+        <div class="col-span-12 lg:col-span-4">
+          <p-floatlabel variant="on">
+            <p-datepicker
+              [class.ng-invalid]="isFieldInvalid(rootField.payment_time!)"
+              [maxDate]="maxPaymentTime"
+              [minDate]="minPaymentTime"
+              [showTime]="true"
+              appendTo="body"
+              class="ng-dirty"
+              dateFormat="dd/mm/yy"
+              [formField]="$any(rootField.payment_time!)"
+              id="payment_time"
+              showIcon="true"
+            ></p-datepicker>
+            <label for="payment_time">{{ 'common.label.collection_date' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      </ng-template>
+      <div class="col-span-12 lg:col-span-4">
+        <p-floatlabel variant="on">
+          <app-branch-form-control
+            [class.ng-invalid]="isFieldInvalid(rootField.branch_id!)"
+            [activeOnly]="true"
+            class="ng-dirty"
+            [formField]="$any(rootField.branch_id!)"/>
+          <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+        </p-floatlabel>
+      </div>
+      @if (model().payment_for !== PAYMENT_FOR.TRANSFER_DEPOSIT) {
+        <div
+          class="col-span-12 lg:col-span-4 mt-2"
+        >
+          <p-floatlabel variant="on">
+            <app-payment-method-autocomplete-form-control
+              [class.ng-invalid]="isFieldInvalid(rootField.method!)"
+              class="ng-dirty"
+              [formField]="$any(rootField.method!)"
+            />
+            <label for="method">{{ 'common.label.payment_method' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+      @if (model().payment_for !== PAYMENT_FOR.TRANSFER_DEPOSIT) {
+        <div
+          class="col-span-12 lg:col-span-4 mt-2"
+        >
+          <p-floatlabel variant="on">
+            <app-payment-type-autocomplete-form-control
+              [class.ng-invalid]="isFieldInvalid(rootField.card_type_id!)"
+              [paymentMethodId]="rootField.method!().value()"
+              class="ng-dirty"
+              [formField]="$any(rootField.card_type_id!)"/>
+            <label for="card_type_id">{{ 'common.label.payment_method' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+      @if (model().payment_for !== PAYMENT_FOR.TRANSFER_DEPOSIT) {
+        <div
+          class="col-span-12 lg:col-span-4 mt-2"
+        >
+          <p-floatlabel variant="on">
+            <input
+              [class.ng-invalid]="isFieldInvalid(rootField.bank_code!)"
+              autocomplete="off"
+              class="ng-dirty"
+              [formField]="$any(rootField.bank_code!)"
+              id="bank_code"
+              pInputText
+              type="text"
+            />
+            <label for="bank_code">{{ 'common.label.invoice' | translate }}</label>
+          </p-floatlabel>
+        </div>
+      }
+      <div class="col-span-12">
+        <p-floatlabel variant="on">
+        <textarea
+          [class.ng-invalid]="isFieldInvalid(rootField.note!)"
+          [rows]="4"
+          pTextarea
+          class="ng-dirty w-full"
+          [formField]="$any(rootField.note!)"
+          id="note"
+        ></textarea>
+          <label for="note">{{ 'crm.payment.form.note_payment' | translate }}</label>
+        </p-floatlabel>
+      </div>
+    </p-fluid>
+    <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                       (saveForm)="checkBeforeSubmit()"/>
+  </form>

@@ -1,0 +1,60 @@
+<div class="p-4 flex flex-col gap-4">
+
+  <!-- Option: selected columns -->
+  <label
+    class="flex gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors"
+    [class.border-primary]="mode() === 'selected'"
+    [class.border-gray-200]="mode() !== 'selected'"
+  >
+    <p-radiobutton
+      name="exportMode"
+      value="selected"
+      [ngModel]="mode()"
+      (ngModelChange)="mode.set($event)"
+      inputId="export_selected"
+    />
+    <div class="flex flex-col gap-1">
+      <span class="font-semibold text-base">
+        {{ 'utilities.export_options_dialog.selected_label' | translate }}
+      </span>
+      <span class="text-sm text-gray-500">
+        {{ 'utilities.export_options_dialog.selected_desc' | translate }}
+      </span>
+    </div>
+  </label>
+
+  <!-- Option: all columns -->
+  <label
+    class="flex gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors"
+    [class.border-primary]="mode() === 'all'"
+    [class.border-gray-200]="mode() !== 'all'"
+  >
+    <p-radiobutton
+      name="exportMode"
+      value="all"
+      [ngModel]="mode()"
+      (ngModelChange)="mode.set($event)"
+      inputId="export_all"
+    />
+    <div class="flex flex-col gap-1">
+      <span class="font-semibold text-base">
+        {{ 'utilities.export_options_dialog.all_label' | translate }}
+      </span>
+      <span class="text-sm text-gray-500">
+        {{ 'utilities.export_options_dialog.all_desc' | translate }}
+      </span>
+    </div>
+  </label>
+
+</div>
+
+<div class="sticky bottom-0 z-50 bg-white border-t border-gray-200 py-3 px-4 flex justify-end gap-2 rounded-b-xl">
+  <button (click)="cancel()" pButton severity="secondary" type="button">
+    <i class="pi pi-times"></i>
+    <span>{{ 'common.action.cancel' | translate }}</span>
+  </button>
+  <button (click)="confirm()" pButton severity="success" type="button">
+    <i class="pi pi-download"></i>
+    <span>{{ 'common.action.export_excel' | translate }}</span>
+  </button>
+</div>

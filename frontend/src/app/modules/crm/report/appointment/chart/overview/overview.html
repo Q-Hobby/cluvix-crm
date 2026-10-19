@@ -1,0 +1,98 @@
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12 md:col-span-6">
+    <p-table
+      #dt
+      (onLazyLoad)="loadRecords($event)"
+      (selectionChange)="onSelectionChange($event)"
+      [columns]="cols()"
+      [filterDelay]="0"
+      [filters]="initialFilters()"
+      [first]="first()"
+      [lazy]="true"
+      [lazyLoadOnInit]="false"
+      [loading]="showSkeleton()"
+      [paginator]="false"
+      [rowHover]="true"
+      [scrollHeight]="'flex'"
+      [scrollable]="true"
+      [selection]="selectedRecords()"
+      [showCurrentPageReport]="true"
+      [showLoader]="false"
+      [stripedRows]="true"
+      [value]="models()"
+      [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''">
+      <ng-template #caption>
+        <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+        <div class="h-[2px] mb-1">
+          @if (refreshing()) {
+            <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+          }
+        </div>
+        <div class="flex items-center gap-2 justify-between">
+          <div class="p-toolbar-group-start">
+          <h2>{{ 'crm.report.appointment_chart.consult_appointment' | translate }}</h2>
+          </div>
+          <div class="p-toolbar-group-end"></div>
+        </div>
+      </ng-template>
+      <ng-template #header>
+        <tr>
+          <th>{{ 'common.label.month' | translate }}</th>
+          <th>{{ 'common.label.appointment' | translate }}</th>
+          <th>{{ 'crm.report.appointment_chart.h_cancel' | translate }}</th>
+          <th>{{ 'common.label.agreed' | translate }}</th>
+          <th>{{ 'crm.report.appointment_chart.h_no_show' | translate }}</th>
+          <th>{{ 'common.label.disagreed' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-index="rowIndex" let-model>
+        <tr>
+          <td class="font-bold">{{ 'crm.report.appointment_chart.month_label' | translate: { month: model.thang_lh } }}</td>
+          <td>
+            <p-badge value="{{ model.lich_hen }}"></p-badge>
+          </td>
+          <td>
+            <p-badge severity="warn" value="{{ model.lich_huy }}"></p-badge>
+          </td>
+          <td>
+            <p-badge severity="success" value="{{ model.dong_y }}"></p-badge>
+          </td>
+          <td>
+            <p-badge severity="danger" value="{{ model.khong_den }}"></p-badge>
+          </td>
+          <td>
+            <p-badge severity="warn" value="{{ model.khong_dong_y }}"></p-badge>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #loadingbody>
+        @for (num of 6 | toArray; track $index) {
+          <tr class="h-[46px]">
+            @for (col of 6 | toArray; track $index) {
+              <td>
+                <p-skeleton></p-skeleton>
+              </td>
+            }
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6">
+            <app-empty-message></app-empty-message>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div class="col-span-12 md:col-span-6">
+    <div
+      [data]="dataChart()"
+      [xAxisLabels]="xAxisLabels()"
+      appBarStackChart
+      class="w-full h-[400px]"
+    ></div>
+  </div>
+</div>

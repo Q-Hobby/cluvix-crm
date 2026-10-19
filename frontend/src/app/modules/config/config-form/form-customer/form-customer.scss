@@ -1,0 +1,39 @@
+//:host ::ng-deep .p-rowgroup-header {
+//  span {
+//    font-weight: 700;
+//  }
+//
+//  .p-row-toggler {
+//    vertical-align: middle;
+//    margin-right: .25rem;
+//  }
+//}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody tr td {
+  padding: 0.5rem !important;
+}
+
+:host ::ng-deep .p-tabmenu-nav {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
+:host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  border: none;
+}
+
+:host ::ng-deep .p-toolbar {
+  position: sticky;
+  position: -webkit-sticky; // Needed for Safari browsers.
+  z-index: 100; // This prevents elements to be seen through the toolbar.
+  top: 0; // Required for "position: sticky" to take effect.
+}
+
+:host ::ng-deep a {
+  color: unset;
+}
+
+:host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  color: var(--active-menuitem-text-color);
+}

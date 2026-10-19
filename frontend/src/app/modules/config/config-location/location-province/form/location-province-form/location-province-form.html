@@ -1,0 +1,86 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <app-location-country-form-control
+          [class.ng-invalid]="isFieldInvalid(rootField.CountryId!)"
+          [formField]="rootField.CountryId!"
+          class="ng-dirty">
+        </app-location-country-form-control>
+        <label for="CountryId">{{ 'common.label.country' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          [formField]="rootField.name!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.province' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.codeProvince!)"
+          [formField]="rootField.codeProvince!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="codeProvince"
+          pInputText
+          type="text"
+        />
+        <label for="codeProvince">{{ 'config.location.location_province.code_province' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <p-inputnumber
+          [class.ng-invalid]="isFieldInvalid(rootField.TelephoneCode!)"
+          [formField]="$any(rootField.TelephoneCode!)"
+          [min]="0"
+          [pKeyFilter]="blockSpace"
+          class="ng-dirty"
+          id="TelephoneCode"
+        ></p-inputnumber>
+        <label for="TelephoneCode">{{ 'config.location.location_country.telephone_code' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <p-select
+          appendTo="body"
+          [class.ng-invalid]="isFieldInvalid(rootField.Type!)"
+          [formField]="$any(rootField.Type!)"
+          [options]="PROVINCE_TYPE_OPTION"
+          [resetFilterOnHide]="true"
+          [showClear]="true"
+          class="ng-dirty"
+          [emptyFilterMessage]="'common.label.no_results' | translate"
+          id="Type"
+          inputId="Type"
+          optionLabel="label"
+          optionValue="value"
+        ></p-select>
+        <label for="Type">{{ 'common.label.type' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 inline-flex items-center gap-2">
+      <p-toggleswitch
+        [formField]="rootField.status!"
+        id="status"
+        [trueValue]="1" [falseValue]="0"
+      ></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ (rootField.status!().value() === 1 ? 'common.label.visible' : 'common.label.hidden') | translate }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

@@ -1,0 +1,33 @@
+# Allowlist cho verify-symbols.sh — symbol skill nhắc mà KHÔNG phải code dự án.
+# Mỗi dòng BẮT BUỘC có lý do. KHÔNG dùng để làm im lặng drift thật.
+#
+# <symbol> | <lý do>
+
+# (a) hàm dựng sẵn MySQL — doc cú pháp MySQL 9.7, đúng khi không có trong code Go
+ADDDATE | hàm MySQL, mục "cú pháp đổi ở 9.7"
+DAYNAME | nt
+FROM_DAYS | nt
+TIMEDIFF | nt
+ROW_COUNT | hàm MySQL — kiểm số dòng bị sửa trong bước đối chứng (testing-backend/reference/mutation-testing.md)
+SHA1 | hàm MySQL, doc ghi nó KHÔNG còn là built-in ở 9.7
+SHA2 | nt
+VECTOR | data type MySQL 9.7, doc ghi "chưa có nhu cầu dùng"
+CURRENT_ROLE_IN | hàm Enterprise Edition, doc ghi ❌ không dùng được
+RAND | hàm dựng sẵn MySQL, doc bẫy seed `RAND(N)` khi sinh dữ liệu bench
+
+# (b) placeholder trong khuôn mẫu — `Xxx` là chỗ điền tên resource
+BuildXxxQuery | template pattern export list
+ExportXxx | nt
+NewXxxService | template constructor service
+NewXxxServiceWithReader | nt
+
+# (c) bổ sung 2026-10-17 — dọn nợ gate sau khi CRM standalone bỏ domain
+DATEDIFF | hàm MySQL (backend-hard-rules/SKILL.md — alias tính toán SUM/DATEDIFF)
+LEAST | hàm MySQL (perf-list-endpoints.md)
+ENUM | kiểu cột MySQL (working-on-config/SKILL.md — bảng lịch sử)
+JSON_TYPE | hàm MySQL (migration-idempotent.md)
+ToSQL | phương thức GORM `db.ToSQL` — thư viện ngoài (patterns-gotchas-data-integrity.md)
+GetCompanyActiveIDWithQuery | mục "(đã bỏ, D15)" ghi chính việc helper này đã xoá (backend-hard-rules/SKILL.md)
+CallCenterProvider | working-on-config/SKILL.md — section tổng đài đã đánh dấu lịch sử/KHÔNG áp dụng (D15/CRM standalone)
+GetCompanyActiveID | mục "(đã bỏ, D15)" trong handling-auth-and-workspace/SKILL.md ghi chính việc gate/helper này đã xoá (lịch sử, không áp dụng)
+ListObjects | debugging-backend-queries/reference/perf-list-endpoints.md — số đo lịch sử của endpoint customer_detail S3 đã bỏ khi tách CRM standalone (không áp dụng)

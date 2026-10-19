@@ -1,0 +1,58 @@
+<div class="comparison__wrapper">
+  @if (isLoaded <= 2 && !isInitComparison) {
+    <div class="grid">
+      <div class="p-col">
+        <div class="custom-skeleton p-4">
+          <div class="flex mb-3">
+            <p-skeleton shape="circle" size="4rem" class="mr-2"></p-skeleton>
+            <div>
+              <p-skeleton class="mb-2" width="10rem"></p-skeleton>
+              <p-skeleton class="mb-2" width="5rem"></p-skeleton>
+              <p-skeleton height=".5rem"></p-skeleton>
+            </div>
+          </div>
+          <p-skeleton height="150px" width="100%"></p-skeleton>
+          <div class="flex justify-between mt-3">
+            <p-skeleton height="2rem" width="4rem"></p-skeleton>
+            <p-skeleton height="2rem" width="4rem"></p-skeleton>
+          </div>
+        </div>
+      </div>
+      <div class="p-col">
+        <div class="custom-skeleton p-4">
+          <div class="flex mb-3">
+            <p-skeleton shape="circle" size="4rem" class="mr-2"></p-skeleton>
+            <div>
+              <p-skeleton class="mb-2" width="10rem"></p-skeleton>
+              <p-skeleton class="mb-2" width="5rem"></p-skeleton>
+              <p-skeleton height=".5rem"></p-skeleton>
+            </div>
+          </div>
+          <p-skeleton height="150px" width="100%"></p-skeleton>
+          <div class="flex justify-between mt-3">
+            <p-skeleton height="2rem" width="4rem"></p-skeleton>
+            <p-skeleton height="2rem" width="4rem"></p-skeleton>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  <div
+    #comparisonElement
+    [style]="isLoaded === 2 && isInitComparison ? 'visibility: visible' : 'visibility: hidden'"
+    class="comparison__stage"
+  >
+    <div class="comparison__slider">
+      <span class="comparison__slider-left-arrow"></span>
+      <span class="comparison__slider-right-arrow"></span>
+    </div>
+    <div class="comparison__container slide-image">
+      <img (load)="dosomething()" [src]="images[FIRST_INDEX]" alt="123" class="h-0"/>
+      <div class="label-position label-before">Trước</div>
+    </div>
+    <div class="comparison__container fixed-image">
+      <img (load)="dosomething()" [src]="images[SECOND_INDEX]" alt="456" class="h-0"/>
+      <div class="label-position label-after">Sau</div>
+    </div>
+  </div>
+</div>

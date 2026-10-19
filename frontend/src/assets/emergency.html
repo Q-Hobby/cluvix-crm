@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <title>Khôi Phục Xác Thực Khẩn Cấp</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+        content="Cluvix Solutions cung cấp và phát triển phần mềm chuyển đổi số cho doanh nghiệp" />
+  <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" href="/assets/icons/favicon-16x16.png" sizes="16x16">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#FF4D8D">
+  <!-- Một kích thước 180×180 là đủ cho iOS hiện nay -->
+  <link rel="apple-touch-icon" href="/assets/icons/apple-icon-180.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#101828">
+
+  <meta content="yes" name="mobile-web-app-capable" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .description {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        #status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            background: #f8f9fa;
+            color: #666;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .success {
+            color: #28a745;
+            background: #d4edda !important;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da !important;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Khôi Phục Xác Thực Khẩn Cấp</h1>
+        <p class="description">Hệ thống đang xóa toàn bộ dữ liệu xác thực để giải quyết vấn đề đăng nhập của bạn.</p>
+        <div id="status"><span class="spinner"></span>Đang xử lý...</div>
+        <div class="btn-group">
+            <button class="btn btn-danger" onclick="manualReset()">Xóa Thủ Công</button>
+            <button class="btn btn-primary" onclick="goToLogin()">Đến Trang Đăng Nhập</button>
+        </div>
+    </div>
+
+    <script>
+        function clearAllAuth() {
+            try {
+                // Clear LocalStorage (main auth storage)
+                const authKeys = ['access_token', 'refresh_token', 'auth_user', 'config_permission'];
+                authKeys.forEach(key => localStorage.removeItem(key));
+                
+                // Clear all storage
+                localStorage.clear();
+                sessionStorage.clear();
+
+                // Clear IndexedDB
+                if ('indexedDB' in window) {
+                    try {
+                        indexedDB.deleteDatabase('cluvix-cache');
+                        indexedDB.deleteDatabase('cluvix-db');
+                    } catch (e) {
+                        console.warn('IndexedDB clear failed:', e);
+                    }
+                }
+
+                return true;
+            } catch (e) {
+                console.error('Clear auth failed:', e);
+                return false;
+            }
+        }
+
+        function manualReset() {
+            const statusEl = document.getElementById('status');
+            statusEl.innerHTML = '<span class="spinner"></span>Đang xóa dữ liệu...';
+            statusEl.className = '';
+
+            setTimeout(() => {
+                const success = clearAllAuth();
+                statusEl.className = success ? 'success' : 'error';
+                statusEl.innerHTML = success
+                    ? '✅ Đã xóa dữ liệu xác thực thành công!'
+                    : '❌ Không thể xóa dữ liệu xác thực';
+            }, 500);
+        }
+
+        function goToLogin() {
+            clearAllAuth();
+            window.location.href = '/login';
+        }
+
+        // Tự động xóa khi tải trang
+        setTimeout(() => {
+            const success = clearAllAuth();
+            const statusEl = document.getElementById('status');
+            statusEl.className = success ? 'success' : 'error';
+            statusEl.innerHTML = success
+                ? '✅ Đã tự động xóa thành công! Bạn có thể đăng nhập bình thường.'
+                : '❌ Tự động xóa thất bại. Vui lòng thử xóa thủ công.';
+        }, 1000);
+    </script>
+</body>
+</html>

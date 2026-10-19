@@ -1,0 +1,59 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12 lg:col-span-8">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          [formField]="rootField.name!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.customer_source_group' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <app-source-multiselect-form-control [formField]="rootField.sourceId!"/>
+        <label for="sourceId">{{ 'common.label.source' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+      <textarea
+        [class.ng-invalid]="isFieldInvalid(rootField.desc!)"
+        [formField]="rootField.desc!"
+        [rows]="4"
+        pTextarea
+        class="ng-dirty w-full"
+        id="desc"
+      ></textarea>
+        <label for="desc">{{ 'common.label.description' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-6 inline-flex items-center">
+      <p-toggleswitch
+        [formField]="rootField.status!"
+        id="status"
+        [trueValue]="1" [falseValue]="0"
+      ></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ (rootField.status!().value() === 1 ? 'common.label.show' : 'common.label.hide') | translate }}</label>
+    </div>
+    <div class="col-span-12 lg:col-span-6 inline-flex items-center">
+      <p-toggleswitch
+        [trueValue]="1" [falseValue]="0"
+        [formField]="$any(rootField.online!)"
+        id="online"
+        [title]="rootField.online!().value() ? ('common.label.online_source' | translate) : ('config.group_source.other_source' | translate)"
+      ></p-toggleswitch>
+      <label class="ml-2" for="status">{{
+          rootField.online!().value() ? ('common.label.online_source' | translate) : ('config.group_source.other_source' | translate)
+        }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

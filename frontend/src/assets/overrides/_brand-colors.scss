@@ -1,0 +1,141 @@
+// ─── Cluvix Brand Colors ──────────────────────────────────────────────────
+// Single source of truth cho toàn bộ màu sắc Cluvix.
+// Sửa màu → chỉ cần sửa file này.
+//
+// Vai trò:
+//   primary  — Purple #7B3F9E, màu chủ đạo duy nhất (button, nav, link, icon)
+//   accent   — Orange #FF5722, badge/highlight/KPI nổi bật (không dùng cho button/nav)
+//   danger   — Red   #E53935, error/destructive only
+//   gradient — Burgundy #8B1538, gradient partner với primary, không dùng độc lập
+// ──────────────────────────────────────────────────────────────────────────
+
+:root {
+  // Primary — Purple
+  --cluvix-primary:       #7B3F9E;
+  --cluvix-primary-light: #9B5FBE;
+  --cluvix-primary-dark:  #6A3589;
+
+  // Accent — Orange
+  --cluvix-accent:        #FF5722;
+  --cluvix-accent-light:  #FF7043;
+  --cluvix-accent-dark:   #F4511E;
+
+  // Danger — Red
+  --cluvix-danger:        #E53935;
+  --cluvix-danger-light:  #EF5350;
+  --cluvix-danger-dark:   #D32F2F;
+
+  // Gradient partner — Burgundy (không dùng độc lập trong UI)
+  --cluvix-gradient:      #8B1538;
+}
+
+// ─── App-level tokens layer 2 (--cx-*) ────────────────────────────────────
+// Theo design skill/bmad/omnichannel/design/mockup.html (2026-07-19): các màu
+// PrimeNG KHÔNG cấp (--p-*) thì app tự khai 1 chỗ TẠI ĐÂY (global — dùng được
+// cả trong overlay appendTo=body). KHÔNG khai lại per-component.
+//   accent  — CHỈ badge/count (không dùng cho nút/nav)
+//   note-*  — nền/viền ghi chú nội bộ, mix trên token nền theme → dark-safe
+//   ch-*    — màu brand kênh chat (cố định, không đổi theo theme)
+:root {
+  --cx-page: #F6F4F9;
+  --cx-accent: var(--cluvix-accent);
+  --cx-danger: var(--cluvix-danger);
+  --cx-warn: #F59E0B;
+  --cx-success: #10B981;
+  --cx-info: #3B82F6;
+  --cx-note-bg: color-mix(in srgb, var(--cx-warn) 13%, var(--p-content-background));
+  --cx-note-border: color-mix(in srgb, var(--cx-warn) 42%, var(--p-content-background));
+  --cx-ch-zalo: #0068FF;
+  --cx-ch-fb: #1877F2;
+  --cx-ch-tg: #229ED9;
+  --cx-topnav: 42px;
+  // Nền topbar omnichat — gradient brand nhưng ĐÃ HẠ SÁNG (mix ~20% với nền tối trung tính):
+  // bản full-saturation #7B3F9E→#8B1538 trải hết bề ngang màn hình gây chói, hút mắt hơn cả vùng
+  // hội thoại. Giữ đúng cặp màu brand, chỉ giảm độ sáng/độ rực → chữ trắng vẫn tương phản tốt.
+  --cx-topbar-bg: linear-gradient(90deg,
+    color-mix(in srgb, var(--cluvix-primary) 80%, #1A1020),
+    color-mix(in srgb, var(--cluvix-gradient) 80%, #1A1020));
+}
+html.app-dark {
+  --cx-page: #140F1D;
+  // Dark mode: hạ thêm 1 nấc cho khớp nền tối chung (nền sáng nổi bật trên dark càng chói).
+  --cx-topbar-bg: linear-gradient(90deg,
+    color-mix(in srgb, var(--cluvix-primary) 66%, #140F1D),
+    color-mix(in srgb, var(--cluvix-gradient) 66%, #140F1D));
+  --cx-note-bg: color-mix(in srgb, var(--cx-warn) 15%, var(--p-content-background));
+  --cx-note-border: color-mix(in srgb, var(--cx-warn) 36%, var(--p-content-background));
+}
+
+// ─── Omnichat brand-primary scope override ────────────────────────────────
+// App-wide preset primary hiện là INDIGO (app.config.ts definePreset MyPreset)
+// — LỆCH với brand rule "Purple #7B3F9E duy nhất" phía trên. Đổi preset toàn
+// app đổi màu MỌI component PrimeNG khắp ERP (blast-radius lớn, ngoài phạm
+// vi omnichat) → KHÔNG sửa ở đây. Scope hẹp: `OmnichatLayout` toggle class
+// `omnichat-scope` trên `<html>` lúc enter/leave route omnichat — override
+// PHỦ CẢ overlay appendTo="body" (popover/select/dialog) vì html là ancestor
+// của mọi portal. Tắt class khi rời route → app còn lại KHÔNG đổi màu.
+html.omnichat-scope {
+  --p-primary-color: var(--cluvix-primary);
+  --p-primary-hover-color: var(--cluvix-primary-dark);
+  --p-primary-contrast-color: #ffffff;
+  --p-highlight-background: color-mix(in srgb, var(--cluvix-primary) 9%, var(--p-content-background));
+  --p-highlight-color: var(--cluvix-primary);
+  --p-focus-ring-color: color-mix(in srgb, var(--cluvix-primary) 35%, transparent);
+
+  // Neutral nhuốm tím theo mockup (2026-07-19). Preset app là material-compat → slate: viền
+  // slate.300 #cbd5e1 đậm và ngả xanh hơn hẳn #E7E3EE của mockup, hover slate.100 ra xám-xanh.
+  // Scope trong omnichat-scope nên KHÔNG đụng phần còn lại của ERP.
+  --p-content-hover-background: #F5F3F8;
+  --p-content-border-color: #E7E3EE;
+  --p-text-color: #241C31;
+  --p-text-muted-color: #6E6580;
+}
+html.omnichat-scope.app-dark {
+  --p-primary-color: var(--cluvix-primary-light);
+  --p-primary-hover-color: #B98AD4;
+  --p-highlight-background: color-mix(in srgb, var(--cluvix-primary-light) 17%, var(--p-content-background));
+  --p-highlight-color: var(--cluvix-primary-light);
+
+  // Bản dark của bộ neutral trên — BẮT BUỘC khai lại: rule light phía trên là giá trị cứng
+  // (không phải light-dark() như token gốc của theme) nên sẽ dính sang cả dark nếu bỏ trống.
+  --p-content-background: #1C1527;
+  --p-content-hover-background: #281F35;
+  --p-content-border-color: #3A2F4C;
+  --p-text-color: #EFEBF5;
+  --p-text-muted-color: #A79BBB;
+}
+
+// Mockup omnichat thiết kế mốc font-size cố định 14px (không co giãn theo breakpoint như
+// toàn app ở custom.scss) — cô lập bằng chính class omnichat-scope đã stamp trên <html>.
+// Specificity `html.omnichat-scope` > `html` nên thắng mọi rule @media font-size ở custom.scss.
+html.omnichat-scope {
+  font-size: 14px;
+}
+
+// ─── Utility classes (dùng ngoài Tailwind, vd trong PrimeNG override) ─────
+
+.text-brand         { color: var(--cluvix-primary); }
+.text-brand-light   { color: var(--cluvix-primary-light); }
+.text-brand-dark    { color: var(--cluvix-primary-dark); }
+
+.bg-brand           { background-color: var(--cluvix-primary); }
+.bg-brand-light     { background-color: var(--cluvix-primary-light); }
+
+.border-brand       { border-color: var(--cluvix-primary); }
+
+.text-accent        { color: var(--cluvix-accent); }
+.bg-accent          { background-color: var(--cluvix-accent); }
+
+.text-danger        { color: var(--cluvix-danger); }
+.bg-danger          { background-color: var(--cluvix-danger); }
+
+// Brand gradient — dùng cho hero banner / logo section
+.bg-brand-gradient {
+  background: linear-gradient(135deg, var(--cluvix-primary) 0%, var(--cluvix-gradient) 100%);
+}
+
+// Text token dark-safe — thay style="color: var(--p-text-muted-color)"/"...text-color)" inline lặp
+// lại nhiều lần trong 1 template (rule ui.md "font-size lặp lại ≥3 lần → class dùng chung", áp dụng
+// tương tự cho color). KHÔNG hardcode hex — tự flip theo theme qua PrimeNG token.
+.text-muted         { color: var(--p-text-muted-color); }
+.text-base-color    { color: var(--p-text-color); }

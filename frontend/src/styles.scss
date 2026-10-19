@@ -1,0 +1,79 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use './tailwind.css';
+@use './assets/overrides/flags.css';
+@use 'primeicons/primeicons.css';
+@use './assets/overrides/primefix';
+
+@use './assets/layout/layout.scss';
+@use './assets/demo/demo.scss';
+@use './assets/overrides/custom.scss';
+
+@import 'photoswipe/dist/photoswipe.css';
+
+/* Override toàn bộ font mặc định */
+html,
+body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+/* WCAG 2.2 AA (2.4.11 focus-not-obscured): `app-dialog-footer` là sticky bottom-0 nằm cuối vùng
+   scroll của dialog. Tab tới field gần cuối form dài → browser cuộn field vào viewport nhưng footer
+   phủ lên đáy, field focus nằm KHUẤT dưới footer, user gõ mù. scroll-padding chừa sẵn chiều cao
+   footer (~3.5rem + đệm) để field luôn dừng phía trên nó. */
+.p-dialog-content {
+  scroll-padding-bottom: 5rem;
+}
+
+/* Tôn trọng lựa chọn giảm chuyển động của hệ điều hành — áp 1 lần toàn cục thay vì rải từng
+   component (transition CLS grid-template-rows, dialog enter/leave, skeleton shimmer...). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === Ultima mobile topbar overrides === */
+@media (max-width: 991px) {
+  .layout-topbar .layout-topbar-end {
+    display: flex !important;
+  }
+  .layout-topbar {
+    flex-direction: unset !important;
+  }
+  .layout-topbar .layout-topbar-start {
+    width: auto !important;
+  }
+}
+
+
+/* Hàng "tắt/inactive" trong bảng list — dùng ở ~100 file `[class.tr-disabled]="!model.status"` nhưng
+   trước đây KHÔNG có định nghĩa CSS nào (class no-op, hàng tắt trông giống hệt hàng bật). Chỉ dùng
+   `opacity` (không hardcode màu nền/chữ) để tự dark-safe ở cả 2 theme. */
+.tr-disabled {
+  opacity: 0.6;
+}
+
+/* ── Sticker động omnichat ─────────────────────────────────────────────────────────────────────
+   @keyframes PHẢI nằm ở global, KHÔNG nằm trong `styles:[]` của component.
+   Angular scope-hoá keyframes khai trong component: tên bị đổi thành
+   `_ngcontent-ng-cXXXXXXX_omni-sticker-play`. Component nào set animation-name bằng INLINE STYLE
+   BINDING (`[style.animation]`) sẽ dùng tên GỐC ⇒ không khớp tên đã scope ⇒ trình duyệt không tìm
+   thấy keyframes và KHÔNG chạy animation nào — trong khi `getComputedStyle` vẫn báo
+   `animation-play-state: running`, nên nhìn CSS tưởng đúng. Bằng chứng: `getAnimations()` trả về
+   mảng RỖNG (đo 2026-08-21).
+
+   Mốc cuối là PX THEO SPRITE (biến `--omni-sprite-end` do component bơm vào), không phải phần trăm:
+   `background-position: X%` cho offset `(bề rộng phần tử − bề rộng ảnh) × X%` — tính theo PHẦN TỬ,
+   nên `-100%` đẩy sprite ra ngoài khung (ô trống) còn `100%` dừng giữa hai khung. */
+@keyframes omni-sticker-play {
+  from { background-position: 0 0; }
+  to { background-position: var(--omni-sprite-end) 0; }
+}

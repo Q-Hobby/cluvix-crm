@@ -1,0 +1,248 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  appFillHeight
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  class="w-full"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+>
+  <ng-template #caption>
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+        <div class="p-toolbar-group-start">
+            <button
+                    *hasPerm="permission.permissionCreateReminder"
+                    (click)="createReminderCustomer()"
+                    type="button"
+                    pButton
+            ><i class="pi pi-plus"></i><span>{{ isDesktop() ? (('common.action.create' | translate)) : '' }}</span></button>
+        </div>
+        <div class="p-toolbar-group-end">
+            <div class="flex gap-2">
+                <button
+                        (click)="resetPage()"
+                        type="button" [attr.aria-label]="'common.action.refresh' | translate"
+                        [pTooltip]="'common.action.reload_page' | translate"
+                        severity="secondary"
+                        tooltipPosition="top"
+                        [iconOnly]="true"
+                        pButton
+                ><i class="pi pi-refresh"></i></button>
+                <button
+                        (click)="colsTpl.toggle($event)"
+                        [attr.aria-label]="'common.action.view_more' | translate"
+                        [pTooltip]="'common.action.view_more' | translate"
+                        tooltipPosition="top"
+                        type="button"
+                        [iconOnly]="true"
+                        pButton
+                ><i class="pi pi-th-large"></i></button>
+            </div>
+        </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[120px] w-[120px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('code')()) {
+        <th class="min-w-[100px]">{{ 'crm.reminder.code' | translate }}</th>
+      }
+      @if (isColVisible('start_time')()) {
+        <th class="min-w-[150px]">{{ 'common.label.time' | translate }}</th>
+      }
+      @if (isColVisible('note')()) {
+        <th class="min-w-[400px]">{{ 'common.label.content' | translate }}</th>
+      }
+      @if (isColVisible('statusReminder')()) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.status' | translate }}
+        </th>
+      }
+      @if (isColVisible('typeReminder')()) {
+        <th class="min-w-[120px]">{{ 'common.label.type' | translate }}</th>
+      }
+      @if (isColVisible('relatedUser')()) {
+        <th class="min-w-[200px]">{{ 'common.label.related_user' | translate }}</th>
+      }
+      @if (isColVisible('created_by')()) {
+        <th class="min-w-[200px]">{{ 'common.label.user_created' | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[150px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      @if (isColVisible('updated_by')()) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.user_updated' | translate }}
+        </th>
+      }
+      @if (isColVisible('updated_at')()) {
+        <th class="min-w-[150px]">{{ 'common.label.updated_at' | translate }}</th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [class.tr-success]="model.status === REMINDER_STATUS_SELECT.STATUS_DONE" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            @if (model.status !== REMINDER_STATUS_SELECT.STATUS_DONE) {
+              <p-button
+                *hasPerm="permission.permissionUpdateReminder"
+                (click)="updateReminderCustomer(model)" icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+                [pTooltip]="'common.label.update_reminder' | translate"
+                severity="success"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+              <p-button
+                *hasPerm="permission.permissionDeleteReminder"
+                (click)="deleteRecord($event, model.id)"
+                icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                [pTooltip]="'crm.reminder_customer.tooltip_delete_reminder' | translate"
+                severity="danger"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            }
+            @if (model.status !== REMINDER_STATUS_SELECT.STATUS_DONE) {
+              <p-button
+                (click)="markForDone($event, model.id, model.updated_at)" icon="pi pi-check" [ariaLabel]="'common.label.mark_as_done' | translate"
+                [pTooltip]="'common.label.mark_as_done' | translate"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            }
+          </p-buttongroup>
+        </div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('code')()) {
+        <td [appCopyText]="model.code">
+          {{ model.code }}
+        </td>
+      }
+      @if (isColVisible('start_time')()) {
+        <td>
+          {{ model.start_timeFormatted }}
+        </td>
+      }
+      @if (isColVisible('note')()) {
+        <td class="whitespace-pre-wrap">
+          <span [innerHTML]="model.note || '—' | safeHtml"></span>
+        </td>
+      }
+      @if (isColVisible('statusReminder')()) {
+        <td>
+          <p-tag [rounded]="true" [severity]="model.reminderStatus?.severity">{{ model.reminderStatus?.labelKey ? (model.reminderStatus.labelKey | translate) : model.reminderStatus?.label }}</p-tag>
+        </td>
+      }
+      @if (isColVisible('typeReminder')()) {
+        <td>
+          <b>{{ model.reminderType?.labelKey ? (model.reminderType.labelKey | translate) : model.reminderType?.label }}</b>
+        </td>
+      }
+      @if (isColVisible('relatedUser')()) {
+        <td>
+          @if (model.relatedUser) {
+            <app-related-user-avatars
+              [ids]="model.relatedUser"
+              [max]="5"
+              size="large"
+            />
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (isColVisible('created_by')()) {
+        <td>
+          <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                  alt="{{model.createdByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td>
+          {{ model.created_atFormatted }}
+        </td>
+      }
+      @if (isColVisible('updated_by')()) {
+        <td>
+          <p-chip label="{{model.updatedByInfo?.fullname}}" image="{{ model.updatedByInfo?.avatar }}"
+                  alt="{{model.updatedByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('updated_at')()) {
+        <td>
+          {{ model.updated_atFormatted }}
+        </td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

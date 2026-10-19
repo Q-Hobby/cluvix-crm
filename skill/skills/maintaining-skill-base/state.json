@@ -1,0 +1,94 @@
+{
+  "runs": [
+    {
+      "n": 1,
+      "date": "2026-08-17",
+      "mode": "full",
+      "watermark": {
+        "skill": "a5f1b481c68cfd9fca10b9e2288c8395fd8552d4",
+        "frontend": "d9e552177c0aa2dc65a7ab520b59a75932afaaa2",
+        "mobile": "65fa2cef09f1ee2b15c188e382ff8c0e3c8877ca",
+        "erp-cluvix": "5d444b2c9b2609f26d97b89f6bfc9d9c452a55aa"
+      },
+      "counts": {
+        "skills": 29,
+        "lines": 34257
+      }
+    },
+    {
+      "n": 2,
+      "date": "2026-08-17",
+      "mode": "full",
+      "watermark": {
+        "skill": "1791993d0d01ee3d114f9fb0d8118b07f39d8d5d",
+        "frontend": "d9e552177c0aa2dc65a7ab520b59a75932afaaa2",
+        "mobile": "65fa2cef09f1ee2b15c188e382ff8c0e3c8877ca",
+        "erp-cluvix": "5d444b2c9b2609f26d97b89f6bfc9d9c452a55aa"
+      },
+      "counts": {
+        "skills": 29,
+        "lines": 34303
+      }
+    },
+    {
+      "n": 3,
+      "date": "2026-08-17",
+      "mode": "full",
+      "watermark": {
+        "skill": "37b3613c8921c73c9688fd6a891d2459c0d7c1f9",
+        "frontend": "d9e552177c0aa2dc65a7ab520b59a75932afaaa2",
+        "mobile": "50bcdd639d603f47f5a882598136971a346c10c4",
+        "erp-cluvix": "1183877b6ff5816a6f378619ff272ffbcef40c32"
+      },
+      "counts": {
+        "skills": 29,
+        "lines": 34124
+      }
+    },
+    {
+      "n": 4,
+      "date": "2026-08-17",
+      "mode": "full",
+      "watermark": {
+        "skill": "c7bd4dfe893efe061f5959d13c6e1a6a116ab232",
+        "frontend": "d9e552177c0aa2dc65a7ab520b59a75932afaaa2",
+        "mobile": "50bcdd639d603f47f5a882598136971a346c10c4",
+        "erp-cluvix": "1183877b6ff5816a6f378619ff272ffbcef40c32"
+      },
+      "counts": {
+        "skills": 29,
+        "lines": 34127
+      }
+    },
+    {
+      "n": 5,
+      "date": "2026-08-17",
+      "mode": "full",
+      "watermark": {
+        "skill": "29a37d672119aabc6de80372e4802f7029ce3fcb",
+        "frontend": "d9e552177c0aa2dc65a7ab520b59a75932afaaa2",
+        "mobile": "50bcdd639d603f47f5a882598136971a346c10c4",
+        "erp-cluvix": "1183877b6ff5816a6f378619ff272ffbcef40c32"
+      },
+      "counts": {
+        "skills": 29,
+        "lines": 34180
+      }
+    },
+    {
+      "n": 6,
+      "date": "2026-09-07",
+      "mode": "full",
+      "watermark": {
+        "skill": "066836e877f67cf9a59ef27ffc267befe2620508",
+        "frontend": "fae2c1f0c9230a9c5c11948aa81fd5d0e3e4a97f",
+        "mobile": "4c3f27649f35cdce798cef4388e0fcd01815e543",
+        "erp-cluvix": "d4e38047b8ae1ac8e2b969331df9bd6fd01c54f2"
+      },
+      "counts": {
+        "skills": 30,
+        "lines": 38347
+      }
+    }
+  ]
+}

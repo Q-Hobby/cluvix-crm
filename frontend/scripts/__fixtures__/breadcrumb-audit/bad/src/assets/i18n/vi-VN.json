@@ -1,0 +1,4 @@
+{
+  "module": {"crm": "CRM", "zalo": "Zalo"},
+  "x": {"list": "Danh sách", "detail": "Chi tiết", "hr": "Nhân sự"}
+}

@@ -1,0 +1,177 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="false"
+  [rowHover]="true"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="models().length"
+  [value]="models()"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center justify-end">
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <div class="flex items-center gap-2">
+            @if (isDesktop()) {
+              <p-floatlabel variant="on">
+                <p-datepicker
+                  (onClear)="clearStartTime()"
+                  [readonlyInput]="true"
+                  appendTo="body"
+                  dateFormat="dd/mm/yy"
+                  formControlName="_created_at"
+                  id="_created_at"
+                  selectionMode="range"
+                  showIcon="true"
+                >
+                  <ng-template #footer>
+                    <app-date-picker-footer (rangeChange)="onQuickSelect($event)"/>
+                  </ng-template>
+                </p-datepicker>
+                <label for="_created_at">{{ 'common.label.select_date' | translate }}</label>
+              </p-floatlabel>
+            }
+            <p-floatlabel variant="on" class="flex min-w-[180px]">
+              <app-appointment-type-multiselect-form-control
+                formControlName="appointment_type_id">
+              </app-appointment-type-multiselect-form-control>
+              <label for="appointment_type_id">{{ 'common.label.appointment_type' | translate }}</label>
+            </p-floatlabel>
+            <button
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-filter-slash"></i></button>
+            <button
+              (click)="getList()"
+              type="button" [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-refresh"></i></button>
+          </div>
+        </form>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[160px]">{{ 'common.label.branch' | translate }}</th>
+      <th class="min-w-[110px] text-center">{{ 'crm.report.branch_appointment.total_appointment' | translate }}</th>
+      <th
+        class="min-w-[110px] text-center"
+        [pTooltip]="'crm.report.department.tooltip_arrived_per_appointment' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'common.status.arrived' | translate }}
+      </th>
+      <th class="min-w-[110px] text-center">{{ 'crm.report.branch_appointment.cancelled' | translate }}</th>
+      <!-- Kết quả tư vấn -->
+      <th class="min-w-[110px] text-center">{{ 'common.label.agreed' | translate }}</th>
+      <th
+        class="min-w-[110px] text-center"
+        [pTooltip]="'crm.report.department.tooltip_arrived_per_appointment' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'crm.report.department.h_arrived_per_appointment' | translate }}
+      </th>
+      <th
+        class="min-w-[110px] text-center"
+        [pTooltip]="'crm.report.department.tooltip_agreed_per_arrived' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'crm.report.department.h_agreed_per_arrived_short' | translate }}
+      </th>
+      <th
+        class="min-w-[110px] text-center"
+        [pTooltip]="'crm.report.branch_appointment.tooltip_agreed_per_appointment' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'crm.report.branch_appointment.agreed_per_appointment' | translate }}
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr>
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td><span class="font-semibold text-primary">{{ model.branchName }}</span></td>
+      <td class="text-center">{{ model.totalAppointment }}</td>
+      <td class="text-center">
+        <span class="text-sky-700 font-medium">{{ model.arrived }}</span>
+        @if (model.totalAppointment > 0) {
+          <span class="text-xs text-gray-400 ml-1">({{ model.arrivedRate.toFixed(1) }}%)</span>
+        }
+      </td>
+      <td class="text-center text-red-600">{{ model.cancelled }}</td>
+      <td class="text-center text-emerald-700 font-medium">{{ model.agreed }}</td>
+      <td class="text-center">{{ model.arrivedRate.toFixed(2) }}%</td>
+      <td class="text-center">{{ model.agreedPerArrived.toFixed(2) }}%</td>
+      <td class="text-center">{{ model.agreedRate.toFixed(2) }}%</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #footer>
+    <tr class="font-bold">
+      <td colspan="2" class="text-right pr-4">{{ 'common.label.total' | translate }}</td>
+      <td class="text-center">{{ totals().totalAppointment }}</td>
+      <td class="text-center">
+        <span class="text-sky-700">{{ totals().arrived }}</span>
+        @if (totals().totalAppointment > 0) {
+          <span class="text-xs text-gray-400 ml-1">({{ totals().arrivedRate.toFixed(1) }}%)</span>
+        }
+      </td>
+      <td class="text-center text-red-600">{{ totals().cancelled }}</td>
+      <td class="text-center text-emerald-700">{{ totals().agreed }}</td>
+      <td class="text-center">{{ totals().arrivedRate.toFixed(2) }}%</td>
+      <td class="text-center">{{ totals().agreedPerArrived.toFixed(2) }}%</td>
+      <td class="text-center">{{ totals().agreedRate.toFixed(2) }}%</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (num of 10 | toArray; track $index) {
+      <tr class="h-[46px]">
+        @for (_ of 9 | toArray; track $index) {
+          <td><p-skeleton/></td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="9"><app-empty-message/></td>
+    </tr>
+  </ng-template>
+</p-table>

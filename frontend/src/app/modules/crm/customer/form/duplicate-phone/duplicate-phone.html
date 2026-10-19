@@ -1,0 +1,65 @@
+<div class="dialog-container overflow-y-auto">
+  <p-table
+    [showLoader]="false"
+    [style]="{ width: '100%' }"
+    [value]="duplicateModels"
+    dataKey="id"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">#</div>
+        </th>
+        <th class="min-w-[150px]">{{ 'common.label.customer' | translate }}</th>
+        <th class="min-w-[100px]">{{ 'common.label.phone' | translate }}</th>
+        <th class="min-w-[200px]">{{ 'common.label.consultant' | translate }}</th>
+        <th class="min-w-[150px]">{{ 'common.label.user_created' | translate }}</th>
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-index="rowIndex" let-model>
+      <tr>
+        <td>
+          <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+        </td>
+        <td>
+          <app-customer-name
+            [id]="model.id"
+            [customer]="model"
+            [name]="model.customerDisplayName"
+          />
+        </td>
+        <td><app-customer-phone [phone]="model.phone" /></td>
+        <td>
+          @if (model.paymentUserInfo) {
+            <p-chip label="{{model.paymentUserInfo?.fullname}}" image="{{ model.paymentUserInfo?.avatar }}"
+                    alt="{{model.paymentUserInfo?.fullname}}"/>
+          }
+        </td>
+        <td>
+          @if (model.createdByInfo) {
+            <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                    alt="{{model.createdByInfo?.fullname}}"/>
+          }
+        </td>
+        <td>{{ model.created_at * 1000 | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<div class="sticky bottom-0 z-50 bg-white border-t border-gray-200 mt-4 py-3 pr-3 text-right rounded-b-xl gap-4">
+  <button (click)="dialogRef.close(false)" class="mr-2" pButton severity="secondary" type="button">
+    <i class="pi pi-arrow-left"></i>
+    <span>{{ 'common.action.cancel' | translate }}</span>
+  </button>
+  @if (blocking) {
+    <span class="text-orange-600 mr-2">{{ 'crm.customer.phone_duplicate_blocked' | translate }}</span>
+  } @else {
+    <button
+      pButton
+      type="button"
+      (click)="dialogRef.close(true)"
+      [disabled]="isSubmitting"
+    ><i class="pi pi-check"></i><span>{{ 'crm.customer.duplicate_save' | translate }}</span></button>
+  }
+</div>

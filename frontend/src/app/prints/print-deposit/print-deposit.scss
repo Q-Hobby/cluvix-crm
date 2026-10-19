@@ -1,0 +1,169 @@
+@media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    height: auto !important;
+    overflow: hidden !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #printable,
+  #printable * {
+    visibility: visible;
+  }
+
+  .p-datatable {
+    border-collapse: collapse !important;
+  }
+
+  .p-datatable table {
+    border-collapse: collapse !important;
+  }
+
+  .p-datatable tr > th,
+  .p-datatable tr > td {
+    border: 1px solid #000 !important;
+  }
+
+  /* Ngăn trang trắng */
+  .sheet {
+    page-break-after: avoid !important;
+    height: auto !important;
+    max-height: 13.8cm !important;
+  }
+}
+
+.logo img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+@page {
+  size: A5 landscape;
+  margin: 0.5cm !important;
+  orphans: 1;
+  widows: 1;
+}
+
+body {
+  background-color: transparent;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 11px;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.pCalculator {
+  font-size: 10px;
+  color: red;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 21cm; /* A5 landscape width */
+  height: auto; /* Thay đổi từ min-height */
+  max-height: 13.8cm; /* Giảm chiều cao để chắc chắn vừa 1 trang */
+  margin: 0 auto;
+  padding: 0 0.08cm;
+  box-sizing: border-box;
+  page-break-inside: avoid !important;
+  overflow: hidden; /* Ẩn nội dung thừa */
+
+  &_head {
+    border-bottom: 1px solid #cecece;
+    margin-bottom: 0;
+
+    .info {
+      .company {
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  &_body {
+    page-break-inside: avoid !important;
+
+    .invoice {
+      &_id {
+        font-weight: 600;
+      }
+
+      &_title {
+        background-color: transparent;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 14px !important;
+        color: #000000;
+        margin: 0.3rem 0;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      &_info {
+        .services {
+          margin-bottom: 0.5rem;
+
+          &.p-datatable {
+            border-collapse: collapse !important;
+
+            table {
+              border-collapse: collapse !important;
+            }
+
+            tr > th,
+            tr > td {
+              background-color: transparent;
+              font-family: 'Times New Roman', Times, serif;
+              font-size: 10px !important;
+              color: #000000;
+              padding: 0.1rem !important;
+              border: 1px solid #000 !important;
+            }
+          }
+
+          .p-datatable-thead {
+            tr > th {
+              background: transparent;
+            }
+          }
+        }
+      }
+    }
+
+    .customer {
+      &_info {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}
+
+@media screen {
+  body {
+    background: #e0e0e0;
+  }
+  .sheet {
+    width: 100%;
+    max-width: 21cm;
+    min-height: 14.8cm;
+    background: white;
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3);
+    margin: 0 auto;
+    padding: 0.3cm;
+  }
+}
+
+.layout-content-wrapper,
+.layout-content,
+.layout-topbar-end,
+.layout-breadcrumb-container {
+  padding-top: unset !important;
+  margin-top: unset !important;
+}

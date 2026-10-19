@@ -1,0 +1,196 @@
+  <p-table
+    [columns]="cols()"
+    [filterDelay]="300"
+    [lazy]="false"
+    [loading]="loading()"
+    [paginator]="false"
+    [rowHover]="true"
+    [scrollHeight]="'flex'"
+    [scrollable]="true"
+    [showLoader]="false"
+    [stripedRows]="true"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [value]="groupedData"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="min-w-[80px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-clock text-blue-600 leading-none"></i>
+            <span class="leading-none">{{ 'crm.appointment.list.appointment_hour' | translate }}</span>
+          </div>
+        </th>
+        <th class="min-w-[180px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-user text-purple-600 leading-none"></i>
+            <span class="leading-none">{{ 'common.label.customer' | translate }}</span>
+          </div>
+        </th>
+        <th class="min-w-[100px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-calendar text-indigo-600 leading-none"></i>
+            <span class="leading-none">{{ 'common.label.appointment_type' | translate }}</span>
+          </div>
+        </th>
+        <th class="min-w-[120px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-info-circle text-cyan-600 leading-none"></i>
+            <span class="leading-none">{{ 'common.label.status' | translate }}</span>
+          </div>
+        </th>
+        <th class="min-w-[250px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-heart text-pink-600 leading-none"></i>
+            <span class="leading-none">{{ 'common.label.appointment_service' | translate }}</span>
+          </div>
+        </th>
+        <th class="w-[300px] min-w-[200px]">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-file-edit text-teal-600 leading-none"></i>
+            <span class="leading-none">{{ 'common.label.content' | translate }}</span>
+          </div>
+        </th>
+        <th [frozen]="isDesktop()" alignFrozen="right" class="min-w-[140px]" pFrozenColumn>
+          <div class="flex items-center justify-center w-full">#</div>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template #loadingbody>
+      @for (_ of rowsIt(); track $index) {
+        <tr class="h-[46px]">
+          @for (_ of colsIt(); track $index) {
+            <td>
+              <p-skeleton></p-skeleton>
+            </td>
+          }
+        </tr>
+      }
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8">
+          <div class="flex flex-column align-items-center justify-content-center gap-3 p-8">
+            <span class="text-gray-600 text-lg">{{ 'crm.appointment.list.no_appointments' | translate }}</span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template let-group #body>
+      <tr class="bg-blue-50">
+        <td class="p-3" colspan="8">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-building text-blue-600 text-lg"></i>
+            <p-overlaybadge [value]="group.appointments.length" severity="info">
+              <span class="font-semibold text-blue-800 text-lg">{{ group.branch_name }}</span>
+            </p-overlaybadge>
+          </div>
+        </td>
+      </tr>
+      @for (appointment of group.appointments; track appointment.id) {
+        <tr class="hover:bg-gray-50">
+          <td>
+            <span class="font-medium">{{ appointment.appointment_date * 1000 | date:'HH:mm' }}</span>
+          </td>
+          <td>
+            <app-customer-name
+              [id]="appointment.customer_id"
+              [name]="appointment.customer_name"
+            />
+          </td>
+          <td>
+            {{ appointment.appointment_type_name }}
+          </td>
+          <td>
+            <p-tag
+              [style]="{ 'background-color': appointment.statusInfo?.background, 'color': appointment.statusInfo?.color }">
+              {{ appointment.statusInfo?.label }}
+            </p-tag>
+          </td>
+          <td>
+            {{ appointment.service_name || '—' }}
+          </td>
+          <td>
+            <span [innerHTML]="appointment.content || '—' | sanitizeQuill | safeHtml" appWhitespaceControl
+                  class="lightgallery-container prose min-w-[400px] break-words"
+                  pswpLightbox></span>
+          </td>
+          <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+            <div class="cx-row-actions">
+              <p-buttongroup>
+                @if (appointment.status === APPOINTMENT_STATUS_SELECT.APPOINTMENT_STATUS_NOT_CHECKIN) {
+                  <p-button
+      icon="pi pi-times"
+                    (onClick)="cancelAppoint(appointment)" [ariaLabel]="'common.label.cancel_appointment' | translate"
+                    *hasPerm="permission.permissionUpdateAppointment"
+                    [pTooltip]="'common.label.cancel_appointment' | translate"
+                    severity="danger"
+                    size="small"
+                    tooltipPosition="top"
+                    [iconOnly]="true"
+                  
+    ></p-button>
+                }
+                @if (appointment._isCheckinAble) {
+                  <p-button
+      icon="pi pi-map-marker"
+                    (onClick)="customerCheckin(appointment)"
+                    *hasPerm="permission.permissionUpdateAppointment"
+                    [ariaLabel]="'common.label.customer_arrived' | translate"
+                    [pTooltip]="'common.label.customer_arrived' | translate"
+                    size="small"
+                    severity="warn"
+                    tooltipPosition="top"
+                    [iconOnly]="true"
+                  
+    ></p-button>
+                }
+              </p-buttongroup>
+              <p-buttongroup>
+                <ng-container *hasPerm="permission.permissionUpdateAppointment">
+                  <p-button
+      icon="pi pi-pencil"
+                    (onClick)="updateAppointmentDialog(appointment)"
+                    [ariaLabel]="'common.action.edit' | translate"
+                    [pTooltip]="'common.label.update_appointment' | translate"
+                    severity="success"
+                    size="small"
+                    tooltipPosition="top"
+                    [iconOnly]="true"
+                  
+    ></p-button>
+                </ng-container>
+                <ng-container *hasPerm="permission.permissionDeleteAppointment">
+                  <p-button
+      icon="pi pi-trash"
+                    (onClick)="deleteRecord($event, appointment.id)"
+                    [ariaLabel]="'common.action.delete' | translate"
+                    [pTooltip]="'common.label.delete_appointment' | translate"
+                    severity="danger"
+                    size="small"
+                    tooltipPosition="left"
+                    [iconOnly]="true"
+                  
+    ></p-button>
+                </ng-container>
+              </p-buttongroup>
+            </div>
+          </td>
+        </tr>
+      }
+    </ng-template>
+
+    <ng-template #footer>
+      @if (loadingMore) {
+        <tr class="h-[46px]">
+          @for (_ of colsIt(); track $index) {
+            <td>
+              <p-skeleton></p-skeleton>
+            </td>
+          }
+        </tr>
+      }
+    </ng-template>
+  </p-table>

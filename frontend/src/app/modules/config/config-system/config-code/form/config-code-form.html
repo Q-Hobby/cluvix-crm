@@ -1,0 +1,68 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          class="ng-dirty"
+          [formField]="rootField.name!"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.identifier' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.parent_table!)"
+          class="ng-dirty"
+          [formField]="rootField.parent_table!"
+          id="parent_table"
+          pInputText
+          type="text"
+        />
+        <label for="parent_table">{{ 'config.config_code.table_name' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.infix_code!)"
+          [pKeyFilter]="blockSpace"
+          class="ng-dirty"
+          [formField]="rootField.infix_code!"
+          id="infix_code"
+          pInputText
+          type="text"
+        />
+        <label for="infix_code">{{ 'config.config_code.infix' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.serial_length!)"
+          class="ng-dirty"
+          [formField]="rootField.serial_length!"
+          id="serial_length"
+
+          pInputText
+          type="number"
+        />
+        <label for="serial_length">{{ 'config.config_code.serial_length' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4 inline-flex items-center gap-2">
+      <p-toggleswitch [formField]="rootField.include_branch_code!" id="include_branch_code"></p-toggleswitch>
+      <label for="include_branch_code">{{ 'config.config_code.include_branch_code' | translate }}</label>
+    </div>
+    <div class="col-span-12 lg:col-span-4 inline-flex items-center gap-2">
+      <p-toggleswitch [formField]="rootField.monthly_reset!" id="monthly_reset"></p-toggleswitch>
+      <label for="monthly_reset">{{ 'config.config_code.monthly_reset' | translate }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

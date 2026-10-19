@@ -1,0 +1,138 @@
+<div class="grid_tab" (keydown)="onHotkey($event)">
+  <div
+    [style]="{
+      width: '100%',
+      minHeight: 'calc(100vh - ' + tableConfig() + 'px)',
+      maxHeight: 'calc(100vh - ' + tableConfig() + 'px)'
+    }"
+    class="card overflow-auto mt-5 p-4"
+  >
+    <!-- Thanh tìm kiếm: dính trên đầu vùng cuộn để còn thấy ô gõ khi đã cuộn sâu xuống panel. -->
+    <div class="sticky top-0 z-10 -mt-4 pt-4 mb-6 pb-3 bg-[var(--p-content-background)] border-b border-surface">
+      <p-iconfield class="w-full">
+        <p-inputicon class="pi pi-search" />
+        <input
+          #searchInput
+          pInputText
+          type="text"
+          class="w-full"
+          autocomplete="off"
+          [value]="query()"
+          [attr.aria-label]="'config.search.placeholder' | translate"
+          [placeholder]="'config.search.placeholder' | translate"
+          (input)="onQueryInput($any($event.target).value)"
+          (keydown)="onSearchKeydown($event)"
+        />
+        <p-inputicon>
+          @if (isSearching()) {
+            <button
+              type="button"
+              class="pi pi-times cursor-pointer text-muted-color hover:text-color bg-transparent border-0 p-0"
+              [attr.aria-label]="'common.action.clear' | translate"
+              (click)="clearQuery()"
+            ></button>
+          } @else {
+            <span class="hidden md:inline text-xs text-muted-color border border-surface rounded px-1.5 py-0.5">
+              Ctrl K
+            </span>
+          }
+        </p-inputicon>
+      </p-iconfield>
+
+      @if (isSearching()) {
+        <div class="mt-2 text-xs text-muted-color">
+          {{ 'common.search.result_count' | translate: { count: results().length } }}
+          <span class="hidden md:inline">· {{ 'config.search.keyboard_hint' | translate }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Truy cập gần đây: chỉ khi không tìm kiếm, tránh chen ngang danh sách kết quả. -->
+    @if (!isSearching() && recent().length) {
+      <div class="mb-4">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="pi pi-history text-muted-color text-sm"></i>
+          <span class="text-sm font-semibold text-color">{{ 'config.search.recent' | translate }}</span>
+          <button
+            type="button"
+            class="ml-auto text-xs text-muted-color hover:text-color bg-transparent border-0 cursor-pointer p-0"
+            (click)="clearRecent()"
+          >
+            {{ 'common.action.clear' | translate }}
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          @for (entry of recent(); track entry.item.link) {
+            <a
+              [routerLink]="entry.item.link"
+              [queryParams]="entry.item.queryParams"
+              (click)="rememberVisit(entry.item.link)"
+              class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-surface text-sm text-color hover:bg-emphasis transition"
+            >
+              <i [class]="entry.item.icon + ' text-sm ' + (entry.item.iconClass || '')"></i>
+              {{ entry.label }}
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+    @if (isSearching()) {
+      <!-- Chế độ kết quả: bỏ bố cục 3 cột, đổ danh sách phẳng để mắt quét theo MỘT chiều dọc. -->
+      @if (results().length) {
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 mt-1">
+          @for (hit of results(); track hit.item.link; let i = $index) {
+            <a
+              [routerLink]="hit.item.link"
+              [queryParams]="hit.item.queryParams"
+              [class.bg-emphasis]="i === activeIndex()"
+              [class.ring-2]="i === activeIndex()"
+              [class.ring-primary]="i === activeIndex()"
+              (click)="rememberVisit(hit.item.link)"
+              (mouseenter)="activeIndex.set(i)"
+              class="flex items-center gap-3 p-2 rounded-lg border border-surface hover:bg-emphasis transition"
+            >
+              <span class="flex items-center justify-center w-9 h-9 shrink-0 rounded-lg bg-emphasis">
+                <i [class]="hit.item.icon + ' ' + (hit.item.iconClass || '')"></i>
+              </span>
+
+              <span class="min-w-0">
+                <span class="block truncate text-color">
+                  @if (hit.match) {
+                    {{ hit.label.slice(0, hit.match.start)
+                    }}<mark class="bg-transparent text-primary-600 font-semibold p-0">{{
+                      hit.label.slice(hit.match.start, hit.match.end)
+                    }}</mark>{{ hit.label.slice(hit.match.end) }}
+                  } @else {
+                    {{ hit.label }}
+                  }
+                </span>
+                <span class="block truncate text-xs text-muted-color">{{ hit.groupLabel }}</span>
+              </span>
+            </a>
+          }
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center gap-2 py-16 mt-1 text-muted-color">
+          <i class="pi pi-search text-3xl"></i>
+          <span>{{ 'common.label.no_results' | translate }}</span>
+        </div>
+      }
+    } @else {
+      <div class="grid grid-cols-12 gap-6">
+        @for (column of columns(); track $index) {
+          <div class="col-span-12 md:col-span-6 lg:col-span-4">
+            @for (group of column; track group.key) {
+              <app-config-panel
+                [group]="group"
+                [permissionContext]="permissionContext()"
+                (visit)="rememberVisit($event.link)"
+              />
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

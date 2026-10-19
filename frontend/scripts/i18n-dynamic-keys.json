@@ -1,0 +1,9 @@
+{
+  "_doc": "Key i18n do BACKEND gửi xuống động (FE không có literal `'key' | translate` nên i18n:check báo ORPHAN giả). Đợt prune key mồ côi PHẢI bỏ qua danh sách này. Prefix `history.login_history.event_` do FE ghép động (`'history.login_history.event_' + e` ở modules/history/login/login-history.ts). Prefix `dashboard.crm.widgets.` + `dashboard.crm.layout.preset_desc.` do dashboard CRM tuỳ biến ghép động (`dashboard.crm.widgets.${key}.title|desc` ở shell/dashboard-widgets.ts, `preset_desc.${id}` ở shell/preset-chooser.ts). Cập nhật khi BE thêm key động mới. (Notification/cron handler key đã gỡ cùng tính năng chuông thông báo + cron UI.)",
+  "keys": [],
+  "prefixes": [
+    "history.login_history.event_",
+    "dashboard.crm.widgets.",
+    "dashboard.crm.layout.preset_desc."
+  ]
+}

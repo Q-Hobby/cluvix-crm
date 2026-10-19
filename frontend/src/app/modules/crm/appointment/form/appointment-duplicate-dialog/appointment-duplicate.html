@@ -1,0 +1,81 @@
+<p class="mb-1"
+   [innerHTML]="'crm.appointment.duplicate.existing_msg' | translate: {
+     branch: appointment.branchLabel,
+     time: (appointment.appointment_date | date: 'HH:mm dd/MM/yyyy')
+   }"></p>
+<p class="mb-1"
+   [innerHTML]="'crm.appointment.duplicate.creating_msg' | translate: {
+     branch: appointmentCreating.branchLabel,
+     time: (appointmentCreating.appointment_date | date: 'HH:mm dd/MM/yyyy')
+   }"></p>
+
+@if (isDuplicate) {
+  <p class="p-text-danger">
+    {{ 'crm.appointment.duplicate.one_per_day' | translate }}
+  </p>
+}
+
+@if (isCreate || !isDuplicate) {
+  <p class="mb-1">
+    <i aria-hidden="true" class="pi pi-arrow-right mr-2 p-text-primary"></i> {{ 'crm.appointment.duplicate.click_label' | translate }}
+    <button type="button"
+      pButton
+      (click)="dialogRef.close('update')"
+      severity="success"
+    >
+      <i class="pi pi-check"></i>
+      <span>{{ 'common.action.update' | translate }}</span>
+    </button>
+    <span [innerHTML]="'crm.appointment.duplicate.update_to_msg' | translate: {
+      oldTime: (appointment.appointment_date | date: 'HH:mm dd/MM/yyyy'),
+      oldBranch: appointment.branchLabel,
+      newTime: (appointmentCreating.appointment_date | date: 'HH:mm dd/MM/yyyy'),
+      newBranch: appointmentCreating.branchLabel
+    }"></span>
+  </p>
+}
+@if (!isDuplicate) {
+  <p class="mb-1">
+    <i aria-hidden="true" class="pi pi-arrow-right mr-2 p-text-primary"></i> {{ 'crm.appointment.duplicate.click_label' | translate }}
+    <button (click)="dialogRef.close('save')" pButton severity="success" type="button">
+      <i class="pi pi-plus"></i>
+      <span>{{ 'common.action.save' | translate }}</span>
+    </button>
+    <span [innerHTML]="'crm.appointment.duplicate.create_keep_msg' | translate: {
+      newTime: (appointmentCreating.appointment_date | date: 'HH:mm dd/MM/yyyy'),
+      newBranch: appointmentCreating.branch_id ? ', ' + appointmentCreating.branchLabel : '',
+      oldTime: (appointment.appointment_date | date: 'HH:mm dd/MM/yyyy'),
+      oldBranch: appointment.branchLabel
+    }"></span>
+  </p>
+}
+<p class="mb-0">
+  <i aria-hidden="true" class="pi pi-arrow-right mr-2 p-text-primary"></i> {{ 'crm.appointment.duplicate.click_label' | translate }}
+  <button (click)="dialogRef.close(false)" class="mr-1" pButton severity="secondary" type="button">
+    <i class="pi pi-arrow-left"></i>
+    <span>{{ 'common.action.cancel' | translate }}</span>
+  </button>
+  <span class="ml-2">{{ 'crm.appointment.duplicate.back_msg' | translate }}</span>
+</p>
+<div class="sticky bottom-0 z-50 bg-white border-t border-gray-200 mt-4 py-3 pr-3 text-right rounded-b-xl gap-4">
+  <button (click)="dialogRef.close(false)" class="mr-2" pButton severity="secondary" type="button">
+    <i class="pi pi-arrow-left"></i>
+    <span>{{ 'common.action.cancel' | translate }}</span>
+  </button>
+  @if (isCreate || !isDuplicate) {
+    <button type="button"
+      pButton
+      (click)="dialogRef.close('update')"
+      class="mx-2"
+    >
+      <i class="pi pi-check"></i>
+      <span>{{ 'common.action.update' | translate }}</span>
+    </button>
+  }
+  @if (!isDuplicate) {
+    <button (click)="dialogRef.close('save')" pButton severity="success" type="button">
+      <i class="pi pi-plus"></i>
+      <span>{{ 'common.action.save' | translate }}</span>
+    </button>
+  }
+</div>

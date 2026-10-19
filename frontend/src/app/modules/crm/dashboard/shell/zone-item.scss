@@ -1,0 +1,4 @@
+// Khung giữ chỗ khi kéo = bản clone của chính khối ⇒ giấu nội dung (con trực tiếp: thanh chrome + chỗ đặt khối), chỉ còn khung nét đứt.
+:host(.dash-item.cdk-drag-placeholder) > * {
+  visibility: hidden;
+}

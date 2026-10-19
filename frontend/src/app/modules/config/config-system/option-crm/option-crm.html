@@ -1,0 +1,376 @@
+<div class="grid_tab">
+  <div [style]="{ width: '100%', minHeight: 'calc(100vh - ' + tableMenuBar() + 'px)' }" class="card mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+      <!-- Card 1: Cập nhật thanh toán -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-wallet text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.payment_update_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.payment_update_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryOptionUpdate; track category.key) {
+            <label [for]="'paymentUpdate_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_UPDATE_PAYMENT, $any(selectedPaymentUpdate).key)"
+                [(ngModel)]="selectedPaymentUpdate"
+                [inputId]="'paymentUpdate_' + category.key"
+                [value]="category"
+                name="paymentUpdate"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 3: Cập nhật đơn hàng -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-violet-50 to-purple-50 border-b border-violet-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-shopping-cart text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.order_update_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.order_update_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryOptionUpdate; track category.key) {
+            <label [for]="'selectedOrderPlanUpdate_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_UPDATE_ORDER_PLAN, $any(selectedOrderPlanUpdate).key)"
+                [(ngModel)]="selectedOrderPlanUpdate"
+                [inputId]="'selectedOrderPlanUpdate_' + category.key"
+                [value]="category"
+                name="selectedOrderPlanUpdate"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 4: Xóa ghi chú -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-trash text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.note_delete_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.note_delete_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryOptionDelete; track category.key) {
+            <label [for]="'selectedNoteDelete_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_DELETE_NOTE, $any(selectedNoteDelete).key)"
+                [(ngModel)]="selectedNoteDelete"
+                [inputId]="'selectedNoteDelete_' + category.key"
+                [value]="category"
+                name="selectedNoteDelete"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 5: Lead của telesale -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-pink-50 to-rose-50 border-b border-pink-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-users text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.lead_telesale_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.lead_telesale_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryOptionLeadView; track category.key) {
+            <label [for]="'selectedLeadOfTelesale_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_VIEW_LEAD_OF_TELE, $any(selectedLeadOfTelesale).key)"
+                [(ngModel)]="selectedLeadOfTelesale"
+                [inputId]="'selectedLeadOfTelesale_' + category.key"
+                [value]="category"
+                name="selectedLeadOfTelesale"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 6: Cập nhật chéo khách hàng -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-sky-50 to-cyan-50 border-b border-sky-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-user-edit text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.cross_update_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.cross_update_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryUpdateCustomerForTelesale; track category.key) {
+            <label [for]="'selectedUpdateCustomerForTelesale_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_UPDATE_CUSTOMER_FOR_TELESALE, $any(selectedUpdateCustomerForTelesale).key)"
+                [(ngModel)]="selectedUpdateCustomerForTelesale"
+                [inputId]="'selectedUpdateCustomerForTelesale_' + category.key"
+                [value]="category"
+                name="selectedUpdateCustomerForTelesale"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 7: Ẩn số điện thoại -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-red-50 to-pink-50 border-b border-red-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-eye-slash text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.hide_phone_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.hide_phone_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryHidePhoneNumber; track category.key) {
+            <label [for]="'selectedHidePhoneNumber_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_HIDE_NUMBER_PHONE, $any(selectedHidePhoneNumber).key)"
+                [(ngModel)]="selectedHidePhoneNumber"
+                [inputId]="'selectedHidePhoneNumber_' + category.key"
+                [value]="category"
+                name="selectedHidePhoneNumber"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card 8: Chọn ngày trước đó — BE gác cấu hình bằng manageConfig (quyền configDevelop đã bỏ 2026-10-19) -->
+      <div *hasPerm="permissionManageConfig"
+           class="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-yellow-50 to-amber-50 border-b border-amber-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-calendar text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.select_date_title' | translate }}</h3>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <span class="text-[0.7692rem] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded tracking-wide">DEV</span>
+            <i class="pi pi-question-circle text-gray-400 text-sm cursor-help"
+               [pTooltip]="'config.option_crm.select_date_tooltip' | translate"
+               tooltipPosition="top"></i>
+          </div>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryTimeBefore; track category.key) {
+            <label [for]="'selectedTimeBefore_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_TIME_BEFORE, $any(selectedTimeBefore).key)"
+                [(ngModel)]="selectedTimeBefore"
+                [inputId]="'selectedTimeBefore_' + category.key"
+                [value]="category"
+                name="selectedTimeBefore"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card: Cho phép chọn ngày hôm qua -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-b border-teal-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-calendar-minus text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.allow_previous_day_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.allow_previous_day_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryAllowPreviousDay; track category.key) {
+            <label [for]="'selectedAllowPreviousDay_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_ALLOW_PREVIOUS_DAY, $any(selectedAllowPreviousDay).key)"
+                [(ngModel)]="selectedAllowPreviousDay"
+                [inputId]="'selectedAllowPreviousDay_' + category.key"
+                [value]="category"
+                name="selectedAllowPreviousDay"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+
+      <!-- Card: Tìm kiếm & xem chéo dữ liệu giữa các cơ sở -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-lime-50 to-green-50 border-b border-lime-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-lime-500 to-green-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-sitemap text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.cross_search_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.cross_search_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryCrossBranch; track category.key) {
+            <label [for]="'selectedCrossBranch_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_CUSTOMER_CROSS_BRANCH, $any(selectedCrossBranch).key)"
+                [(ngModel)]="selectedCrossBranch"
+                [inputId]="'selectedCrossBranch_' + category.key"
+                [value]="category"
+                name="selectedCrossBranch"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card: Hiển thị số điện thoại khi export -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-orange-50 to-red-50 border-b border-orange-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-file-export text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.export_phone_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.export_phone_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryExportPhone; track category.key) {
+            <label [for]="'selectedExportPhone_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_EXPORT_PHONE, $any(selectedExportPhone).key)"
+                [(ngModel)]="selectedExportPhone"
+                [inputId]="'selectedExportPhone_' + category.key"
+                [value]="category"
+                name="selectedExportPhone"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card: Bỏ qua kiểm tra thanh toán khi điều trị -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-red-50 to-rose-50 border-b border-red-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-lock-open text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.skip_payment_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.skip_payment_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categorySkipPaymentCheck; track category.key) {
+            <label [for]="'selectedSkipPaymentCheck_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_SKIP_PAYMENT_CHECK, $any(selectedSkipPaymentCheck).key)"
+                [(ngModel)]="selectedSkipPaymentCheck"
+                [inputId]="'selectedSkipPaymentCheck_' + category.key"
+                [value]="category"
+                name="selectedSkipPaymentCheck"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card: Tính tiền điều trị theo tổng gói -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-calculator text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.payment_by_total_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.payment_by_total_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryPaymentByTotal; track category.key) {
+            <label [for]="'selectedPaymentByTotal_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_PAYMENT_BY_TOTAL, $any(selectedPaymentByTotal).key)"
+                [(ngModel)]="selectedPaymentByTotal"
+                [inputId]="'selectedPaymentByTotal_' + category.key"
+                [value]="category"
+                name="selectedPaymentByTotal"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <!-- Card: Điều trị dịch vụ đã mua ở chi nhánh khác -->
+      <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <div class="px-5 py-4 bg-gradient-to-r from-cyan-50 to-sky-50 border-b border-cyan-100 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-sky-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-sitemap text-white text-xs"></i>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-800 flex-1 leading-snug">{{ 'config.option_crm.cross_branch_treatment_title' | translate }}</h3>
+          <i class="pi pi-question-circle text-gray-400 text-sm cursor-help flex-shrink-0"
+             [pTooltip]="'config.option_crm.cross_branch_treatment_tooltip' | translate"
+             tooltipPosition="top"></i>
+        </div>
+        <div class="p-4 space-y-1.5">
+          @for (category of categoryCrossBranchTreatment; track category.key) {
+            <label [for]="'selectedCrossBranchTreatment_' + category.key"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+              <p-radiobutton
+                (onClick)="optionUpdate(CONFIG_OPTION_CRM_SELECT.OPTION_CROSS_BRANCH_TREATMENT, $any(selectedCrossBranchTreatment).key)"
+                [(ngModel)]="selectedCrossBranchTreatment"
+                [inputId]="'selectedCrossBranchTreatment_' + category.key"
+                [value]="category"
+                name="selectedCrossBranchTreatment"
+              ></p-radiobutton>
+              <span class="text-sm text-gray-700 select-none">{{ category.nameKey | translate }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

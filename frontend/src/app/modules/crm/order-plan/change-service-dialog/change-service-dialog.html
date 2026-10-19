@@ -1,0 +1,39 @@
+@if (rfModel) {
+  <form [formGroup]="rfModel" novalidate>
+    <div class="flex flex-col gap-4 pt-2">
+
+      @if (serviceOptions().length === 0) {
+        <div class="text-sm text-gray-500">
+          {{ 'crm.order_plan.change_service.no_options' | translate }}
+        </div>
+      } @else {
+        <p-floatlabel variant="on">
+          <p-select
+            formControlName="new_service_id"
+            id="new_service_id"
+            [options]="serviceOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            appendTo="body"
+            class="w-full ng-dirty"
+          ></p-select>
+          <label for="new_service_id">{{ 'crm.order_plan.change_service.new_service_label' | translate }}</label>
+        </p-floatlabel>
+      }
+
+      <p-floatlabel variant="on">
+        <textarea pTextarea rows="3" class="w-full" formControlName="reason"></textarea>
+        <label>{{ 'crm.order_plan.change_service.reason_label' | translate }}</label>
+      </p-floatlabel>
+
+    </div>
+
+    <app-dialog-footer
+      [isSubmitting]="isSubmitting()"
+      [showSave]="serviceOptions().length > 0"
+      (cancelForm)="closeForm()"
+      (saveForm)="onSubmit()"
+    />
+  </form>
+}

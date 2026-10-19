@@ -1,0 +1,31 @@
+.tb-ic {
+  width: var(--tb-ic-size, var(--tb-btn-size, 2.5rem));
+  height: var(--tb-ic-size, var(--tb-btn-size, 2.5rem));
+  user-select: none;
+  border-radius: var(--tb-btn-radius, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--tb-btn-color, var(--topbar-item-text-color, #fff));
+  /* --tb-btn-*: chỉ theme topbar cluvix khai (ô vuông bo góc kiểu icon menu trái); omnichat không
+     khai ⇒ fallback = kiểu cũ (tròn, không nền/viền). */
+  background-color: var(--tb-btn-bg, transparent);
+  border: 1px solid var(--tb-btn-border, transparent);
+  transition:
+    background-color var(--transition-duration),
+    border-color var(--transition-duration);
+}
+.tb-ic i {
+  font-size: var(--tb-btn-icon-size, 1.25rem);
+}
+.tb-ic:hover {
+  background-color: var(--tb-btn-hover-bg, var(--topbar-item-hover-bg, rgba(255, 255, 255, 0.14)));
+  border-color: var(--tb-btn-hover-border, transparent);
+}
+/* Dialog đã appendTo="body" nên thẻ này rỗng, NHƯNG vẫn là flex item của host → ăn nguyên 1
+   nhịp gap sau nút "tạo KH", làm 3 nút trên topbar trông không cách đều. display:none để nó
+   ra khỏi layout (không ảnh hưởng dialog vì DOM thật nằm ở body). */
+app-utilities-global-search {
+  display: none;
+}

@@ -1,0 +1,92 @@
+/* Topbar cao 4rem (64px), cột logo 17rem (272px): cố định cao 40px (chừa 12px trên/dưới),
+   rộng theo tỉ lệ ảnh (355:84 ⇒ ~169px). KHÔNG để height:auto — ảnh sẽ hiện nguyên 84px và tràn topbar. */
+.logo-custom {
+  display: block;
+  height: 40px;
+  width: auto;
+  max-width: 100%;
+}
+
+/* Nền topbar đổi theo theme ⇒ KHÔNG dùng token surface (text-muted-color chìm hẳn trên nền
+   màu). Dùng cặp màu nhấn --topbar-menu-button-* mà MỌI theme đã chọn để tương phản với nền
+   topbar (vàng trên xanh/tím, primary trên topbar trắng) ⇒ nổi bật ở mọi theme. */
+.topbar-docs-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  // Khoảng cách trái đặt ở khung `.layout-topbar-actions-start` (ml-3) — để nút đầu tiên
+  // (Hướng dẫn hoặc Cài ứng dụng khi Hướng dẫn ẩn) luôn cách mép như nhau.
+  padding: 0 1.125rem 0 0.875rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--topbar-menu-button-text-color);
+  background-color: var(--topbar-menu-button-bg);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  transition:
+    background-color var(--transition-duration),
+    transform var(--transition-duration),
+    box-shadow var(--transition-duration);
+}
+.topbar-docs-link:hover {
+  background-color: var(--topbar-menu-button-hover-bg);
+  transform: translateY(-1px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.topbar-docs-link:active {
+  transform: translateY(0);
+}
+.topbar-docs-link:focus-visible {
+  outline: 2px solid var(--topbar-item-text-color);
+  outline-offset: 2px;
+}
+.topbar-docs-link i {
+  font-size: 1.05rem;
+}
+.topbar-docs-link .topbar-docs-link-ext {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+/* Nút viền cùng màu nhấn: thấy rõ nhưng đứng sau nút Hướng dẫn (đặc) về thứ bậc. */
+.topbar-install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.25rem;
+  padding: 0 1.125rem 0 0.875rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--topbar-menu-button-bg);
+  background-color: transparent;
+  border: 1.5px solid var(--topbar-menu-button-bg);
+  transition:
+    background-color var(--transition-duration),
+    color var(--transition-duration);
+}
+.topbar-install-btn:hover {
+  color: var(--topbar-menu-button-text-color);
+  background-color: var(--topbar-menu-button-bg);
+}
+.topbar-install-btn:focus-visible {
+  outline: 2px solid var(--topbar-item-text-color);
+  outline-offset: 2px;
+}
+.topbar-install-btn i {
+  font-size: 1rem;
+}
+@media (max-width: 991px) {
+  .topbar-docs-link,
+  .topbar-install-btn {
+    display: none;
+  }
+}

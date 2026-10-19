@@ -1,0 +1,84 @@
+<p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid">
+  <div class="col-span-12 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [autofocus]="true"
+        [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+        class="ng-dirty"
+        [formField]="rootField.name!"
+        id="branch-step-name"
+        pInputText
+        type="text"
+      />
+      <label for="branch-step-name" [class.text-red-500]="isFieldInvalid(rootField.name!)">{{ 'config.branch.branch_name' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.name!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+  <div class="col-span-12 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [class.ng-invalid]="isFieldInvalid(rootField.code!)"
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.code!"
+        id="branch-step-code"
+        pInputText
+        type="text"
+      />
+      <label for="branch-step-code" [class.text-red-500]="isFieldInvalid(rootField.code!)">{{ 'config.branch.branch_code' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.code!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+
+  <div class="col-span-12 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.hotline!"
+        id="branch-step-hotline"
+        pInputText
+        type="text"
+      />
+      <label for="branch-step-hotline">{{ 'config.company.hotline' | translate }}</label>
+    </p-floatlabel>
+  </div>
+  <div class="col-span-12 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [class.ng-invalid]="isFieldInvalid(rootField.email!)"
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.email!"
+        id="branch-step-email"
+        pInputText
+        type="text"
+      />
+      <label for="branch-step-email">{{ 'common.label.email' | translate }}</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.email!)) {
+      <small class="text-red-500">{{ 'common.validation.email' | translate }}</small>
+    }
+  </div>
+
+  <div class="col-span-12">
+    <p-floatlabel variant="on">
+      <textarea
+        class="w-full"
+        [class.ng-invalid]="isFieldInvalid(rootField.address!)"
+        [rows]="2"
+        pTextarea
+        [formField]="$any(rootField.address!)"
+        id="branch-step-address"
+      ></textarea>
+      <label for="branch-step-address" [class.text-red-500]="isFieldInvalid(rootField.address!)">{{ 'common.label.address' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.address!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+</p-fluid>

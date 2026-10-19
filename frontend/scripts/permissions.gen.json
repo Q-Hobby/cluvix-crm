@@ -1,0 +1,186 @@
+[
+  {
+    "name": "createAppointment",
+    "description": "Lịch hẹn — Tạo mới"
+  },
+  {
+    "name": "createCustomer",
+    "description": "Khách hàng — Tạo mới"
+  },
+  {
+    "name": "createImage",
+    "description": "Quản lý hình ảnh khách hàng — Tạo mới"
+  },
+  {
+    "name": "createNote",
+    "description": "Ghi chú — Tạo mới"
+  },
+  {
+    "name": "createPayment",
+    "description": "Thanh toán — Tạo mới"
+  },
+  {
+    "name": "createPlanOrder",
+    "description": "Đơn hàng - Dịch vụ — Tạo mới"
+  },
+  {
+    "name": "createReminder",
+    "description": "Nhắc nhở — Tạo mới"
+  },
+  {
+    "name": "createRole",
+    "description": "Vai trò — Tạo mới"
+  },
+  {
+    "name": "createUser",
+    "description": "Nhân viên — Tạo mới"
+  },
+  {
+    "name": "deleteAppointment",
+    "description": "Lịch hẹn — Xóa"
+  },
+  {
+    "name": "deleteCustomer",
+    "description": "Khách hàng — Xóa"
+  },
+  {
+    "name": "deleteNote",
+    "description": "Ghi chú — Xóa"
+  },
+  {
+    "name": "deletePayment",
+    "description": "Thanh toán — Xóa"
+  },
+  {
+    "name": "deletePlanOrder",
+    "description": "Đơn hàng - Dịch vụ — Xóa"
+  },
+  {
+    "name": "deleteReminder",
+    "description": "Nhắc nhở — Xóa"
+  },
+  {
+    "name": "deleteRole",
+    "description": "Vai trò — Xóa"
+  },
+  {
+    "name": "deleteUser",
+    "description": "Nhân viên — Xóa"
+  },
+  {
+    "name": "extAppointment",
+    "description": "Lịch hẹn — Mở rộng"
+  },
+  {
+    "name": "extCustomer",
+    "description": "Khách hàng — Mở rộng"
+  },
+  {
+    "name": "extDeposit",
+    "description": "Đặt cọc — Mở rộng"
+  },
+  {
+    "name": "extPayment",
+    "description": "Thanh toán — Mở rộng"
+  },
+  {
+    "name": "extRefundDeposit",
+    "description": "Hoàn cọc — Mở rộng"
+  },
+  {
+    "name": "extRefundService",
+    "description": "Hoàn dịch vụ — Mở rộng"
+  },
+  {
+    "name": "extUser",
+    "description": "Nhân viên — Mở rộng"
+  },
+  {
+    "name": "lockServiceUsed",
+    "description": "Khoá dịch vụ đã dùng — Danh sách"
+  },
+  {
+    "name": "manageConfig",
+    "description": "Cấu hình — Quản lý"
+  },
+  {
+    "name": "manageCrmReport",
+    "description": "Báo cáo CRM — Quản lý"
+  },
+  {
+    "name": "searchCustomerGlobal",
+    "description": "Tìm kiếm khách hàng Global — Danh sách"
+  },
+  {
+    "name": "updateAppointment",
+    "description": "Lịch hẹn — Cập nhật"
+  },
+  {
+    "name": "updateCustomer",
+    "description": "Khách hàng — Cập nhật"
+  },
+  {
+    "name": "updateNote",
+    "description": "Ghi chú — Cập nhật"
+  },
+  {
+    "name": "updatePayment",
+    "description": "Thanh toán — Cập nhật"
+  },
+  {
+    "name": "updatePlanOrder",
+    "description": "Đơn hàng - Dịch vụ — Cập nhật"
+  },
+  {
+    "name": "updateReminder",
+    "description": "Nhắc nhở — Cập nhật"
+  },
+  {
+    "name": "updateRole",
+    "description": "Vai trò — Cập nhật"
+  },
+  {
+    "name": "updateUser",
+    "description": "Nhân viên — Cập nhật"
+  },
+  {
+    "name": "viewAppointment",
+    "description": "Lịch hẹn — Danh sách"
+  },
+  {
+    "name": "viewCustomer",
+    "description": "Khách hàng — Danh sách"
+  },
+  {
+    "name": "viewHistory",
+    "description": "Lịch sử — Danh sách"
+  },
+  {
+    "name": "viewNote",
+    "description": "Ghi chú — Danh sách"
+  },
+  {
+    "name": "viewPayment",
+    "description": "Thanh toán — Danh sách"
+  },
+  {
+    "name": "viewPlanOrder",
+    "description": "Đơn hàng - Dịch vụ — Danh sách"
+  },
+  {
+    "name": "viewReminder",
+    "description": "Nhắc nhở — Danh sách"
+  },
+  {
+    "name": "viewRole",
+    "description": "Vai trò — Danh sách"
+  },
+  {
+    "name": "viewServiceUsed",
+    "description": "Dịch vụ đã dùng — Danh sách"
+  },
+  {
+    "name": "viewUser",
+    "description": "Nhân viên — Danh sách"
+  }
+]

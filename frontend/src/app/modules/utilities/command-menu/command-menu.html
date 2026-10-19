@@ -1,0 +1,17 @@
+<p-dialog
+  (onHide)="onHide()"
+  (visibleChange)="commandMenuService.visible.set($event)"
+  [closable]="false"
+  [closeOnEscape]="true"
+  [dismissableMask]="true"
+  [modal]="true"
+  [style]="isDesktop() ? { width: '40vw' } : { width: '100%' }"
+  [visible]="commandMenuService.visible()"
+>
+  <p-commandmenu
+    [model]="commands()"
+    [placeholder]="'utilities.command_menu.placeholder' | translate"
+    [emptyMessage]="'common.label.no_results' | translate"
+    [ariaLabel]="'utilities.command_menu.aria_label' | translate"
+  />
+</p-dialog>

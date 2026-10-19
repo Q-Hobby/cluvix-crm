@@ -1,0 +1,121 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{
+    width: '100%',
+    minHeight: 'calc(100vh - ' + plus + 'px)',
+    maxHeight: 'calc(100vh - ' + plus + 'px)',
+  }"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[180px]">
+        {{ 'common.label.customer' | translate }}
+      </th>
+      <th class="min-w-[100px]">
+        {{ 'common.label.phone' | translate }}
+      </th>
+      <th class="min-w-[100px]">{{ 'common.label.execution_date' | translate }}</th>
+      <th class="min-w-[80px]">{{ 'crm.reminder_list.actions' | translate }}</th>
+      <th class="min-w-[300px]">{{ 'common.label.reminder_content' | translate }}</th>
+      <th class="min-w-[180px]">{{ 'common.label.related_user' | translate }}</th>
+      <th alignFrozen="right" class="min-w-[40px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>
+        <app-customer-name
+          [id]="model.customer?.id"
+            [customer]="model.customer"
+          [name]="model.customerDisplayName"
+        />
+      </td>
+      <td>
+        <app-customer-phone [phone]="model.customer?.phone" />
+      </td>
+      <td>
+        {{ model.start_timeFormatted }}
+      </td>
+      <td>
+        <b>{{ model.reminderType?.labelKey ? (model.reminderType.labelKey | translate) : model.reminderType?.label }}</b>
+      </td>
+      <td class="whitespace-pre-wrap">
+        <span [innerHTML]="model.note || '—' | safeHtml"></span>
+      </td>
+      <td>
+        @if (model.relatedUser) {
+          <app-related-user-avatars
+            [ids]="model.relatedUser"
+            [max]="5"
+            size="large"
+          />
+        } @else {
+          —
+        }
+      </td>
+      <td alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          @if (model.status !== REMINDER_STATUS_SELECT.STATUS_DONE) {
+            <button
+              (click)="markForDone($event, model.id)" type="button" [attr.aria-label]="'common.label.mark_as_done' | translate"
+              [pTooltip]="'common.label.mark_as_done' | translate"
+              severity="success"
+              size="small"
+              [iconOnly]="true"
+              pButton
+            ><i class="pi pi-check"></i></button>
+          }
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="12">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

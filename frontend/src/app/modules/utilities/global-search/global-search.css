@@ -1,0 +1,14 @@
+.item_line_search {
+  border: solid #e9ecef;
+  border-width: 0 0 1px 0;
+}
+
+:host ::ng-deep .p-dataview .p-dataview-content {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .p-dialog-header {
+  padding: unset !important;
+}
+
+/*# sourceMappingURL=global-search.css.map */

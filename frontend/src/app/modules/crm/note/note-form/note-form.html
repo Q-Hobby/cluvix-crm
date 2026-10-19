@@ -1,0 +1,42 @@
+<form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+    <div class="p-fluid">
+      <div class="mb-0">
+        <p-editor #myEditor (onInit)="onEditorInit($event)" [style]="{ height: '100px' }" [formField]="$any(rootField.note!)"
+                  [formats]="formats">
+          <ng-template #header>
+            <span class="ql-formats">
+              <select class="ql-header">
+                <option selected></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-bold"></button>
+              <button type="button" class="ql-italic"></button>
+              <button type="button" class="ql-underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button type="button" class="ql-link"></button>
+              <button type="button" class="ql-image"></button>
+            </span>
+          </ng-template>
+        </p-editor>
+        <div class="align-end justify-between pt-2 flex gap-4">
+          <ng-content></ng-content>
+          <div class="flex items-center gap-2 ml-auto">
+            <button
+              [disabled]="!rootField.note!().value()"
+              pButton
+              severity="success"
+              [pTooltip]="'crm.note_form.add_tooltip' | translate"
+              tooltipPosition="top"
+              type="submit">
+              <i class="pi pi-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>

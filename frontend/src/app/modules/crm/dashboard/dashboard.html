@@ -1,0 +1,141 @@
+@if (layout.editing()) {
+  <!-- Thanh chế độ sửa: dính đầu trang, thay thanh lọc (bộ lọc vẫn giữ trong store — khối không tải lại). -->
+  <div class="dash-sticky sticky z-50 -mx-1 px-1 py-2 bg-[var(--p-content-background)] border-b border-[var(--p-content-border-color)]"
+       role="region" [attr.aria-label]="'dashboard.crm.layout.editing_title' | translate">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--p-text-color)]">
+        <i class="pi pi-pencil text-[var(--p-primary-color)]" aria-hidden="true"></i>{{ 'dashboard.crm.layout.editing_title' | translate }}
+      </span>
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <p-button [text]="true" size="small" icon="pi pi-plus" [label]="'dashboard.crm.layout.add_widget' | translate"
+                  [disabled]="layout.saving()" (onClick)="openGallery()" />
+        <!-- Mẫu bố cục đủ khối (user được thấy) theo vai trò ⇒ vào bản nháp (Huỷ để quay lại). -->
+        <p-button [text]="true" size="small" icon="pi pi-th-large" iconPos="left" [label]="'dashboard.crm.layout.preset_menu' | translate"
+                  aria-haspopup="menu" [disabled]="layout.saving()" (onClick)="presetMenuRef.toggle($event)" />
+        <p-menu #presetMenuRef class="absolute" [model]="presetItems()" [popup]="true" appendTo="body" />
+        <p-button [text]="true" size="small" severity="secondary" icon="pi pi-refresh" [label]="'dashboard.crm.layout.reset' | translate"
+                  [disabled]="layout.saving()" (onClick)="reset()" />
+        @if (canManageConfig()) {
+          @if (layout.hasBrandDefault()) {
+            <!-- PRD FR7: xoá mặc định thương hiệu ⇒ ai chưa có bố cục riêng về mặc định hệ thống. -->
+            <p-button [text]="true" size="small" severity="danger" icon="pi pi-trash" [label]="'dashboard.crm.layout.delete_brand_default' | translate"
+                      [disabled]="layout.saving()" (onClick)="deleteBrandDefault()" />
+          }
+          <p-button [outlined]="true" size="small" severity="secondary" icon="pi pi-building" [label]="'dashboard.crm.layout.save_brand_default' | translate"
+                    [disabled]="layout.saving()" (onClick)="saveBrandDefault()" />
+        }
+        <p-button [text]="true" size="small" severity="secondary" [label]="'common.action.cancel' | translate"
+                  [disabled]="layout.saving()" (onClick)="cancelEdit()" />
+        <p-button size="small" icon="pi pi-check" [label]="'common.action.save' | translate"
+                  [disabled]="!layout.dirty() || layout.saving()" [loading]="layout.saving()" (onClick)="save()" />
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-dashboard-filter-bar>
+    <!-- Không có quyền lưu bố cục (BE /crm-dashboard/layout đòi quyền module CRM) ⇒ bố cục chỉ đọc, ẩn mọi nút tuỳ chỉnh. -->
+    @if (layout.canPersist) {
+    <div dashboardActions class="relative flex items-center gap-2">
+      <!-- 3 nút chỉ icon, cùng kiểu; tên nút qua tooltip bên trái (mép phải màn hình) + ariaLabel cho trình đọc màn hình. -->
+      <p-button [outlined]="true" size="small" severity="secondary" icon="pi pi-plus"
+                [pTooltip]="'dashboard.crm.layout.add_widget' | translate" tooltipPosition="left"
+                [ariaLabel]="'dashboard.crm.layout.add_widget' | translate"
+                [disabled]="!layout.layout() || layout.saving()" (onClick)="openGallery()" />
+      <!-- Đổi mẫu ngay khi xem ⇒ lưu luôn làm bố cục riêng (đã có bản tự sắp thì hỏi trước). -->
+      <p-button [outlined]="true" size="small" severity="secondary" icon="pi pi-th-large" aria-haspopup="menu"
+                [pTooltip]="'dashboard.crm.layout.preset_menu' | translate" tooltipPosition="left"
+                [ariaLabel]="'dashboard.crm.layout.preset_menu' | translate"
+                [disabled]="!layout.layout() || layout.saving()" (onClick)="viewPresetMenuRef.toggle($event)" />
+      <!-- absolute: host p-menu (popup gắn body) không chiếm 1 ô gap trong hàng nút. -->
+      <p-menu #viewPresetMenuRef class="absolute" [model]="presetItems()" [popup]="true" appendTo="body" />
+      <p-button [outlined]="true" size="small" severity="secondary" icon="pi pi-sliders-h"
+                [pTooltip]="'dashboard.crm.layout.customize' | translate" tooltipPosition="left"
+                [ariaLabel]="'dashboard.crm.layout.customize' | translate"
+                [disabled]="!layout.layout() || layout.saving()" (onClick)="startEdit()" />
+      @if (showHint()) {
+        <!-- Gợi ý lần đầu: 1 lần / thiết bị (AC8). -->
+        <div role="status"
+             class="absolute right-0 top-full mt-2 z-50 w-72 p-3 rounded-xl shadow-lg border border-[var(--p-content-border-color)] bg-[var(--p-content-background)]">
+          <div class="text-sm font-semibold text-[var(--p-text-color)]">{{ 'dashboard.crm.layout.hint_title' | translate }}</div>
+          <p class="m-0 mt-1 text-xs text-[var(--p-text-muted-color)]">{{ 'dashboard.crm.layout.hint_desc' | translate }}</p>
+          <div class="mt-2 flex justify-end">
+            <p-button size="small" [text]="true" [label]="'layout.timezone_dialog.acknowledge' | translate" (onClick)="dismissHint()" />
+          </div>
+        </div>
+      }
+    </div>
+    }
+  </app-dashboard-filter-bar>
+  @if (showChooser()) {
+    <app-dashboard-preset-chooser [registry]="layout.registry" [busy]="layout.saving()" (pick)="pickPreset($event)" (dismiss)="dismissChooser()" />
+  }
+}
+
+@if (layout.view()) {
+  @if (empty() && !layout.editing()) {
+    <!-- Ẩn hết khối (AC8). Khi đang sửa vẫn hiện 3 vùng rỗng để kéo/thêm vào. -->
+    <div class="mt-6 p-10 rounded-xl border border-dashed border-[var(--p-content-border-color)] flex flex-col items-center gap-3 text-center">
+      <i class="pi pi-th-large text-3xl text-[var(--p-text-muted-color)]" aria-hidden="true"></i>
+      <div class="text-base font-semibold text-[var(--p-text-color)]">{{ 'dashboard.crm.layout.empty_title' | translate }}</div>
+      <p class="m-0 max-w-md text-sm text-[var(--p-text-muted-color)]">{{ 'dashboard.crm.layout.empty_desc' | translate }}</p>
+      @if (layout.canPersist) {
+        <p-button icon="pi pi-plus" [label]="'dashboard.crm.layout.add_widget' | translate" [disabled]="layout.saving()" (onClick)="openGallery()" />
+      }
+    </div>
+  } @else {
+    <div class="grid grid-cols-12 gap-4 pt-4" cdkDropListGroup [class.dash-editing]="layout.editing()">
+      @if (layout.top().length || layout.editing()) {
+        <div class="dash-zone col-span-12 flex flex-col gap-4" cdkDropList [cdkDropListData]="'top'" [cdkDropListDisabled]="!layout.editing()"
+             (cdkDropListDropped)="onDrop($event)" [attr.aria-label]="'dashboard.crm.layout.zone_top' | translate">
+          @for (it of layout.top(); track it.key; let i = $index, n = $count) {
+            <app-dashboard-zone-item cdkDrag [cdkDragData]="it.key" [cdkDragDisabled]="dragOff()" cdkDragPreviewClass="dash-drag-preview"
+                                     [attr.data-widget-key]="it.key" [class]="itemClass(it, 'top')"
+                                     [item]="it" zone="top" [index]="i" [count]="n" [editing]="layout.editing()" [draggable]="desktop()"
+                                     [busy]="layout.saving()" (hide)="hide(it.key)" (toggleSize)="toggleSize(it)" (move)="onMove(it, $event)" />
+          }
+        </div>
+      }
+
+      <!-- Vùng chính: 8/12 ở ≥ md; khối "half" 2 khối/hàng, "full" cả hàng; < md xếp 1 cột, SAU vùng phụ. -->
+      <div class="dash-zone col-span-12 md:col-span-8 order-2 md:order-1 grid grid-cols-1 md:grid-cols-2 gap-4 content-start"
+           cdkDropList cdkDropListOrientation="mixed" [cdkDropListData]="'main'" [cdkDropListDisabled]="!layout.editing()"
+           (cdkDropListDropped)="onDrop($event)" [attr.aria-label]="'dashboard.crm.layout.zone_main' | translate">
+        @for (it of layout.main(); track it.key; let i = $index, n = $count) {
+          <app-dashboard-zone-item cdkDrag [cdkDragData]="it.key" [cdkDragDisabled]="dragOff()" cdkDragPreviewClass="dash-drag-preview"
+                                     [attr.data-widget-key]="it.key" [class]="itemClass(it, 'main')"
+                                     [item]="it" zone="main" [index]="i" [count]="n" [editing]="layout.editing()" [draggable]="desktop()"
+                                     [busy]="layout.saving()" (hide)="hide(it.key)" (toggleSize)="toggleSize(it)" (move)="onMove(it, $event)" />
+        }
+      </div>
+
+      <!-- Vùng phụ: 4/12 ở ≥ md; < md hiện TRƯỚC vùng chính (như bố cục cũ order-1/order-2). -->
+      <div class="dash-zone col-span-12 md:col-span-4 order-1 md:order-2 flex flex-col gap-4" cdkDropList [cdkDropListData]="'side'"
+           [cdkDropListDisabled]="!layout.editing()" (cdkDropListDropped)="onDrop($event)"
+           [attr.aria-label]="'dashboard.crm.layout.zone_side' | translate">
+        @for (it of layout.side(); track it.key; let i = $index, n = $count) {
+          <app-dashboard-zone-item cdkDrag [cdkDragData]="it.key" [cdkDragDisabled]="dragOff()" cdkDragPreviewClass="dash-drag-preview"
+                                     [attr.data-widget-key]="it.key" [class]="itemClass(it, 'side')"
+                                     [item]="it" zone="side" [index]="i" [count]="n" [editing]="layout.editing()" [draggable]="desktop()"
+                                     [busy]="layout.saving()" (hide)="hide(it.key)" (toggleSize)="toggleSize(it)" (move)="onMove(it, $event)" />
+        }
+      </div>
+    </div>
+  }
+} @else {
+  <!-- Chưa có bố cục (không bản tạm, API chưa về) ⇒ khung giữ chỗ, KHÔNG nháy mặc định hệ thống. -->
+  <div class="grid grid-cols-12 gap-4 pt-4" aria-busy="true">
+    <div class="col-span-12"><p-skeleton width="100%" height="180px" borderRadius="0.75rem" /></div>
+    <div class="col-span-12 md:col-span-8 flex flex-col gap-4">
+      <p-skeleton width="100%" height="180px" borderRadius="0.75rem" />
+      <p-skeleton width="100%" height="260px" borderRadius="0.75rem" />
+    </div>
+    <div class="col-span-12 md:col-span-4 flex flex-col gap-4">
+      <p-skeleton width="100%" height="180px" borderRadius="0.75rem" />
+      <p-skeleton width="100%" height="180px" borderRadius="0.75rem" />
+    </div>
+  </div>
+}
+
+
+<app-dashboard-widget-gallery [(visible)]="galleryOpen" [registry]="layout.registry" [items]="layout.view()?.items ?? []" [fullScreen]="!desktop()"
+                              [busy]="layout.saving()" (add)="add($event)" />

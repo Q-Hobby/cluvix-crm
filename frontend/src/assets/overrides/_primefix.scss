@@ -1,0 +1,24 @@
+/* PrimeNG layout fix tổng hợp cho Ultima + Tailwind */
+
+/* ===============================
+   GENERAL FIX: full width các input
+   =============================== */
+.p-calendar,
+.p-datepicker {
+  width: 100% !important;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   DATE PICKER FIX (p-calendar & p-datepicker)
+   =============================== */
+.p-datepicker {
+  display: flex !important;
+  width: 100% !important;
+}
+
+.p-datepicker .p-inputwrapper,
+.p-datepicker .p-inputtext {
+  width: 100% !important;
+}

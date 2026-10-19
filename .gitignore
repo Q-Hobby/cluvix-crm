@@ -1,0 +1,107 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/
+*.log
+
+# Secrets / certs — KHÔNG public (backend/.env, frontend dev cert, ...)
+.env
+.env.docker
+ssl.txt
+*.pem
+backend/certs/
+certs/
+/storage/certs/
+/storage/tmp/
+
+# Build output / dependencies — sinh ra từ source, không phải source
+/public/
+node_modules/
+frontend/deploy/
+backend/tmp/
+backend/.run/
+backend/.air.toml
+backend/storage/uploads/
+backend/storage/private/
+backend/storage/export/
+backend/exports/
+
+# Working scratch dirs của agent/dev — không phải source, không cần theo dõi
+backend/spike/
+frontend/i18n-dedup/
+
+# Backend binaries — build output của Go, KHÔNG phải source
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+backend/main
+backend/migrate
+backend/gen-template
+backend/spike-*
+# ⚠ Cách liệt kê TỪNG TÊN ở trên chỉ chặn được binary ĐÃ TỒN TẠI — binary MỚI luôn lọt.
+# Đã xảy ra thật (ERP): `backend/zalo-personal` (build từ spike/) lọt vào commit, 12 MB.
+# Quy ước để không tái diễn: build spike LUÔN ra `backend/tmp/` (đã ignore cả thư mục), ví dụ
+#   go build -tags spike -o backend/tmp/<ten> ./spike/<ten>
+# KHÔNG `go build ./spike/<ten>` ở gốc backend/ — nó nhả binary ngay tại đó.
+
+# Migration cũ copy từ ERP (chứa secret/PII/comment production) — KHÔNG commit, KHÔNG public
+/backend/migrations_backup/
+
+# BMAD artifact transient (plan/story đang chạy, không phải tooling bền) — KHÔNG theo dõi
+/bmad/
+
+# Ghi chú agent riêng máy (tên DB hệ khác cùng máy...) — KHÔNG public
+/CLAUDE.local.md
+# Brand kit quảng cáo (MST, địa chỉ, case study khách thật — chưa có đồng ý public) — chỉ local
+/skill/bmad/personas/cluvixhealth-brand-kit.md
+
+# Claude Code local config — chỉ theo dõi commands (tooling dùng chung cho mọi máy),
+# KHÔNG theo dõi projects/ (lịch sử phiên riêng máy) hay settings.local.json (permission riêng máy)
+/.claude/*
+!/.claude/commands/
+!/.claude/settings.json
+!/.claude/launch.json
+
+# Qodana
+qodana.*
+
+# Frontend build output (angular.json outputPath.base = "dist", story-28)
+/frontend/dist/
+# Cache build của Angular CLI (.tsbuildinfo...) — sinh lại mỗi lần build
+/frontend/.angular/
+
+# Template Ultima (PrimeNG, TRẢ PHÍ — KHÔNG public). File vẫn nằm trên máy dev, chỉ không theo dõi.
+# Các path dưới đây = nội dung gói layout dẫn xuất Ultima (private, chỉ cấp cho người có license
+# Ultima). Cài đặt: README mục 2.
+/frontend/src/assets/layout/
+/frontend/src/assets/demo/
+/frontend/src/assets/overrides/flags.css
+/frontend/src/assets/overrides/images/404-bg.jpg
+/frontend/src/assets/overrides/images/404.png
+/frontend/src/assets/overrides/images/accessDenied-bg.jpg
+/frontend/src/assets/overrides/images/accessDenied.png
+/frontend/src/assets/overrides/images/vector_logo.png
+/frontend/src/app/layout/components/app.configurator.ts
+/frontend/src/app/layout/components/app.layout.ts
+/frontend/src/app/layout/components/app.breadcrumb.ts
+/frontend/src/app/layout/components/app.menuitem.ts
+/frontend/src/app/layout/components/app.menuprofile.ts
+/frontend/src/app/layout/service/layout.service.ts
+/frontend/src/app/modules/auth/lockscreen/
+/frontend/src/app/modules/auth/accessdenied/accessdenied.ts
+/frontend/src/app/modules/utilities/notfound/notfound.ts
+/frontend/src/app/modules/utilities/empty/empty.ts
+
+# Env local (chứa PrimeUI license key thật — KHÔNG commit). Mẫu: environment.local.example.ts
+/frontend/src/environments/environment.local.ts
+
+# Env bản build Cluvix (chứa URL CDN Cluvix — repo public KHÔNG được có). Mẫu: environment.cluvix.example.ts
+/frontend/src/environments/environment.cluvix.ts
+
+# Sinh lúc phát hành (make third-party-notices) — không commit
+/backend/THIRD_PARTY_NOTICES.txt
+# Output build phát hành (make build-linux) — không commit
+/backend/dist/

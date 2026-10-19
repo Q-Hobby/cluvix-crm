@@ -1,0 +1,106 @@
+@charset "UTF-8";
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable,
+  #printable * {
+    visibility: visible;
+  }
+}
+.logo img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; /* Đảm bảo căn giữa logo */
+}
+
+@page {
+  margin: 0;
+}
+body {
+  background-color: transparent;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px;
+  color: #000000;
+  margin: 0; /* Xóa margin mặc định */
+  padding: 0;
+}
+
+.pCalculator {
+  font-size: 11px;
+  color: red;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 19cm; /* Sửa lại thành 19cm để đảm bảo không bị tràn lề giấy A4 */
+  min-height: 27cm; /* Sửa chiều cao tối thiểu */
+  margin: 0 auto; /* Đảm bảo căn giữa nội dung */
+  padding: 0.5cm 1cm 0.5cm 1cm; /* Đảm bảo nội dung không bị sát mép giấy */
+  box-sizing: border-box;
+  page-break-after: always;
+}
+.sheet_head {
+  border-bottom: 1px solid #cecece;
+  margin-bottom: 5px;
+}
+.sheet_head .info .company {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.sheet_body .invoice_id {
+  font-weight: 600;
+}
+.sheet_body .invoice_title {
+  background-color: transparent;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 18px !important;
+  color: #000000;
+  margin: 0.5rem 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+.sheet_body .invoice_info .services {
+  margin-bottom: 1rem;
+}
+.sheet_body .invoice_info .services.p-datatable tr > th,
+.sheet_body .invoice_info .services.p-datatable tr > td {
+  background-color: transparent;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14px !important;
+  color: #000000;
+  padding: 0.5rem !important;
+  border: 1px solid #ebebef;
+}
+.sheet_body .invoice_info .services .p-datatable-thead tr > th {
+  background: transparent;
+}
+.sheet_body .customer_info {
+  margin-bottom: 1rem;
+}
+
+@media screen {
+  body {
+    background: #e0e0e0;
+  }
+  .sheet {
+    width: 100%;
+    max-width: 19cm; /* Đồng nhất với khổ in */
+    min-height: 27cm; /* Đồng nhất với khổ in */
+    background: white;
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3);
+    margin: 0 auto; /* Thêm khoảng cách khi xem trên màn hình */
+    padding: 0.5cm 1cm 0.5cm 1cm; /* Tương tự như chế độ in */
+  }
+}
+.layout-content-wrapper,
+.layout-content,
+.layout-topbar-end,
+.layout-breadcrumb-container {
+  padding-top: unset !important;
+  margin-top: unset !important;
+}
+
+/*# sourceMappingURL=print-order.css.map */

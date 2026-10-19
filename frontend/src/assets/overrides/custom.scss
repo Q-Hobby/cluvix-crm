@@ -1,0 +1,601 @@
+@use 'brand-colors'; // CSS variables + utility classes — sửa màu chỉ cần sửa file đó
+
+// Breakpoint cố định (integer px) thay cho công thức vw liên tục cũ — tránh pixel lẻ gây mờ chữ
+// (VD 0.26vw+8 ở màn 1399px ra 11.637px, không phải số nguyên). Mobile-first: mỗi mốc override mốc trước.
+html {font-size: 9px; /* < 768px */}
+@media (min-width: 768px) { html {font-size: 10px; /* tablet */} }
+@media (min-width: 992px) { html {font-size: 12px; /* laptop nhỏ */} }
+@media (min-width: 1440px) { html {font-size: 13px; /* laptop/desktop chuẩn */} }
+@media (min-width: 1920px) { html {font-size: 14px; /* desktop Full HD+ */} }
+@media (min-width: 2560px) { html {font-size: 16px; /* 4K/ultra-wide */} }
+
+// ── Thang RIÊNG cho route `/teamchat` (user chốt 2026-09-04: "font toàn module teamchat nhỏ quá,
+// tăng 2 size") ────────────────────────────────────────────────────────────────────────────────
+// +2px ở MỌI bậc so với thang gốc ngay trên. Vì sao đổi ở `html` chứ không set `font-size` cho khối
+// teamchat: toàn module đo bằng `rem`, mà `rem` LUÔN quy chiếu về root — set font-size trên container
+// con thì không một giá trị rem nào nhúc nhích (chỉ `em` mới ăn). Dịch cả thang cũng là cách duy nhất
+// giữ được tính thích ứng: 6 bậc màn hình vẫn nguyên hình dạng, chỉ nhấc lên 2px.
+// Class do `TeamchatLayout` gắn/gỡ theo vòng đời route (xem `layout/teamchat/teamchat.layout.ts`) —
+// KHÔNG rò sang route khác, và dock teamchat nổi trên các trang ERP vẫn giữ cỡ chữ cũ (đúng ý: nó là
+// widget nhỏ cạnh nội dung ERP, không phải màn hình chat toàn trang).
+// ⚠ Sửa thang gốc thì sửa luôn thang này — hai thang phải đi cùng nhau, để cạnh nhau chính vì vậy.
+html.teamchat-scale {font-size: 11px; /* < 768px */}
+@media (min-width: 768px) { html.teamchat-scale {font-size: 12px; /* tablet */} }
+@media (min-width: 992px) { html.teamchat-scale {font-size: 14px; /* laptop nhỏ */} }
+@media (min-width: 1440px) { html.teamchat-scale {font-size: 15px; /* laptop/desktop chuẩn */} }
+@media (min-width: 1920px) { html.teamchat-scale {font-size: 16px; /* desktop Full HD+ */} }
+@media (min-width: 2560px) { html.teamchat-scale {font-size: 18px; /* 4K/ultra-wide */} }
+
+.card {
+  padding: 0.5rem;
+}
+
+// ── Cụm nút hành động trong 1 dòng bảng ────────────────────────────────────────────────────────
+// Thay cho chuỗi utility lặp `flex flex-wrap gap-1 justify-center align-center` từng rải ở 229 chỗ.
+// (`align-center` KHÔNG phải class Tailwind — đã verify 0 hit trong bundle CSS, tức nó là class rác
+// không sinh style nào; vì vậy ở đây KHÔNG set `align-items`, giữ nguyên `stretch` mặc định như cũ.)
+//
+// ⚠ `nowrap` là toàn bộ mục đích của class này, đừng đổi lại thành `wrap`:
+// nút PrimeNG size="small" rộng đúng `2.5rem` và gap `0.25rem` — tức ĐO BẰNG REM nên phình theo
+// root font-size của từng bậc màn hình (12/13/14/16px). Còn cột hành động bị khoá bằng px cứng
+// (`min-w-[Npx]` — Tailwind arbitrary value KHÔNG scale). Đo thật trên `/crm/appointment`: 7 nút cần
+// 228px @root12 → 266px @root14 → 304px @root16, trong khi chỗ trống của cột lại TỤT 187→179→175px
+// (các cột khác cũng khoá px cứng nên không nhường chỗ). Với `wrap`, flex được phép co dưới bề rộng
+// nội tại ⇒ nút rớt xuống dòng 2-3, dòng bảng cao 81px thay vì 49px, và MÀN CÀNG TO CÀNG VỠ NẶNG.
+// Với `nowrap`, bề rộng nội tại của cụm nút trở thành sàn của ô ⇒ table auto-layout tự nới cột vừa đủ.
+.cx-row-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.layout-content-wrapper .layout-content {
+  padding: 0.5rem !important;
+}
+
+.hide-toolbar .ql-toolbar {
+  display: none !important;
+}
+
+.hide-toolbar .ql-container {
+  border-top: 1px solid #dee2e6 !important;
+}
+
+// Canh lại padding phần menu profile bên trái
+.layout-menu-profile > button {
+  padding: 0.75rem;
+}
+
+// Giảm padding trái phải của table
+body .p-datatable .p-datatable-tbody > tr > td,
+body .p-datatable .p-datatable-thead > tr > th,
+body .p-datatable .p-datatable-tfoot > tr > td {
+  padding-left: 0.3rem !important;
+  padding-right: 0.3rem !important;
+}
+
+// Mặc định canh top cho tất cả các dòng
+table tr,
+table td {
+  vertical-align: top !important;
+}
+
+// ⚠ KHÔNG thêm lại `.layout-content { width: unset !important }` (xoá 2026-09-14): nó từng dùng để gỡ
+// `width: 1504px` cứng của Ultima, nhưng nay đè mất `width: 100%` ở `layout/_responsive.scss` (≥1729px)
+// ⇒ trang list full-height (wrapper là flex) co giãn theo bảng, tràn ngang cả trang: nội dung trượt
+// dưới sidebar / phân trang bị cắt bên phải. Đo được: bảng 2600px ⇒ document rộng 1884px trên viewport 1397px.
+
+// CSS cho input disable
+.p-inputtext:disabled {
+  opacity: 0.6;
+  background-color: #f5f5f5;
+  color: #64748b;
+}
+
+// Override lại mega menu cho giống menutab
+.p-megamenu {
+  padding: 0 0.5rem;
+}
+
+// Màu nền sidebar
+.p-sidebar .p-sidebar-header {
+  background-color: #f1f1f1;
+}
+
+// Bị scroll ngang trong detail report-customer
+.p-tabview .p-tabview-panels {
+  padding: 1rem;
+}
+
+// Giảm padding cho thanh tiến trình
+.p-steps {
+  padding: 0;
+}
+
+// Giảm padding của breadcrumb
+.layout-breadcrumb-container {
+  padding: 0 1rem !important;
+}
+
+.p-dialog .p-dialog-content {
+  padding-bottom: 0;
+  // WCAG 2.2 AA 2.4.11 focus-not-obscured (2026-09-21): `app-dialog-footer` là `sticky bottom-0
+  // z-50` NGAY TRONG vùng cuộn này — tab xuống field gần cuối form dài thì field chui xuống dưới
+  // thanh nút, user gõ mù. `scroll-padding-bottom` bắt trình duyệt cuộn dư thêm chừng đó khi đưa
+  // element focus vào tầm nhìn. 5rem = chiều cao footer thật (py-3 ×2 + nút ~2.5rem + border-top)
+  // làm tròn lên; để bằng `rem` vì chính footer cũng đo bằng rem ⇒ bám theo thang font fluid ở đầu file.
+  scroll-padding-bottom: 5rem;
+}
+
+.p-dialog .p-dialog-footer {
+  position: sticky !important;
+  bottom: 0;
+  z-index: 999;
+  padding: 0 0 15px 0;
+  // B.18 dark-theme-safe: hardcode #ffffff làm dải footer TRẮNG dán vào đáy dialog nền tối
+  // ở dark mode (áp cho mọi dialog dùng <ng-template #footer>). Dùng token như
+  // share/components/dialog-footer.ts.
+  background: var(--p-content-background);
+  color: var(--p-text-color);
+  text-align: right;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+/* Add your customizations of layout here */
+.layout-wrapper .layout-main .layout-content {
+  padding-top: unset !important;
+}
+
+.p-paginator {
+  justify-content: end !important;
+}
+
+.p-input-filled .p-inputtext {
+  background-color: #fff;
+}
+
+.p-col {
+  flex-grow: 1;
+  flex-basis: 0;
+  padding: 1rem;
+}
+
+.p-text-primary {
+  color: #0f97c7;
+}
+
+.p-input-filled .p-dropdown {
+  background: white !important;
+}
+
+@media screen and (max-width: 40em) {
+  .width_search_keyword_SP {
+    width: 56%;
+  }
+}
+
+.avatar-image-boder {
+  background-size: cover;
+  background-position: center top;
+  border-radius: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  font-weight: 400 !important;
+  padding: 0.75rem 1rem;
+}
+
+.layout-sidebar .layout-menu ul a.active-route {
+  font-weight: normal;
+}
+
+.bg-cover {
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
+
+.grid_tab {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -1rem;
+}
+
+.grid-cols-12 {
+  width: 100%;
+}
+
+.p-tabpanels {
+  padding: 0.25rem !important;
+}
+
+// Fade-in mượt khi chuyển tab (p-tabs) — tab đã visit được giữ trong DOM
+// (toggle .hidden thay vì destroy/recreate), animation replay mỗi lần
+// display chuyển none -> block để cảm giác chuyển tab luôn mượt, không giật.
+.tab-fade-content {
+  animation: cluvix-tab-fade-in 200ms ease-out;
+}
+
+@keyframes cluvix-tab-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.avatar-contact {
+  min-width: 80px;
+  width: 80px;
+  height: 80px;
+  background: #cee1fc;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.avatar-contact h2 {
+  height: 100%;
+  text-align: center;
+  line-height: 80px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+.pCalculator {
+  color: red;
+}
+
+.statusCustomer-1, .customerData-null {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-2, .complaintStatus-1 {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-3, .paymentFor-5 {
+  background-color: #fef9c3;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-4 {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #facc15;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-5 {
+  background-color: #fef9c3;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-6, .paymentFor-1, .customerData-2, .complaintStatus-2, .treatmentCustomer-2 {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-7 {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-8, .paymentFor-3, .status-inactive, .treatmentCustomer-1 {
+  background-color: #fde68a;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-9, .paymentFor-2, .status-suspended, .customerConnect-2 {
+  background-color: #f87171;
+  color: #7f1d1d;
+  border: 1px solid #fca5a5;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-10, .paymentFor-4, .status-active, .customerConnect-1, .customerData-1, .complaintStatus-3, .treatmentCustomer-3 {
+  background-color: #bbf7d0;
+  color: #15803d;
+  border: 1px solid #4ade80;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-11 {
+  background-color: #a7f3d0;
+  color: #065f46;
+  border: 1px solid #34d399;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-12, .userStatus-10, .couponType-1, .status-2 {
+  background-color: #86efac;
+  color: #166534;
+  border: 1px solid #22c55e;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-13, .userStatus-1, .status-1 {
+  background-color: #fca5a5;
+  color: #7f1d1d;
+  border: 1px solid #fecaca;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-14, .userStatus-9, .couponType-2, .status-3 {
+  background-color: #fde68a;
+  color: #78350f;
+  border: 1px solid #fcd34d;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-15, .paymentFor-6, .complaintStatus-4 {
+  background-color: #c7d2fe;
+  color: #3730a3;
+  border: 1px solid #a5b4fc;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.statusCustomer-16 {
+  background-color: #ede9fe;
+  color: #6d28d9;
+  border: 1px solid #c4b5fd;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.paymentFor-7 {
+  background-color: #a5f3fc;
+  color: #0e7490;
+  border: 1px solid #22d3ee;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+.paymentFor-8 {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  min-width: 72px;
+  text-align: center;
+  line-height: 1.25rem;
+}
+
+// FloatLabel: label màu gray, tránh nhầm với input text
+.p-floatlabel label {
+  color: #9CA3AF !important;
+}
+.p-floatlabel:has(input:focus) label,
+.p-floatlabel:has(textarea:focus) label,
+.p-floatlabel:has(.p-inputwrapper-focus) label {
+  color: var(--cluvix-primary) !important;
+}
+.p-floatlabel:has(input.p-filled) label,
+.p-floatlabel:has(textarea.p-filled) label,
+.p-floatlabel:has(.p-inputwrapper-filled) label {
+  color: #6B7280 !important;
+}
+// Validation: viền đỏ + label đỏ cho ng-invalid trên custom form control
+// (custom form control wrap p-autoComplete/p-select/... bên trong).
+// Apply cho cả host element (custom component) lẫn inner PrimeNG input.
+.p-floatlabel:has(.ng-invalid.ng-dirty) label {
+  color: var(--cluvix-danger) !important;
+}
+
+// Chỉ áp cho leaf invalid container (custom form control wrap PrimeNG input).
+// QUAN TRỌNG: phải loại trừ `form`, `[formGroup]`, `fieldset` ngay từ selector vì:
+// - Khi user fill 1 field đúng → field đó valid+dirty → form cascade thành ng-invalid.ng-dirty
+//   (vì còn field khác chưa fill) nhưng KHÔNG còn descendant nào invalid+dirty đồng thời.
+// - `:not(:has(.ng-invalid.ng-dirty))` lúc này = TRUE → rule áp vào form → cascade red
+//   xuống TẤT CẢ input bên trong → bug "fill 1 field thì các field khác đỏ hết".
+.ng-invalid.ng-dirty:not(form):not([formgroup]):not(fieldset):not(:has(.ng-invalid.ng-dirty)) {
+  .p-inputtext,
+  .p-select,
+  .p-autocomplete-input,
+  .p-multiselect,
+  .p-datepicker-input,
+  .p-textarea {
+    border-color: var(--cluvix-danger) !important;
+  }
+}
+
+// Trường hợp PrimeNG component trực tiếp được mark ng-invalid
+.p-inputtext.ng-invalid.ng-dirty,
+.p-select.ng-invalid.ng-dirty,
+.p-multiselect.ng-invalid.ng-dirty,
+.p-textarea.ng-invalid.ng-dirty {
+  border-color: var(--cluvix-danger) !important;
+}
+
+// Placeholder: mờ + italic để phân biệt rõ với giá trị thật
+::placeholder {
+  color: #D1D5DB !important;
+  font-style: italic;
+}
+
+// ============================================================
+// EMR clinical tables (Chỉ định / Điều trị / Đơn thuốc / Thanh toán)
+// - Buộc header KHÔNG wrap để header gọn 1 dòng (tránh wrap 2 dòng
+//   ở viewport rộng làm khó scan)
+// - Body cell `<td>` mặc định wrap để dữ liệu dài (tên dịch vụ, ghi chú)
+//   vẫn xuống dòng đọc được
+// - Hover row làm nổi hơn để dễ theo dõi mắt theo hàng
+// ============================================================
+.emr-clinical-table {
+  .p-datatable-thead > tr > th {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  // calculator marker (1)(2)(3)... canh giữa cùng dòng nhãn
+  .p-datatable-thead > tr > th .pCalculator {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 11px;
+    font-weight: 400;
+    color: #6b7280;
+  }
+  // hover row đậm hơn để mắt theo hàng dài
+  .p-datatable-tbody > tr:hover {
+    background-color: rgba(123, 63, 158, 0.04) !important;
+  }
+}
+
+// ============================================================
+// p-dialog animation — override global (áp dụng mọi p-dialog trong app)
+// PrimeNG v22 CSS-class-based motion, xem .skill/primeng22.md mục 3
+// ============================================================
+// !important bắt buộc — PrimeNG tự inject CSS bằng JS lúc component khởi tạo,
+// thường SAU khi styles.scss đã load nên cùng specificity thì rule của PrimeNG thắng.
+.p-dialog-enter-active {
+  animation: cluvix-dialog-in 250ms ease-out !important;
+}
+
+.p-dialog-leave-active {
+  animation: cluvix-dialog-out 300ms ease-in !important;
+}
+
+// KHÔNG blur/scale/rotate — animate filter/scale đẩy dialog lên GPU layer,
+// text bị rasterize mất subpixel antialiasing → user thấy chữ mờ mỗi lần mở dialog.
+@keyframes cluvix-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+// Leave giữ rotate được — dialog đang fade-out, user không đọc text lúc này,
+// GPU layer giải phóng ngay khi dialog remove khỏi DOM.
+@keyframes cluvix-dialog-out {
+  to {
+    opacity: 0;
+    transform: translateY(200%) rotate(-90deg);
+  }
+}
+
+// ============================================================
+// p-anchored-overlay animation (Select/AutoComplete/Popover/...) — dùng chung
+// underlying <p-overlay> component. Nhẹ hơn dialog vì tần suất mở/đóng cao
+// (gõ filter liên tục) — chỉ fade + dịch nhẹ, KHÔNG blur/rotate.
+// ============================================================
+.p-anchored-overlay-enter-active {
+  animation: cluvix-overlay-in 150ms ease-out !important;
+}
+
+.p-anchored-overlay-leave-active {
+  animation: cluvix-overlay-out 100ms ease-in !important;
+}
+
+@keyframes cluvix-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes cluvix-overlay-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+// ============================================================
+// p-collapsible animation (Accordion/Panel/Fieldset) — cùng lý do nhẹ nhàng như overlay.
+// ============================================================
+.p-collapsible-enter-active {
+  animation: cluvix-collapsible-in 180ms ease-out !important;
+}
+
+.p-collapsible-leave-active {
+  animation: cluvix-collapsible-out 150ms ease-in !important;
+}
+
+@keyframes cluvix-collapsible-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes cluvix-collapsible-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+// ============================================================
+// Route transition (withViewTransitions trong app.config.ts) — chỉ crossfade
+// vùng nội dung chính (.layout-content chứa router-outlet), KHÔNG đụng sidebar/topbar tĩnh.
+// Mặc định View Transitions API crossfade TOÀN TRANG nếu không scope view-transition-name.
+// ============================================================
+.layout-content-wrapper .layout-content {
+  view-transition-name: main-content;
+}
+
+::view-transition-old(main-content),
+::view-transition-new(main-content) {
+  animation-duration: 180ms;
+}
+

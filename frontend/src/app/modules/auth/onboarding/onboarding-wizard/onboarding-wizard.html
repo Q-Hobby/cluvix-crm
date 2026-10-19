@@ -1,0 +1,154 @@
+<div class="flex flex-col gap-6">
+  <!-- Story-08 AC7 + Story-09 AC1/AC2: layout side-by-side, cột trái = danh sách bước (NỔI BẬT —
+       khối riêng nền/viền/bo góc), cột phải = nội dung bước hiện tại. flex-col ở mobile,
+       md:flex-row ở desktop. Tỉ lệ 4-6 (AC1): `flex-[2_2_0%]`/`flex-[3_3_0%]` chia đúng phần
+       KHÔNG GIAN CÒN LẠI sau `gap-8` theo tỉ lệ 2:3 — cùng cơ chế `flex: <grow> <shrink> 0%` như
+       `flex-1` cũ (khi đó 2 bên bằng nhau vì cùng hệ số 1), chỉ đổi hệ số grow/shrink, KHÔNG dùng
+       `basis-2/5`/`basis-3/5` (basis% tính trên bề rộng container TRƯỚC khi trừ gap, cộng cả 2 bên
+       lại vượt 100% + gap ⇒ lệch tỉ lệ thật so với 4-6 khi trình duyệt phải co lại). -->
+  <div class="flex gap-8 flex-col md:flex-row">
+    <!-- AC2: khối cột trái nổi bật — nền `bg-emphasis` (khác nền `p-content-background` của cột
+         phải để phân biệt 2 khối), viền + bo góc bằng token. -->
+    <div class="md:flex-[2_2_0%] flex flex-col bg-emphasis border border-surface rounded-2xl p-4 md:p-6">
+      <ol class="flex flex-col">
+        @for (s of steps; track s.key; let i = $index; let isLast = $last) {
+          <!-- `<ol>/<li>` ngữ nghĩa (AC5) — KHÔNG `<div (click)>`, hàng này không có hành vi bấm.
+               `aria-current="step"` chỉ gắn ở bước đang làm.
+               QA pass 2: `bg-highlight` chỉ chênh nền `bg-emphasis` ~1.17:1 (dark)/1.19:1 (light) —
+               gần như vô hình, KHÔNG đạt yêu cầu gốc "nổi bật". Thêm dải dọc `border-l-4` làm tín hiệu
+               KHÔNG PHỤ THUỘC màu nền. `border-l-4` để TĨNH (LUÔN có ở mọi hàng, chỉ đổi MÀU qua
+               `[class]` — không dùng `[class.border-transparent]`/`[class.border-primary]` song song vì
+               tránh xô lệch ngang khi chuyển bước (khác cách "chỉ thêm border khi active" sẽ đẩy nội
+               dung lệch phải 4px).
+               QA pass 3 (patch): dải màu `border-primary` (`--p-primary-color`) đo ĐÚNG nền composite
+               tint mà nó thực sự tiếp giáp (nền `bg-highlight`, KHÔNG phải `bg-emphasis` trần) chỉ đạt
+               ~2.61:1 ở dark — TRƯỢT 3:1 (non-text UI, WCAG 1.4.11). Light vẫn PASS ~5.26:1. KHÔNG đổi
+               1 màu cho cả 2 theme (`primary.300` riêng dark = 3.68:1 PASS, nhưng cùng `primary.300` ở
+               LIGHT trên nền tint nhạt chỉ ~2.64:1 — TRƯỢT) ⇒ override RIÊNG dark bằng `dark:` variant
+               (ăn theo `.app-dark`, đã có tiền lệ `choose-company.html` dòng 3 (`dark:` + token surface
+               đậm), xác nhận qua `tailwind.config.js` `darkMode:['selector','[class*="app-dark"]']`),
+               giữ `border-primary`
+               mặc định cho light. Dùng `[class]` (string ternary, KHÔNG `[class.dark:border-[...]]`) vì
+               arbitrary-value bên trong `[class.x]` bị SILENT KHÔNG ÁP (gotcha B.18 đã ghi) — `[class]`
+               gán cả chuỗi nên không dính lỗi đó; Angular merge an toàn với `class` tĩnh + `[class.bg-highlight]`
+               trên cùng element. -->
+          <li
+            class="relative flex gap-3 rounded-xl px-3 py-2.5 border-l-4 transition-colors"
+            [class.bg-highlight]="i === activeIndex()"
+            [class]="i === activeIndex() ? 'border-primary dark:border-[var(--p-primary-300)]' : 'border-transparent'"
+            [attr.aria-current]="i === activeIndex() ? 'step' : null"
+          >
+            <div class="flex flex-col items-center shrink-0">
+              <!--
+                Story-11 AC4 — vòng tròn bước "chưa tới" (KHÔNG active, KHÔNG done) là non-text UI
+                MANG THÔNG TIN (phân biệt "chưa làm" vs "đang làm"/"đã xong" — WCAG 1.4.11, cần ≥3:1),
+                luôn nằm trực tiếp trên nền `bg-emphasis` của khối cột trái (không có `bg-highlight`
+                chồng lên vì chỉ hàng active mới có class đó) ⇒ đo ĐÚNG nền composite `bg-emphasis`,
+                KHÔNG đo trên nền trắng/nền khối trần (bài học story-09 pass 3).
+
+                `border-surface` (`var(--p-content-border-color)` = `light-dark({surface.300},
+                {surface.700})`) trên `bg-emphasis` (`var(--p-content-hover-background)` =
+                `light-dark({surface.100},{surface.800})`) — preset Material-compat resolve qua
+                `slate`/`zinc`: light border `#cbd5e1` / bg `#f1f5f9` = **1.36:1**; dark border
+                `#3f3f46` / bg `#27272a` = **1.43:1** (khớp đúng số QA đã đo trong story — xác nhận
+                tra đúng token). Cả 2 đều TRƯỢT xa 3:1.
+
+                Đổi sang `var(--p-text-muted-color)` (`text.mutedColor` = `light-dark({surface.600},
+                {surface.400})`, TỰ ĐỔI theo scheme, không cần `dark:` override riêng như dải
+                `border-primary` ở `<li>` bên trên) — token NÀY vốn dùng cho `text-muted-color` ở
+                dòng mô tả bước ngay dưới, tái dùng thay vì tự chọn màu mới:
+                light `#475569`/bg `#f1f5f9` = **6.92:1**; dark `#a1a1aa`/bg `#27272a` = **5.81:1** —
+                PASS ≥3:1 cả 2 theme, dư biên đủ lớn để không cần bậc riêng theo theme (khác trường
+                hợp `border-primary` ở trên vốn cận biên nên phải tách `dark:`).
+
+                Arbitrary value `var(--p-text-muted-color)` KHÔNG đặt trong `[class.border-[...]]`
+                (gotcha B.18: silent không áp) — gộp vào `[class]` string như dải `border-primary`.
+                9 vòng tròn/viền khác trong 9 file còn lại của epic GIỮ NGUYÊN (user chốt — viền
+                trang trí, không mang thông tin).
+              -->
+              <div
+                class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-medium z-10"
+                [class.bg-primary]="i === activeIndex() || isStepDone(i)"
+                [class.text-white]="i === activeIndex() || isStepDone(i)"
+                [class]="!(i === activeIndex() || isStepDone(i)) ? 'border border-[var(--p-text-muted-color)] text-color' : ''"
+              >
+                @if (isStepDone(i)) {
+                  <i class="pi pi-check" aria-hidden="true"></i>
+                } @else {
+                  <span>{{ i + 1 }}</span>
+                }
+              </div>
+              @if (!isLast) {
+                <!-- Đường nối dọc giữa các vòng tròn (AC2) — `border-l` token, KHÔNG màu tự chế. -->
+                <div class="w-px flex-1 min-h-4 border-l border-surface" aria-hidden="true"></div>
+              }
+            </div>
+            <div class="flex-1 flex flex-col gap-1 justify-center py-1">
+              <!-- QA pass 1 story_defect AC2: `bg-highlight` (li) đã tự mang `--p-highlight-color`
+                   ĐÚNG tương phản cho nền tint của chính nó (~10:1 dark, ~ok light) — ghi đè
+                   `text-primary` (= `--p-primary-color`, indigo.400 ở preset Indigo trang này)
+                   TRƯỢT AA ở dark mode (đo ~2.6:1, xem Story Change Log). KHÔNG ghi đè màu nữa, chỉ
+                   nhấn bước đang làm bằng độ đậm `font-semibold` (đổi weight, không đổi contrast). -->
+              <span
+                class="font-medium"
+                [class.font-semibold]="i === activeIndex()"
+                [class.text-color]="i !== activeIndex()"
+              >
+                {{ s.titleKey | translate }}
+              </span>
+              @if (s.descKey) {
+                <span class="text-sm text-muted-color">{{ s.descKey | translate }}</span>
+              }
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="md:flex-[3_3_0%] bg-[var(--p-content-background)] p-4 rounded-2xl">
+      <ng-container
+        #outlet="ngComponentOutlet"
+        [ngComponentOutlet]="currentStep().component"
+        [ngComponentOutletInputs]="stepInputs()"
+      ></ng-container>
+    </div>
+  </div>
+
+  <!-- Cố ý KHÔNG dùng app-dialog-footer: đây không phải dialog (choose-company.html:64 tiền lệ). -->
+  <div class="flex justify-between items-center gap-3 mt-2">
+    <button
+      type="button"
+      pButton
+      [outlined]="true"
+      [disabled]="activeIndex() === 0 || isSubmitting()"
+      (click)="back()"
+    >
+      <i class="pi pi-arrow-left"></i>
+      <span>{{ 'common.action.back' | translate }}</span>
+    </button>
+
+    <div class="flex gap-3">
+      @if (currentStep().optional) {
+        <button type="button" pButton [text]="true" [disabled]="isSubmitting()" (click)="skip()">
+          {{ 'common.action.skip' | translate }}
+        </button>
+      }
+      @if (!isLastStep()) {
+        <button type="button" pButton [disabled]="isSubmitting()" (click)="next()">
+          <span>{{ 'common.action.next' | translate }}</span>
+          <i class="pi pi-arrow-right"></i>
+        </button>
+      } @else {
+        <button type="button" pButton [disabled]="isSubmitting()" (click)="finish()">
+          <i
+            class="pi"
+            [class.pi-spin]="isSubmitting()"
+            [class.pi-spinner]="isSubmitting()"
+            [class.pi-check]="!isSubmitting()"
+          ></i>
+          <span>{{ 'common.action.finish' | translate }}</span>
+        </button>
+      }
+    </div>
+  </div>
+</div>

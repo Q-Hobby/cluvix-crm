@@ -1,0 +1,555 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  appFillHeight
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  class="w-full"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+>
+  <ng-template #caption>
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="flex gap-2">
+        <button
+          pButton
+          type="button"
+          (click)="createDeposit()"
+          *hasPerm="permission.permissionExtDeposit"
+          severity="info"
+        ><i class="pi pi-plus"></i><span>{{ 'crm.payment.label.add_deposit' | translate }}</span></button>
+        @if (customer.status !== CUSTOMER_STATUS.TICKET && customer.status !== CUSTOMER_STATUS.LEAD) {
+          <button
+            pButton
+            type="button"
+            (click)="createOrUpdatePayment(null)"
+            *hasPerm="permission.permissionCreatePayment"
+            [style]="{'background-color': '#7B3F9E', 'border-color': '#7B3F9E'}"
+          ><i class="pi pi-plus"></i><span>{{ 'common.label.payment' | translate }}</span></button>
+          <button
+            pButton
+            type="button"
+            (click)="payInstallment()"
+            *hasPerm="permission.permissionCreatePayment"
+            [style]="{'background-color': '#FF5722', 'border-color': '#FF5722'}"
+          ><i class="pi pi-plus"></i><span>{{ 'common.label.installment' | translate }}</span></button>
+        }
+      </div>
+      <div class="p-toolbar-group-end">
+        <div class="flex gap-2">
+          <button
+            pButton
+            type="button"
+            (click)="resetPage()"
+            [attr.aria-label]="'common.action.refresh' | translate"
+            [pTooltip]="'common.action.reload_page' | translate"
+            severity="secondary"
+            tooltipPosition="top"
+            [iconOnly]="true"
+          ><i class="pi pi-refresh"></i></button>
+          <button
+            pButton
+            type="button"
+            (click)="colsTpl.toggle($event)"
+            [attr.aria-label]="'common.action.view_more' | translate"
+            [pTooltip]="'common.action.view_more' | translate"
+            tooltipPosition="left"
+            [iconOnly]="true"
+          ><i class="pi pi-th-large"></i></button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      <th class="min-w-[120px] w-[120px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('printTotal')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="cx-row-actions">
+            <button
+              pButton
+              type="button"
+              (click)="printCustomPayment()"
+              [attr.aria-label]="'crm.payment.tooltip.print_custom' | translate"
+              [pTooltip]="'crm.payment.tooltip.print_custom' | translate"
+              severity="info"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-print"></i></button>
+          </div>
+        </th>
+      }
+      @if (isColVisible('treatmentPlanCode')()) {
+        <th class="min-w-[150px]">{{ "common.label.order_code" | translate }}</th>
+      }
+      @if (isColVisible('serviceUsedCode')()) {
+        <th class="min-w-[160px]">{{ "common.label.treatment_service_code" | translate }}</th>
+      }
+      @if (isColVisible('serviceName')()) {
+        <th class="min-w-[250px]">
+          {{ 'common.label.service' | translate }}
+        </th>
+      }
+      @if (isColVisible('code')()) {
+        <th class="min-w-[150px]">{{ "common.label.receipt_code" | translate }}</th>
+      }
+      @if (isColVisible('paymentFor')()) {
+        <th class="min-w-[150px]">{{ "common.label.payment_method" | translate }}</th>
+      }
+      @if (isColVisible('payment_info')()) {
+        <th class="min-w-[170px]">{{ "common.label.amount" | translate }}</th>
+      }
+      @if (isColVisible('paymentMethod')()) {
+        <th class="min-w-[120px]">{{ "common.label.method" | translate }}</th>
+      }
+      @if (isColVisible('paymentCard')()) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.payment_method' | translate }}
+        </th>
+      }
+      @if (isColVisible('note')()) {
+        <th class="min-w-[250px]">{{ "common.label.content" | translate }}</th>
+      }
+      @if (isColVisible('branch')()) {
+        <th class="min-w-[150px]">
+          {{ 'common.label.branch' | translate }}
+        </th>
+      }
+      @if (isColVisible('source')()) {
+        <th class="min-w-[200px]">{{ "common.label.source" | translate }}</th>
+      }
+      @if (isColVisible('payment_of_date')()) {
+        <th class="min-w-[140px]">{{ "common.label.payment_date" | translate }}</th>
+      }
+      @if (isColVisible('payment_time')()) {
+        <th class="min-w-[140px]">{{ "common.label.collect_refund_date" | translate }}</th>
+      }
+      @if (isColVisible('userCreated')()) {
+        <th class="min-w-[180px]">{{ "common.label.user_created" | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[140px]">{{ "common.label.created_at" | translate }}</th>
+      }
+      @if (isColVisible('updated_by')()) {
+        <th class="min-w-[200px]">{{ "common.label.user_updated" | translate }}</th>
+      }
+      @if (isColVisible('updated_at')()) {
+        <th class="min-w-[140px]">{{ "common.label.updated_at" | translate }}</th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      <td>
+        <div class="flex items-center justify-center w-full gap-2">
+          @if (model.payment_for === PAYMENT_FOR.ORDER ||
+          model.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT) {
+            <p-buttongroup>
+              <!-- Đã check quyền trong TS-->
+              @if (model.payment_for === PAYMENT_FOR.ORDER && checkPaymentUpdate(model.created_at, model.created_by)) {
+                <p-button
+                  (click)="createOrUpdatePayment(model)"
+                  icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+                  [pTooltip]="'crm.payment.tooltip.update_payment' | translate"
+                  severity="success"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              }
+              @if (model.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT && checkPaymentUpdate(model.created_at, model.created_by)) {
+                <p-button
+                  (click)="updateMovePayment(model, model.treatmentPlan?.id)"
+                  icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+                  [pTooltip]="'common.label.update_transfer_deposit' | translate"
+                  severity="success"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              }
+              <p-button
+                (click)="deletePayment($event, model.id)"
+                *hasPerm="permission.permissionDeletePayment"
+                icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                [pTooltip]="('common.action.delete' | translate) + ' ' + (model?.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT ? ('common.label.transfer_deposit' | translate) : ('common.label.payment' | translate))"
+                severity="danger"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+              <p-button
+                (click)="printPayment(model.id)"
+                [ariaLabel]="model.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT
+                    ? ('crm.payment.tooltip.print_transfer_deposit' | translate)
+                    : ('crm.payment.tooltip.print_payment' | translate)"
+                [pTooltip]="model.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT
+                    ? ('crm.payment.tooltip.print_transfer_deposit' | translate)
+                    : ('crm.payment.tooltip.print_payment' | translate)"
+                icon="pi pi-print"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            </p-buttongroup>
+          }
+          @if (model.payment_for === PAYMENT_FOR.DEPOSIT) {
+            <div class="flex justify-center items-centermt-1">
+              <p-buttongroup>
+                <!-- Đã check quyền trong TS-->
+                @if (checkDepositUpdate(model.created_at, model.created_by) &&
+                model.deposit_after === model.amount) {
+                  <p-button
+                    (click)="updateDeposit(model)" icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+                    [pTooltip]="'common.label.update_deposit' | translate"
+                    severity="success"
+                    size="small"
+                    tooltipPosition="top"
+                  ></p-button>
+                }
+                <ng-container *hasPerm="permission.permissionExtDeposit">
+                  @if (model.deposit_after === model.amount) {
+                    <p-button
+                      (click)="deleteDeposit($event, model.id)"
+                      icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                      [pTooltip]="'crm.payment.tooltip.delete_deposit' | translate"
+                      severity="danger"
+                      size="small"
+                      tooltipPosition="top"
+                    ></p-button>
+                  }
+                </ng-container>
+                <p-button
+                  (click)="printDeposit(model.id)"
+                  icon="pi pi-print" [ariaLabel]="'crm.payment.tooltip.print_deposit' | translate"
+                  [pTooltip]="'crm.payment.tooltip.print_deposit' | translate"
+                  severity="info"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              </p-buttongroup>
+            </div>
+            <div class="flex justify-center items-centermt-1">
+              <p-buttongroup>
+                <ng-container *hasPerm="permission.permissionExtRefundDeposit">
+                  @if (model.deposit_after > 0 &&
+                  model.deposit_type !== modelService.TYPE_DEPOSIT_KG) {
+                    <p-button
+                      (click)="refundDeposit(model.id)" icon="pi pi-minus" [ariaLabel]="'common.label.refund_deposit' | translate"
+                      [pTooltip]="'common.label.refund_deposit' | translate"
+                      severity="warn"
+                      size="small"
+                      tooltipPosition="top"
+                    ></p-button>
+                  }
+                </ng-container>
+                <!-- Chuyển cọc như hình thức tạo mới thanh toán-->
+                <ng-container *hasPerm="permission.permissionExtDeposit">
+                  @if (model.deposit_after > 0 &&
+                  model.deposit_type !== modelService.TYPE_DEPOSIT_KG) {
+                    <p-button
+                      (click)="moveDeposit($event, model.id, model.deposit_after)" icon="pi pi-step-forward" [ariaLabel]="'common.label.transfer_deposit' | translate"
+                      [pTooltip]="'common.label.transfer_deposit' | translate"
+                      severity="help"
+                      size="small"
+                      tooltipPosition="top"
+                    ></p-button>
+                  }
+                </ng-container>
+                <!-- BE gác POST create-refund-kg-customer bằng extPayment ⇒ FE ẩn nút theo đúng quyền đó. -->
+                <ng-container *hasPerm="permission.permissionExtPayment">
+                  @if (model.deposit_after > 0 &&
+                  model.deposit_type === modelService.TYPE_DEPOSIT_KG) {
+                    <p-button
+                      (click)="refundKg(model.id)" icon="pi pi-minus" [ariaLabel]="'common.label.refund_consignment' | translate"
+                      [pTooltip]="'common.label.refund_consignment' | translate"
+                      severity="warn"
+                      size="small"
+                      tooltipPosition="top"
+                    ></p-button>
+                  }
+                </ng-container>
+              </p-buttongroup>
+            </div>
+          }
+          @if (model.payment_for === PAYMENT_FOR.DEPOSIT_REFUND) {
+            <p-buttongroup>
+              <ng-container *hasPerm="permission.permissionExtRefundDeposit">
+                <p-button
+                  (click)="deleteRefund($event, model.id)"
+                  icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                  [pTooltip]="'crm.payment.tooltip.delete_refund_deposit' | translate"
+                  severity="danger"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              </ng-container>
+              <p-button
+                (click)="printRefundDeposit(model.id)"
+                icon="pi pi-print" [ariaLabel]="'crm.payment.tooltip.print_refund_deposit' | translate"
+                [pTooltip]="'crm.payment.tooltip.print_refund_deposit' | translate"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            </p-buttongroup>
+          }
+          @if (model.payment_for === PAYMENT_FOR.SERVICE_REFUND) {
+            <p-buttongroup>
+              <ng-container *hasPerm="permission.permissionExtRefundService">
+                <p-button
+                  (click)="deleteRefundOrderPlan($event, model.id)"
+                  icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                  [pTooltip]="'crm.payment.tooltip.delete_refund_service' | translate"
+                  severity="danger"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              </ng-container>
+              <p-button
+                (click)="printRefundService(model.id)"
+                icon="pi pi-print" [ariaLabel]="'common.action.print' | translate"
+                [pTooltip]="'common.action.print' | translate"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            </p-buttongroup>
+          }
+          @if (model.payment_for === PAYMENT_FOR.CONSIGNMENT_REFUND) {
+            <p-buttongroup>
+              <ng-container *hasPerm="permission.permissionExtPayment">
+                <p-button
+                  (click)="deleteRefundConsignment($event, model.id)"
+                  icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+                  [pTooltip]="'crm.payment.tooltip.delete_refund_consignment' | translate"
+                  severity="danger"
+                  size="small"
+                  tooltipPosition="top"
+                ></p-button>
+              </ng-container>
+              <p-button
+                (click)="printRefundConsignment(model.id)"
+                icon="pi pi-print" [ariaLabel]="'crm.payment.tooltip.print_refund_consignment' | translate"
+                [pTooltip]="'crm.payment.tooltip.print_refund_consignment' | translate"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+              ></p-button>
+            </p-buttongroup>
+          }
+        </div>
+      </td>
+      @if (isColVisible('printTotal')()) {
+        <td>
+          @if (model.payment_for === PAYMENT_FOR.ORDER ||
+          model.payment_for === PAYMENT_FOR.TRANSFER_DEPOSIT) {
+            <div class="flex items-center justify-center w-full">
+              <p-checkbox
+                (onChange)="onCheckboxChange($event, model.id)"
+                name="serviceUsedCode[]"
+                value="{{ model.id }}"
+              ></p-checkbox>
+            </div>
+          }
+        </td>
+      }
+      @if (isColVisible('treatmentPlanCode')()) {
+        <td
+          [appCopyText]="model.treatmentPlan?.code"
+        >
+          {{ model.treatmentPlan?.code || '—' }}
+        </td>
+      }
+      @if (isColVisible('serviceUsedCode')()) {
+        <td
+          [appCopyText]="model.orderServiceUsed?.code"
+        >
+          {{ model.orderServiceUsed?.code || '—' }}
+        </td>
+      }
+      @if (isColVisible('serviceName')()) {
+        <td>
+          <span class="font-semibold text-primary"
+                [appCopyText]="model.serviceInfo?.name">{{ model.serviceInfo?.name || '—' }}</span>
+          <!-- Mở chi tiết: dòng nhỏ dưới tên dịch vụ. <button> chứ không phải <a> không href để tab
+               bàn phím tới được; đặt NGOÀI vùng [appCopyText] để bấm không copy nhầm tên dịch vụ. -->
+          <div class="mt-0.5">
+            <button
+              type="button"
+              class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              (click)="openPaymentDetail(model)"
+            >
+              <i class="pi pi-arrow-up-right text-[0.6rem]"></i>
+              {{ 'common.label.detail' | translate }}
+            </button>
+          </div>
+        </td>
+      }
+      @if (isColVisible('code')()) {
+        <td [appCopyText]="model.code">
+          {{ model.code || '—' }}
+        </td>
+      }
+      @if (isColVisible('paymentFor')()) {
+        <td>
+              <span
+                class="font-semibold px-3 py-[5px] rounded-full shadow-sm text-sm mr-1 mb-1 inline-block"
+                [class]="model.paymentForClass">
+              {{ model.paymentForKey ? (model.paymentForKey | translate) : model.paymentForLabel }}
+            </span>
+          @if (model.typeDepositInfo) {
+            <p class="px-3 text-xs text-red-500">*({{ model.typeDepositInfo?.label }})</p>
+          }
+        </td>
+      }
+      @if (isColVisible('payment_info')()) {
+        <td>
+          @if (model.payment_for !== PAYMENT_FOR.DEPOSIT) {
+            <span class="text-blue-500">{{ model.amount !== 0 ? (model.amount | currencyFormat) : '—' }}</span>
+          }
+          @if (model.payment_for === PAYMENT_FOR.DEPOSIT) {
+            @if (model.deposit_type === modelService.TYPE_DEPOSIT_KG) {
+              {{ "common.label.consignment" | translate }}: <b class="text-blue-500">{{ model.amountFormatted }}</b
+              ><br/>
+              {{ 'crm.order_plan.form.outstanding_balance' | translate }}:
+              <b class="text-blue-500">{{ model.deposit_afterFormatted }}</b>
+            } @else {
+              <ng-container [ngTemplateOutlet]="depositOther"></ng-container>
+            }
+            <ng-template #depositOther>
+              {{ "common.label.deposit" | translate }}: <b class="text-blue-500">{{ model.amountFormatted }}</b
+            ><br/>
+              {{ 'crm.order_plan.form.outstanding_balance' | translate }}:
+              <b class="text-blue-500">{{ model.deposit_afterFormatted }}</b>
+            </ng-template>
+          }
+        </td>
+      }
+      @if (isColVisible('paymentMethod')()) {
+        <td>{{ model.paymentMethodLabel || '—' }}</td>
+      }
+      @if (isColVisible('paymentCard')()) {
+        <td>{{ model.paymentTypeLabel || '—' }}</td>
+      }
+      @if (isColVisible('note')()) {
+        <td [innerHTML]="model.note || '—' | safeHtml" class="whitespace-pre-wrap"></td>
+      }
+      @if (isColVisible('branch')()) {
+        <td>{{ model.branchLabel || '—' }}</td>
+      }
+      @if (isColVisible('source')()) {
+        <td>{{ model.sourceLabel || '—' }}</td>
+      }
+      @if (isColVisible('payment_of_date')()) {
+        <td>
+          {{ model.payment_of_dateFormatted || '—' }}
+        </td>
+      }
+      @if (isColVisible('payment_time')()) {
+        <td>
+          {{ model.payment_timeFormatted || '—' }}
+        </td>
+      }
+      @if (isColVisible('userCreated')()) {
+        <td>
+          <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                  alt="{{model.createdByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td>
+          {{ model.created_atFormatted }}
+        </td>
+      }
+      @if (isColVisible('updated_by')()) {
+        <td>
+          <p-chip label="{{model.updatedByInfo?.fullname}}" image="{{ model.updatedByInfo?.avatar }}"
+                  alt="{{model.updatedByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('updated_at')()) {
+        <td>
+          {{ model.updated_atFormatted }}
+        </td>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>
+
+<!--
+  @defer: panel chi tiết chỉ tải khi người dùng thật sự mở lần đầu — không nằm chung chunk với màn
+  danh sách. `prefetch on idle` kéo sẵn chunk lúc trình duyệt rảnh nên lần bấm đầu vẫn mở ngay.
+-->
+@defer (when detail.visible(); prefetch on idle) {
+  <app-payment-detail-panel
+    [(visible)]="detail.visible"
+    [paymentId]="detail.id()"
+    [seed]="detail.seed()"
+  />
+}

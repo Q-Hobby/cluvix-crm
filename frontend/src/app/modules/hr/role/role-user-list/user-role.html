@@ -1,0 +1,441 @@
+
+<p-dialog
+  [(visible)]="confirmVisible"
+  [modal]="true"
+  [showHeader]="false"
+  styleClass="shadow-sm rounded-2xl"
+  contentStyleClass="p-6!"
+  footerStyleClass="pb-6! px-6!"
+  [style]="{width: '420px'}"
+>
+  <ng-template #content>
+    @if (confirmState(); as state) {
+      <div class="flex flex-col items-center gap-4 text-center">
+        <div class="w-14 h-14 rounded-full border flex items-center justify-center" [ngClass]="state.iconBgClass">
+          <i class="text-2xl" [ngClass]="[state.icon, state.iconColorClass]"></i>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="text-lg font-semibold text-surface-800 dark:text-surface-100">{{ state.header }}</span>
+          <span class="text-sm text-surface-500 dark:text-surface-400">{{ state.message }}</span>
+        </div>
+      </div>
+    }
+  </ng-template>
+  <ng-template #footer>
+    @if (confirmState(); as state) {
+      <div class="flex gap-2 justify-end w-full">
+        <button type="button"
+          pButton
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (click)="closeConfirm()"
+        >
+          <span>{{ 'common.action.cancel' | translate }}</span>
+        </button>
+        <button type="button"
+          pButton
+          [severity]="state.acceptSeverity"
+          size="small"
+          (click)="state.onAccept(); closeConfirm()"
+        >
+          <span>{{ state.acceptLabel }}</span>
+        </button>
+      </div>
+    }
+  </ng-template>
+</p-dialog>
+<div class="card mb-0">
+  <div
+    [style]="{minHeight: 'calc(100vh - ' + plusTableRole() + 'px)', maxHeight: 'calc(100vh - ' + plusTableRole() + 'px)'}"
+    class="min-h-0 grid grid-cols-12 gap-0">
+
+    <!-- ── Sidebar: Vai trò ─────────────────────────────────────────── -->
+    <div class="col-span-12 lg:col-span-3 md:col-span-4 border-r border-surface-200 dark:border-surface-700 flex flex-col pr-4">
+      <div class="flex items-center justify-between py-2 mb-2">
+        <span class="text-xs font-semibold uppercase tracking-widest text-surface-500 dark:text-surface-400">{{ 'common.label.role' | translate }}</span>
+        <button type="button"
+          pButton
+          *hasPerm="permission.permissionCreateRole"
+          (click)="saveRole(null)"
+          [attr.aria-label]="'hr.role_page.tooltip_add_role' | translate"
+          [rounded]="true"
+          [text]="true"
+          size="small"
+          severity="primary"
+          [pTooltip]="'hr.role_page.tooltip_add_role' | translate"
+          tooltipPosition="top"
+          [iconOnly]="true"
+        >
+          <i class="pi pi-plus"></i>
+        </button>
+      </div>
+
+      <div
+        [ngStyle]="isDesktop()
+          ? {minHeight: 'calc(100vh - ' + plusMenuRole() + 'px)', maxHeight: 'calc(100vh - ' + plusMenuRole() + 'px)'}
+          : {height: '300px'}"
+        class="overflow-y-auto flex flex-col gap-0.5">
+
+        <!-- Skeleton loading cho roles -->
+        @if (loadingRoles()) {
+          @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track i) {
+            <div class="rounded-lg px-3 py-3 animate-pulse">
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 bg-surface-200 dark:bg-surface-700 rounded shrink-0"></div>
+                <div class="h-5 bg-surface-200 dark:bg-surface-700 rounded flex-1" 
+                     [style.width.%]="60 + (i * 3) % 40"></div>
+              </div>
+            </div>
+          }
+        } @else {
+          @for (item of roles(); track item.value ?? $index) {
+            <div
+              class="group flex items-center justify-between rounded-lg px-3 py-2.5 cursor-pointer select-none transition-all duration-150"
+              [ngClass]="{
+                'bg-primary text-white shadow-sm': activeRole()?.value === item.value,
+                'hover:bg-surface-100 dark:hover:bg-surface-700': activeRole()?.value !== item.value
+              }"
+              (click)="onActiveItemChange(item)"
+              pRipple
+            >
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                @if (item.icon) {
+                  <i class="text-sm shrink-0" [class]="item.icon"
+                     [ngClass]="activeRole()?.value === item.value
+                       ? 'text-white/80'
+                       : 'text-surface-400 dark:text-surface-500'"
+                  ></i>
+                }
+                <span class="text-sm font-medium truncate"
+                      [ngClass]="activeRole()?.value === item.value
+                        ? 'text-white'
+                        : 'text-surface-800 dark:text-surface-100'"
+                >{{ item.label }}</span>
+              </div>
+
+              <div class="flex items-center gap-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 -mr-1">
+                <button type="button"
+                  pButton
+                  *hasPerm="permission.permissionUpdateRole"
+                  (click)="saveRole(item.value); $event.stopPropagation()"
+                  [attr.aria-label]="'common.action.edit' | translate"
+                  [rounded]="true"
+                  [text]="true"
+                  size="small"
+                  [pTooltip]="'common.action.update' | translate"
+                  tooltipPosition="top"
+                  [ngClass]="activeRole()?.value === item.value ? 'text-white' : ''"
+                  [iconOnly]="true"
+                >
+                  <i class="pi pi-pencil"></i>
+                </button>
+                @if (item.value !== 'admin') {
+                  <button type="button"
+                    pButton
+                    *hasPerm="permission.permissionDeleteRole"
+                    (click)="deleteRoles($event, item.value); $event.stopPropagation()"
+                    [attr.aria-label]="'common.action.delete' | translate"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    severity="danger"
+                    [pTooltip]="'common.action.delete' | translate"
+                    tooltipPosition="top"
+                    [iconOnly]="true"
+                  >
+                    <i class="pi pi-trash"></i>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          @if (roles().length === 0 && !loadingRoles()) {
+            <div class="flex flex-col items-center justify-center py-12 gap-3 text-surface-400 dark:text-surface-600">
+              <i class="pi pi-shield text-4xl"></i>
+              <span class="text-sm">{{ 'hr.role_page.no_roles' | translate }}</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- ── Content: Bảng quyền theo module ──────────────────────────── -->
+    <div class="col-span-12 lg:col-span-9 md:col-span-8 flex flex-col min-h-0 pl-4">
+
+      <!-- Toolbar -->
+      <p-toolbar class="toolbar_role mb-3">
+        <ng-template #start>
+          <div class="flex items-center gap-2">
+            <p-checkbox
+              (onChange)="selectAllGlobal($event.checked)"
+              [binary]="true"
+              [ngModel]="aggChecked().global"
+              [pTooltip]="'hr.role_page.tooltip_select_all_check' | translate"
+            />
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-300">{{ 'common.label.select_all' | translate }}</span>
+          </div>
+        </ng-template>
+        <ng-template #end>
+          <div class="flex items-center gap-2">
+            <button type="button"
+              pButton
+              *hasPerm="permission.permissionUpdateRole"
+              (click)="updatePermission()"
+              [disabled]="!hasDiff() || isUpdating()"
+              severity="success"
+              size="small"
+            >
+              @if (isUpdating()) {
+                <i class="pi pi-spinner pi-spin"></i>
+              } @else {
+                <i class="pi pi-save"></i>
+              }
+              <span>{{ 'common.action.save' | translate }}</span>
+            </button>
+            <button type="button"
+              pButton
+              (click)="resetPage()"
+              [disabled]="isReloading()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [rounded]="true"
+              severity="secondary"
+              size="small"
+              [pTooltip]="'hr.role_page.tooltip_reload' | translate"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            >
+              @if (isReloading()) {
+                <i class="pi pi-spinner pi-spin"></i>
+              } @else {
+                <i class="pi pi-refresh"></i>
+              }
+            </button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+
+      <!-- Empty state: chưa chọn role -->
+      @if (!activeRole()) {
+        <div class="flex flex-col items-center justify-center flex-1 gap-3 text-surface-300 dark:text-surface-600">
+          <i class="pi pi-lock-open text-6xl"></i>
+          <span class="text-base font-medium">{{ 'hr.role_page.empty_state' | translate }}</span>
+        </div>
+      } @else {
+        <!-- Accordion phân quyền theo module -->
+        <div
+          [style]="{minHeight: 'calc(100vh - ' + plusTablePermissionRole() + 'px)', maxHeight: 'calc(100vh - ' + plusTablePermissionRole() + 'px)'}"
+          class="overflow-y-auto relative"
+        >
+          <!-- Loading overlay khi switch role -->
+          @if (loadingPermissions()) {
+            <div class="absolute inset-0 bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm z-10 flex items-start justify-center pt-8">
+              <div class="flex flex-col items-center gap-3">
+                <i class="pi pi-spin pi-spinner text-3xl text-primary"></i>
+                <span class="text-sm text-surface-600 dark:text-surface-400">{{ 'hr.role_page.loading_permissions' | translate }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Skeleton loading cho lần đầu hoặc khi chưa có data -->
+          @if (loadingPermissions() && (appModuleGroups().length === 0 || !activeRole())) {
+            <div class="space-y-3">
+              @for (groupIdx of [1,2,3,4]; track groupIdx) {
+                <div class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden animate-pulse">
+                  <!-- Header skeleton -->
+                  <div class="bg-surface-50 dark:bg-surface-800 p-4 border-b border-surface-200 dark:border-surface-700">
+                    <div class="flex items-center gap-3">
+                      <div class="w-4 h-4 bg-surface-300 dark:bg-surface-600 rounded shrink-0"></div>
+                      <div class="h-5 bg-surface-300 dark:bg-surface-600 rounded w-48"></div>
+                      <div class="ml-auto h-4 bg-surface-300 dark:bg-surface-600 rounded w-20"></div>
+                    </div>
+                  </div>
+                  
+                  <!-- Table skeleton -->
+                  <div class="p-4">
+                    <div class="overflow-x-auto">
+                      <table class="w-full">
+                        <thead>
+                          <tr class="border-b-2 border-surface-200 dark:border-surface-700">
+                            <th class="py-2.5 px-4 text-left min-w-[200px]">
+                              <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded w-24"></div>
+                            </th>
+                            @for (col of [1,2,3,4,5]; track col) {
+                              <th class="py-2.5 px-3 text-left min-w-[96px]">
+                                <div class="flex items-center gap-2">
+                                  <div class="w-4 h-4 bg-surface-200 dark:bg-surface-700 rounded shrink-0"></div>
+                                  <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded w-16"></div>
+                                </div>
+                              </th>
+                            }
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (row of [1,2,3,4,5]; track row) {
+                            <tr class="border-b border-surface-100 dark:border-surface-800">
+                              <td class="py-2.5 px-4">
+                                <div class="flex items-center gap-2">
+                                  <div class="w-4 h-4 bg-surface-200 dark:bg-surface-700 rounded shrink-0"></div>
+                                  <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded" 
+                                       [style.width.%]="50 + (row * 7) % 30"></div>
+                                </div>
+                              </td>
+                              @for (col of [1,2,3,4,5]; track col) {
+                                <td class="py-2.5 px-3 text-center">
+                                  <div class="flex justify-center">
+                                    <div class="w-4 h-4 bg-surface-200 dark:bg-surface-700 rounded"></div>
+                                  </div>
+                                </td>
+                              }
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Content thật -->
+            <p-accordion
+              [multiple]="true"
+              [value]="activeAccordionPanels()"
+              (valueChange)="activeAccordionPanels.set($any($event))"
+              class="perm-accordion"
+              [class.opacity-50]="loadingPermissions()"
+            >
+              @for (group of appModuleGroups(); track group.appModule) {
+                <p-accordion-panel [value]="group.appModule">
+                  <p-accordion-header>
+                    <div class="flex items-center gap-3 w-full" (click)="$event.stopPropagation()">
+                      <p-checkbox
+                        [binary]="true"
+                        [ngModel]="aggChecked().byGroup[group.appModule]"
+                        (onChange)="selectAllGroup(group.appModule, $event.checked)"
+                        [pTooltip]="'hr.role_page.tooltip_select_group_check' | translate"
+                        (click)="$event.stopPropagation()"
+                        [disabled]="loadingPermissions()"
+                      />
+                      <span class="font-semibold text-sm">{{ (group.labelKey || group.label) | translate }}</span>
+                      <span class="ml-auto mr-1 text-xs text-surface-400 dark:text-surface-500 font-normal tabular-nums">
+                        {{ 'hr.role_page.feature_count' | translate: { count: group.modules.length } }}
+                      </span>
+                    </div>
+                  </p-accordion-header>
+
+                  <p-accordion-content>
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr class="border-b-2 border-surface-200 dark:border-surface-700">
+                            <th class="py-2.5 px-4 text-left font-semibold min-w-[200px]">
+                              {{ 'common.label.feature' | translate }}
+                            </th>
+                            <th class="py-2.5 px-3 text-left font-semibold min-w-[96px]">
+                              <div class="flex items-center gap-2">
+                                <p-checkbox
+                                  [binary]="true"
+                                  [ngModel]="aggChecked().byColumn[group.appModule][1]"
+                                  (onChange)="selectAllColumn(group.appModule, 1, $event.checked)"
+                                  [disabled]="loadingPermissions()"
+                                />
+                                <span>{{ 'define.permission.action.list' | translate }}</span>
+                              </div>
+                            </th>
+                            <th class="py-2.5 px-3 text-left font-semibold min-w-[96px]">
+                              <div class="flex items-center gap-2">
+                                <p-checkbox
+                                  [binary]="true"
+                                  [ngModel]="aggChecked().byColumn[group.appModule][2]"
+                                  (onChange)="selectAllColumn(group.appModule, 2, $event.checked)"
+                                  [disabled]="loadingPermissions()"
+                                />
+                                <span>{{ 'common.action.create' | translate }}</span>
+                              </div>
+                            </th>
+                            <th class="py-2.5 px-3 text-left font-semibold min-w-[96px] ">
+                              <div class="flex items-center gap-2">
+                                <p-checkbox
+                                  [binary]="true"
+                                  [ngModel]="aggChecked().byColumn[group.appModule][3]"
+                                  (onChange)="selectAllColumn(group.appModule, 3, $event.checked)"
+                                  [disabled]="loadingPermissions()"
+                                />
+                                <span>{{ 'common.action.update' | translate }}</span>
+                              </div>
+                            </th>
+                            <th class="py-2.5 px-3 text-left font-semibold min-w-[96px] ">
+                              <div class="flex items-center gap-2">
+                                <p-checkbox
+                                  [binary]="true"
+                                  [ngModel]="aggChecked().byColumn[group.appModule][4]"
+                                  (onChange)="selectAllColumn(group.appModule, 4, $event.checked)"
+                                  [disabled]="loadingPermissions()"
+                                />
+                                <span>{{ 'define.permission.action.extend' | translate }}</span>
+                              </div>
+                            </th>
+                            <th class="py-2.5 px-3 text-left font-semibold min-w-[96px] ">
+                              <div class="flex items-center gap-2">
+                                <p-checkbox
+                                  [binary]="true"
+                                  [ngModel]="aggChecked().byColumn[group.appModule][5]"
+                                  (onChange)="selectAllColumn(group.appModule, 5, $event.checked)"
+                                  [disabled]="loadingPermissions()"
+                                />
+                                <span>{{ 'common.action.delete' | translate }}</span>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (mod of group.modules; track mod.id; let odd = $odd) {
+                            <tr
+                              class="border-b border-surface-100 dark:border-surface-800 transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/50"
+                              [class.bg-surface-50]="odd"
+                            >
+                              <td class="py-2 px-4">
+                                <div class="flex items-center gap-2">
+                                  <p-checkbox
+                                    [binary]="true"
+                                    [ngModel]="aggChecked().rows[mod.id]"
+                                    (onChange)="selectAllRow(mod.id, $event.checked)"
+                                    [pTooltip]="'hr.role_page.tooltip_select_row_check' | translate"
+                                    [disabled]="loadingPermissions()"
+                                  />
+                                  <span class="text-surface-700 dark:text-surface-200 font-medium">
+                                    {{ (mod.nameKey || mod.name) | translate }}
+                                  </span>
+                                </div>
+                              </td>
+                              @for (perm of permissionsList(mod); track (perm.value ?? $index)) {
+                                <td class="py-2 px-3 text-center">
+                                  @if (perm.value) {
+                                    <p-checkbox
+                                      [binary]="true"
+                                      [ngModel]="hasPermission(mod.id, perm.value)"
+                                      (onChange)="togglePermission(mod.id, perm, $event.checked)"
+                                      [disabled]="loadingPermissions()"
+                                    />
+                                  } @else {
+                                    <span class="text-surface-300 dark:text-surface-600">—</span>
+                                  }
+                                </td>
+                              }
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </p-accordion-content>
+                </p-accordion-panel>
+              }
+            </p-accordion>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

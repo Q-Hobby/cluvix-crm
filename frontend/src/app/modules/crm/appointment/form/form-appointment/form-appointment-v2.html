@@ -1,0 +1,165 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-4 flex-wrap p-fluid mt-2">
+    <!-- Loại lịch hẹn -->
+    <div class="col-span-12 lg:col-span-3">
+      <p-floatlabel variant="on" class="w-full">
+        <app-appointment-type-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.appointment_type_id!"
+          [activeOnly]="!isEditMode()"
+          [class.ng-invalid]="isFieldInvalid(rootField.appointment_type_id!)"
+        />
+        <label>{{ 'common.label.appointment_type' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Dịch vụ hẹn -->
+    <div class="col-span-12 lg:col-span-9">
+      <p-floatlabel variant="on" class="w-full">
+        <app-services-grouped-autocomplete-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.service_id!"
+          [class.ng-invalid]="isFieldInvalid(rootField.service_id!)"
+          [customerServices]="customerServicesData()"
+        />
+        <label>{{ 'common.label.appointment_service' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Ngày đặt hẹn -->
+    <div class="col-span-12 lg:col-span-3">
+      <p-floatlabel variant="on" class="w-full">
+        <p-datepicker
+          class="w-full ng-dirty"
+          [formField]="rootField.appointment_date!"
+          [showTime]="true"
+          appendTo="body"
+          dateFormat="dd/mm/yy"
+          inputId="appointment_date"
+          [class.ng-invalid]="isFieldInvalid(rootField.appointment_date!)"
+        />
+        <label>{{ 'common.label.appointment_date' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Thời gian dự kiến -->
+    <div class="col-span-12 lg:col-span-3">
+      <p-floatlabel variant="on" class="w-full">
+        <p-select
+          appendTo="body"
+          class="w-full ng-dirty"
+          [formField]="rootField.schedule_time!"
+          [options]="SCHEDULETIME_OPTIONS"
+          inputId="schedule_time"
+          [showClear]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.schedule_time!)"
+        ></p-select>
+        <label>{{ 'common.label.expected_time' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Chi nhánh -->
+    <div class="col-span-12 lg:col-span-3">
+      <p-floatlabel variant="on" class="w-full">
+        <app-branch-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.branch_id!"
+          [activeOnly]="true"
+          [statusOpenAppointment]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.branch_id!)"
+        />
+        <label>{{ 'common.label.branch' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Nguồn khách -->
+    <div class="col-span-12 lg:col-span-3">
+      <p-floatlabel variant="on" class="w-full">
+        <app-source-autocomplete-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.source_id!"
+        />
+        <label>{{ 'common.label.source' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Nhóm dịch vụ -->
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on" class="w-full">
+        <app-service-type-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.type_service_id!"
+          [activeOnly]="true"
+        />
+        <label>{{ 'common.label.service_group_of_interest' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Convert -->
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on" class="w-full">
+        <app-department-user-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.convert_id!"
+          [branchId]="currentBranchId()"
+          [activeOnly]="!isEditMode()"
+          [department]="11"
+        />
+        <label>{{ 'common.label.convert' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Tư vấn viên -->
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on" class="w-full">
+        <app-user-form-control
+          class="w-full ng-dirty"
+          [formField]="rootField.revenue_id!"
+          [activeOnly]="!isEditMode()"
+        ></app-user-form-control>
+        <label>{{ 'common.label.consultant' | translate }}</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- Radio chọn loại lịch -->
+    <div class="col-span-12 flex flex-wrap items-center justify-between gap-3 pt-2">
+      <div class="flex flex-wrap gap-5">
+        @for (category of APPOINTMENT_BOOK_TYPE_OPTIONS; track category.value) {
+          <div class="flex items-center">
+            <p-radiobutton
+              [inputId]="category.key"
+              [value]="category.value"
+              [formField]="rootField.bookType!"
+            ></p-radiobutton>
+            <label [for]="category.key" class="ml-2">{{ (category.labelKey || category.label) | translate }}</label>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Nội dung -->
+    <div class="col-span-12 lg:col-span-6">
+      <label for="content" class="font-medium">{{ 'crm.appointment.label.content_customer' | translate }}</label>
+      <p-editor
+        #contentEditor
+        [formField]="rootField.content!"
+        id="content"
+        [style]="{ height: '200px' }"
+      ></p-editor>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+      <label for="contentPrivate" class="font-medium">{{ 'common.label.internal_note' | translate }}</label>
+      <p-editor
+        #contentPrivateEditor
+        [formField]="rootField.contentPrivate!"
+        id="contentPrivate"
+        [style]="{ height: '200px' }"
+      ></p-editor>
+    </div>
+  </p-fluid>
+  <app-dialog-footer
+    [isSubmitting]="isSubmitting()"
+    (cancelForm)="closeForm($event)"
+    (saveForm)="onSubmit()"
+  />
+</form>

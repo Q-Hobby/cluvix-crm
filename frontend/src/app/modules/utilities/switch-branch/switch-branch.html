@@ -1,0 +1,24 @@
+@if (loadingOptions()) {
+  <div class="flex justify-center items-center py-8">
+    <p-progress-spinner class="w-10 h-10" strokeWidth="4"/>
+  </div>
+} @else {
+  <form novalidate>
+    <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+      <div class="col-span-12">
+        <p-floatlabel variant="on" class="w-full">
+          <app-branch-form-control
+            [class.ng-invalid]="isFieldInvalid(rootField.branchActive_id!)"
+            [activeOnly]="true"
+            class="ng-dirty"
+            [formField]="$any(rootField.branchActive_id!)"/>
+          <label for="branchActive_id">{{ 'common.label.branch' | translate }}</label>
+        </p-floatlabel>
+        <small class="text-red-500">
+          {{ 'utilities.switch_branch.branch_note' | translate }}
+        </small>
+      </div>
+    </p-fluid>
+    <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)" (saveForm)="onSubmit()"/>
+  </form>
+}

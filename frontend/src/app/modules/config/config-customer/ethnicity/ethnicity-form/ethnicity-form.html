@@ -1,0 +1,40 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          [formField]="rootField.name!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'config.ethnicity.name' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.codeEthnicity!)"
+          [formField]="rootField.codeEthnicity!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="codeEthnicity"
+          pInputText
+          type="text"
+        />
+        <label for="codeEthnicity">{{ 'config.ethnicity.code' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 inline-flex items-center gap-2">
+      <p-toggleswitch [formField]="rootField.status!" id="status" [trueValue]="1" [falseValue]="0"></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ (rootField.status!().value() === 1 ? 'common.label.visible' : 'common.label.hidden') | translate }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

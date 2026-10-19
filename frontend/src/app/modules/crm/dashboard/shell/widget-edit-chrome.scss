@@ -1,0 +1,14 @@
+.dash-chrome-btn {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: var(--p-text-muted-color);
+  background: transparent;
+  border: 0;
+}
+.dash-chrome-btn:hover:not(:disabled) { background: var(--p-content-hover-background); color: var(--p-text-color); }
+.dash-chrome-btn:focus-visible { outline: 2px solid var(--p-primary-color); outline-offset: 1px; }
+.dash-chrome-btn:disabled { opacity: 0.5; }

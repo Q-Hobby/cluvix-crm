@@ -1,0 +1,668 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  selectionMode="single">
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+          <button
+            (click)="exportCustomerToExcel()"
+            *hasPerm="permission.permissionExtCustomer"
+            [pTooltip]="'crm.customer.export_data_tooltip' | translate"
+            severity="help"
+            tooltipPosition="top"
+            type="button"
+            pButton
+          ><i class="pi pi-download"></i><span>{{ isDesktop() ? ('common.action.export' | translate) : '' }}</span></button>
+      </div>
+      <div class="p-toolbar-group-end">
+        @if (rfFilterModel) {
+          <form [formGroup]="rfFilterModel" novalidate>
+            <p-popover #op>
+              <div
+                [style]="
+              isDesktop()
+                ? { width: '600px' }
+                : { width: '300px', height: '400px', overflow: 'auto' }
+            "
+                class="grid grid-cols-12 gap-4"
+              >
+                @if (isMobile()) {
+                  <div class="col-span-12 md:col-span-6 mt-2">
+                    <p-floatlabel variant="on">
+                      <p-iconfield>
+                        <p-inputicon class="pi pi-search"/>
+                        <input
+                          class="w-full"
+                          autocomplete="off"
+                          formControlName="_keyword"
+                          id="search_keyword"
+                          pInputText
+                          type="text"
+                        />
+                      </p-iconfield>
+                      <label for="search_keyword">{{ "common.label.keyword" | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                }
+                @if (isMobile()) {
+                  <div class="col-span-12 md:col-span-6">
+                    <p-floatlabel variant="on">
+                      <p-select
+                        [options]="customerTypeOptions()"
+                        [showClear]="true"
+                        appendTo="body"
+                        class="w-full"
+                        [emptyFilterMessage]="'common.label.no_results' | translate"
+                        formControlName="customerType"
+                        id="customerType"
+                      >
+                      </p-select>
+                      <label for="customerType">{{ "crm.customer.filter_customer_type" | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                }
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-branch-multiselect-form-control formControlName="branch_id"/>
+                    <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-customer-category-multiselect-form-control
+                      formControlName="category"
+                    ></app-customer-category-multiselect-form-control>
+                    <label for="category">{{ "common.label.customer_category" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-user-multiselect-form-control formControlName="payment_user_id" [includeNull]="true"/>
+                    <label for="payment_user_id">{{ "common.label.consultant" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-select [multiple]="true"
+                      [options]="genderOptions()"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="gender"
+                      id="gender"
+                      optionLabel="label"
+                      optionValue="value"
+                      resetFilterOnHide="true"
+                    >
+                    </p-select>
+                    <label for="gender">{{ "common.label.gender" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-inputgroup>
+                    <p-floatlabel variant="on">
+                      <p-inputnumber
+                        formControlName="_ageFrom"
+                        id="_ageFrom"
+                        [min]="0"
+                        [max]="120"
+                        class="w-full"></p-inputnumber>
+                      <label for="_ageFrom">{{ 'common.label.age_from' | translate }}</label>
+                    </p-floatlabel>
+                    <p-floatlabel variant="on">
+                      <p-inputnumber
+                        formControlName="_ageTo"
+                        id="_ageTo"
+                        class="w-full"></p-inputnumber>
+                      <label for="_ageTo">{{ 'common.label.age_to' | translate }}</label>
+                    </p-floatlabel>
+                  </p-inputgroup>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-source-multiselect-form-control formControlName="source_id"/>
+                    <label for="source_id">{{ "common.label.source" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-service-type-multiselect-form-control
+                      formControlName="type_service_id">
+                    </app-service-type-multiselect-form-control>
+                    <label for="type_service_id">{{ "common.label.service_group_of_interest" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-select [multiple]="true"
+                      [options]="customerStatusOptions()"
+                      appendTo="body"
+                      class="w-full"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="_status"
+                      id="_status"
+                      resetFilterOnHide="true"
+                    >
+                    </p-select>
+                    <label for="_status">{{ "common.label.progress" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                @if (!isDesktop()) {
+                  <div class="col-span-12 md:col-span-6">
+                    <p-floatlabel variant="on">
+                      <p-datepicker
+                        (onClear)="clearStartTime()"
+                        [readonlyInput]="true"
+                        appendTo="body"
+                        dateFormat="dd/mm/yy"
+                        formControlName="created_day"
+                        id="created_day"
+                        selectionMode="range"
+                        showIcon="true"
+                      >
+                        <ng-template #footer>
+                          <app-date-picker-footer
+                            (rangeChange)="onCreatedDaySelect($event)"
+                          ></app-date-picker-footer>
+                        </ng-template>
+                      </p-datepicker>
+                      <label for="created_day">{{ "common.label.collection_date" | translate }}</label>
+                    </p-floatlabel>
+                  </div>
+                }
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <app-user-multiselect-form-control
+                      formControlName="created_by">
+                    </app-user-multiselect-form-control>
+                    <label for="created_by">{{ "common.label.user_created" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+                <div class="col-span-12 md:col-span-6">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      (onClear)="clearStartTime()"
+                      [readonlyInput]="true"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="created_at"
+                      id="created_at"
+                      selectionMode="range"
+                      showIcon="true"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer
+                          (rangeChange)="onQuickSelect($event)"
+                        ></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="created_day">{{ "common.label.created_at" | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              </div>
+            </p-popover>
+            <div class="flex items-center gap-2 w-full">
+              @if (isDesktop()) {
+                <p-floatlabel variant="on">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input
+                      autocomplete="off"
+                      formControlName="_keyword"
+                      id="search_keyword"
+                      pInputText
+                      type="text"
+                    />
+                  </p-iconfield>
+                  <label for="search_keyword">{{ "common.label.keyword" | translate }}</label>
+                </p-floatlabel>
+              }
+              @if (isDesktop()) {
+                <p-floatlabel variant="on" class="flex-1 min-w-[200px]">
+                  <p-select
+                    [options]="customerTypeOptions()"
+                    [showClear]="true"
+                    appendTo="body"
+                    class="w-full"
+                    [emptyFilterMessage]="'common.label.no_results' | translate"
+                    formControlName="customerType"
+                    id="customerType"
+                  >
+                  </p-select>
+                  <label for="customerType">{{ "crm.customer.filter_customer_type" | translate }}</label>
+                </p-floatlabel>
+              }
+              @if (isDesktop()) {
+                <p-floatlabel variant="on">
+                  <p-datepicker
+                    (onClear)="clearStartTime()"
+                    [readonlyInput]="true"
+                    appendTo="body"
+                    dateFormat="dd/mm/yy"
+                    formControlName="created_day"
+                    id="createdDay"
+                    selectionMode="range"
+                    showIcon="true"
+                  >
+                    <ng-template #footer>
+                      <app-date-picker-footer
+                        (rangeChange)="onCreatedDaySelect($event)"
+                      ></app-date-picker-footer>
+                    </ng-template>
+                  </p-datepicker>
+                  <label for="createdDay">{{ "common.label.collection_date" | translate }}</label>
+                </p-floatlabel>
+              }
+              <button
+                (click)="op.toggle($event)"
+                [attr.aria-label]="'common.action.filter' | translate"
+                [pTooltip]="'common.action.filter' | translate"
+                severity="info"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+                pButton
+              ><i class="pi pi-filter"></i></button>
+              <button
+                (click)="clearFilter()"
+                [attr.aria-label]="'common.action.clear_filter' | translate"
+                [pTooltip]="'common.action.clear_filter' | translate"
+                severity="warn"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+                pButton
+              ><i class="pi pi-filter-slash"></i></button>
+              <button
+                (click)="resetPage()"
+                [attr.aria-label]="'common.action.refresh' | translate"
+                [pTooltip]="'common.action.reload_page' | translate"
+                severity="secondary"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+                pButton
+              ><i class="pi pi-refresh"></i></button>
+              <button
+                (click)="colsTpl.toggle($event)"
+                [attr.aria-label]="'common.action.view_more' | translate"
+                [pTooltip]="'common.action.view_more' | translate"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+                pButton
+              ><i class="pi pi-th-large"></i></button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (visibleColumns().id) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (visibleColumns().avatar) {
+        <th class="w-[80px]">
+          <div class="flex items-center justify-center w-full">Avatar</div>
+        </th>
+      }
+      @if (visibleColumns().code) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.customer_code' | translate }}
+        </th>
+      }
+      @if (visibleColumns().old_code) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.old_code' | translate }}
+        </th>
+      }
+      @if (visibleColumns().fullname) {
+        <th class="min-w-[180px]">
+          {{ 'common.label.customer' | translate }}
+        </th>
+      }
+      @if (visibleColumns().phone) {
+        <th class="min-w-[110px]">
+          {{ 'common.label.phone' | translate }}
+        </th>
+      }
+      @if (visibleColumns().email) {
+        <th class="min-w-[180px]">{{ 'common.label.email' | translate }}</th>
+      }
+      @if (visibleColumns().genderCustomer) {
+        <th class="min-w-[80px] w-[80px]">{{ "common.label.gender" | translate }}</th>
+      }
+      @if (visibleColumns().birthday) {
+        <th class="min-w-[110px]">{{ 'common.label.birthday' | translate }}</th>
+      }
+      @if (visibleColumns().age) {
+        <th class="min-w-[70px] w-[70px] text-center">{{ 'common.label.age' | translate }}</th>
+      }
+      @if (visibleColumns().statusName) {
+        <th class="min-w-[120px]">{{ "common.label.progress" | translate }}</th>
+      }
+      @if (visibleColumns().affiliate) {
+        <th class="min-w-[160px]">{{ "common.label.referrer" | translate }}</th>
+      }
+      @if (visibleColumns().source) {
+        <th class="min-w-[250px]">{{ "common.label.source" | translate }}</th>
+      }
+      @if (visibleColumns().serviceType) {
+        <th class="min-w-[200px]">{{ "common.label.service_group_of_interest" | translate }}</th>
+      }
+      @if (visibleColumns().payment_user_id) {
+        <th class="min-w-[200px]">{{ "common.label.consultant" | translate }}</th>
+      }
+      @if (visibleColumns().totalRevenue) {
+        <th class="min-w-[110px] w-[110px]">{{ "common.label.total_sales" | translate }}</th>
+      }
+      @if (visibleColumns().totalPayment) {
+        <th class="min-w-[110px] w-[110px]">{{ "common.label.revenue" | translate }}</th>
+      }
+      @if (visibleColumns().totalDebt) {
+        <th class="min-w-[110px] w-[110px]">{{ "displaycols.contact.total_debt" | translate }}</th>
+      }
+      @if (visibleColumns().totalDeposit) {
+        <th class="min-w-[110px] w-[110px]">{{ "displaycols.contact.total_deposit" | translate }}</th>
+      }
+      @if (visibleColumns().refundDeposit) {
+        <th class="min-w-[110px] w-[110px]">{{ "common.label.refund_deposit" | translate }}</th>
+      }
+      @if (visibleColumns().refundService) {
+        <th class="min-w-[110px] w-[110px]" [pTooltip]="'common.label.refund_service' | translate"
+            tooltipPosition="top">{{ "crm.customer.refund_service_short" | translate }}
+        </th>
+      }
+      @if (visibleColumns().treatment_count) {
+        <th class="min-w-[90px] w-[90px] text-center">{{ "common.label.treatment_progress" | translate }}</th>
+      }
+      @if (visibleColumns().visit_count) {
+        <th class="min-w-[90px] w-[90px] text-center">{{ "crm.customer.visit_count" | translate }}</th>
+      }
+      @if (visibleColumns().country) {
+        <th class="min-w-[180px]">{{ "common.label.country" | translate }}</th>
+      }
+      @if (visibleColumns().province) {
+        <th class="min-w-[180px]">{{ "common.label.province" | translate }}</th>
+      }
+      @if (visibleColumns().address) {
+        <th class="min-w-[180px]">{{ "common.label.address" | translate }}</th>
+      }
+      @if (visibleColumns().branch) {
+        <th class="min-w-[150px]">
+          {{ 'common.label.branch' | translate }}
+        </th>
+      }
+      @if (visibleColumns().created_by) {
+        <th class="min-w-[180px]">{{ "common.label.user_created" | translate }}</th>
+      }
+      @if (visibleColumns().createdDay) {
+        <th class="min-w-[140px]">{{ "common.label.collection_date" | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[130px] min-w-[130px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr
+      [style.background-color]="
+        displayColorRow(model.totalRevenue, model.totalPayment)
+      "
+      class="vertical-align-top"
+    >
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (visibleColumns().id) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (visibleColumns().avatar) {
+        <td>
+          <div class="flex items-center justify-center w-full">
+            <app-avatar-lazy
+              [src]="model.avatar"
+              [originalSrc]="model.avatar"
+              [name]="model.customerDisplayName"
+              [lightbox]="true"
+            />
+          </div>
+        </td>
+      }
+      @if (visibleColumns().code) {
+        <td [appCopyText]="model.code">
+          {{ model.code }}
+        </td>
+      }
+      @if (visibleColumns().old_code) {
+        <td>
+          <span [appCopyText]="model.old_code">{{ model.old_code || '—' }}</span>
+        </td>
+      }
+      @if (visibleColumns().fullname) {
+        <td>
+          <app-customer-name
+            [id]="model.id"
+            [name]="model.customerDisplayName"
+            [customer]="model"
+          />
+        </td>
+      }
+      @if (visibleColumns().phone) {
+        <td>
+          <app-customer-phone [phone]="model.phone" />
+        </td>
+      }
+      @if (visibleColumns().email) {
+        <td>{{ model.email || '—' }}</td>
+      }
+      @if (visibleColumns().genderCustomer) {
+        <td>
+          {{ model.genderKey ? (model.genderKey | translate) : model.genderLabel }}
+        </td>
+      }
+      @if (visibleColumns().birthday) {
+        <td>{{ model.birthdayFormatted || '—' }}</td>
+      }
+      @if (visibleColumns().age) {
+        <td class="text-center">{{ model.age ?? '—' }}</td>
+      }
+      @if (visibleColumns().statusName) {
+        <td>
+            <span
+              class="font-semibold px-3 py-[5px] rounded-full shadow-sm text-sm mr-1 mb-1 inline-block"
+              [class]="model.statusClass">
+              {{ model.statusKey ? (model.statusKey | translate) : model.statusLabel }}
+            </span>
+        </td>
+      }
+      @if (visibleColumns().affiliate) {
+        <td>{{ model.affiliate_fullname || '—' }}</td>
+      }
+      @if (visibleColumns().source) {
+        <td>{{ model.sourceLabel || '—' }}</td>
+      }
+      @if (visibleColumns().serviceType) {
+        <td>{{ model.serviceTypeLabel || '—' }}</td>
+      }
+      @if (visibleColumns().payment_user_id) {
+        <td>
+          @if (model.payment_user_id) {
+            <p-chip label="{{model.paymentUserInfo?.fullname}}" image="{{ model.paymentUserInfo?.avatar }}"
+                    alt="{{model.paymentUserInfo?.fullname}}"/>
+          } @else {
+            —
+          }
+        </td>
+      }
+      @if (visibleColumns().totalRevenue) {
+        <td class="text-blue-500">
+          {{ model.totalRevenue | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().totalPayment) {
+        <td class="text-blue-500">
+          {{ model.totalPayment | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().totalDebt) {
+        <td class="text-red-500">
+          {{ model.totalDebt | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().totalDeposit) {
+        <td class="text-blue-500">
+          {{ model.totalDeposit | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().refundDeposit) {
+        <td class="text-red-500">
+          {{ model.refundDeposit | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().refundService) {
+        <td class="text-red-500">
+          {{ model.refundService | currencyFormat }}
+        </td>
+      }
+      @if (visibleColumns().treatment_count) {
+        <td class="text-center text-teal-700">{{ model.treatment_count ?? 0 }}</td>
+      }
+      @if (visibleColumns().visit_count) {
+        <td class="text-center text-cyan-700">{{ model.visit_count ?? 0 }}</td>
+      }
+      @if (visibleColumns().country) {
+        <td>
+          @if (model.country_id) {
+            <div class="flex items-center gap-2">
+              <img
+                class="w-[20px] min-w-[20px]"
+                [class]="'flag flag-' + model.countryInfo?.code?.toLowerCase()"
+                [alt]="model.countryInfo?.code"
+                src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+              />
+              <span>{{ model.countryInfo?.name }}</span>
+            </div>
+          } @else {
+            {{ model.country_id || '—' }}
+          }
+        </td>
+      }
+      @if (visibleColumns().province) {
+        <td>{{ model.provinceLabel || '—' }}</td>
+      }
+      @if (visibleColumns().address) {
+        <td>{{ model.address || '—' }}</td>
+      }
+      @if (visibleColumns().branch) {
+        <td>{{ model.branchLabel || '—' }}</td>
+      }
+      @if (visibleColumns().created_by) {
+        <td>
+          <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                  alt="{{model.createdByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (visibleColumns().createdDay) {
+        <td>
+          {{ model.created_dayFormatted }}
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="flex items-center justify-center w-full gap-1">
+          <p-buttongroup>
+            <p-button
+              (click)="updateCustomer(model)"
+              *hasPerm="permission.permissionUpdateCustomer"
+              icon="pi pi-pencil" [ariaLabel]="'common.action.edit' | translate"
+              [pTooltip]="'crm.customer.update_customer_tooltip' | translate"
+              severity="success"
+              size="small"
+              tooltipPosition="top"
+            ></p-button>
+
+            <p-button
+              (click)="deleteRecord($event, model.id)"
+              *hasPerm="permission.permissionDeleteCustomer"
+              icon="pi pi-trash" [ariaLabel]="'common.action.delete' | translate"
+              [pTooltip]="'common.label.delete_customer' | translate"
+              severity="danger"
+              size="small"
+              tooltipPosition="left"
+            ></p-button>
+          </p-buttongroup>
+          <app-customer-timeline-button
+            (clickTimeLine)="timelineCustomer($event.event, $event.id, $event.fullname)"
+            [customer]="model"
+          >
+          </app-customer-timeline-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

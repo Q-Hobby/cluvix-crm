@@ -1,0 +1,131 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  [filterDelay]="0"
+  selectionMode="single">
+  <ng-template #caption>
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    @if (rfFilterModel) {
+      <form [formGroup]="rfFilterModel" novalidate>
+        <div class="flex items-center">
+          <div class="flex items-center gap-2 w-full justify-between">
+            <div class="p-toolbar-group-start"></div>
+            <div class="p-toolbar-group-end flex items-center gap-2 flex-wrap">
+            <p-floatlabel variant="on">
+              <p-iconfield>
+                <p-inputicon class="pi pi-search"/>
+                <input
+                  autocomplete="off"
+                  formControlName="_keyword"
+                  id="search_keyword"
+                  pInputText
+                  type="text"
+                />
+              </p-iconfield>
+              <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+            </p-floatlabel>
+            <button type="button"
+              pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-refresh"></i></button>
+            </div>
+          </div>
+        </div>
+      </form>
+    }
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[40px] w-[40px]">ID</th>
+      <th class="min-w-[130px] w-[130px]">{{ 'common.label.time' | translate }}</th>
+      <th class="min-w-[180px] w-[180px]">{{ 'common.label.actor' | translate }}</th>
+      <th class="min-w-[100px] w-[100px]">{{ 'common.label.actions' | translate }}</th>
+      <th class="min-w-[200px] w-[200px]">{{ 'common.label.customer' | translate }}</th>
+      <th class="min-w-[400px]">{{ 'history.log.col_changes' | translate }}</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>{{ model.appointment_id }}</td>
+      <td>{{ model.changed_atFormatted }}</td>
+      <td>
+        <p-chip alt="{{model.changedBy?.fullname}}" image="{{ model.changedBy?.avatar }}"
+                label="{{model.changedBy?.fullname}}"/>
+      </td>
+      <td>
+        <p-tag [severity]="model.actionType?.severity" value="{{ model.actionType?.label }}"></p-tag>
+      </td>
+      <td>
+        <app-customer-name
+          [id]="model.customer?.id"
+            [customer]="model.customer"
+          [name]="(model.customer?.fullname || '') + (model.customer?.nickname ? ' - ' + model.customer?.nickname : '')"
+        />
+      </td>
+      <td>
+        @if (model.action_type === LOG_ACTION_DELETE) {
+          <span class="text-muted-color italic">{{ 'common.message.data_deleted' | translate }}</span>
+        } @else {
+          @for (entry of model.changed_fields; track entry.key) {
+            <p>
+              <b>{{ entry.key }}</b>:
+              @if (entry.key === 'Ghi chú' || entry.key === 'Nội dung lịch hẹn') {
+                <span class="text-red-500 line-through" [innerHTML]="entry.value?.from"></span>
+                →
+                <span class="text-green-500" [innerHTML]="entry.value?.to"></span>
+              } @else {
+                <span class="text-red-500 line-through">{{ entry.value?.from }}</span>
+                →
+                <span class="text-green-500">{{ entry.value?.to }}</span>
+              }
+            </p>
+          }
+        }
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="7">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

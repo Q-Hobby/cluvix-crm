@@ -1,0 +1,462 @@
+@if (model(); as m) {
+  <div class="grid_tab">
+    <div class="grid grid-cols-12 gap-2">
+      <!-- Header -->
+      <div class="col-span-12 mt-4">
+        <div class="card flex justify-between items-center">
+          <div class="grid grid-cols-12 gap-2">
+            <div class="col-span-12 flex flex-col lg:flex-row lg:items-center gap-3">
+              <div class="flex items-center gap-3 shrink-0">
+              @if (m.id) {
+                <div class="avatar-contact relative">
+                  <app-avatar-lazy
+                    [src]="avatarUrl()"
+                    [originalSrc]="m.avatar"
+                    [name]="m.fullname"
+                    [size]="78"
+                    [lightbox]="true"
+                  />
+
+                  <div class="avatar-actions">
+                    <button
+                      *hasPerm="permission.permissionUpdateCustomer"
+                      severity="success"
+                      [rounded]="true"
+                      pButton
+                      pRipple
+                      [pTooltip]="'common.label.take_photo' | translate"
+                      tooltipPosition="top"
+                      type="button"
+                      [attr.aria-label]="'common.label.take_photo' | translate"
+                      (click)="openCamera()">
+                      <i class="pi pi-camera"></i>
+                    </button>
+
+                    <input #inputUploadAvatar
+                           (change)="onFileSelected($event)"
+                           class="hidden"
+                           type="file" accept="image/*"/>
+
+                    <button
+                      (click)="inputUploadAvatar.click()"
+                      *hasPerm="permission.permissionUpdateCustomer"
+                      class="upload-avatar"
+                      severity="help"
+                      [rounded]="true"
+                      pButton
+                      pRipple
+                      [pTooltip]="'crm.customer.upload_avatar' | translate"
+                      tooltipPosition="top"
+                      [attr.aria-label]="'crm.customer.upload_avatar' | translate"
+                      type="button">
+                      <i class="pi pi-upload"></i>
+                    </button>
+                  </div>
+                </div>
+              }
+              @if (loading() && !m.id) {
+                <div>
+                  <p-skeleton shape="circle" size="6rem"></p-skeleton>
+                </div>
+              }
+              <div>
+                @if (loading() && !m.id) {
+                  <div class="pt-3">
+                    <p-skeleton class="mb-3" width="25rem"></p-skeleton>
+                    <p-skeleton class="mb-3" width="25rem"></p-skeleton>
+                    <p-skeleton class="mb-3" width="35rem"></p-skeleton>
+                  </div>
+                }
+
+                @if (m.id) {
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="font-bold text-2xl text-[var(--p-text-color)]">
+                        {{ m.customerDisplayName }}
+                      </span>
+                      <!-- Nút thao tác hồ sơ — sát phải hàng tên, cùng kiểu với nút Timeline -->
+                      <div class="flex items-center gap-2 shrink-0">
+                        @if (m.canShowUpdateBtn) {
+                          <button
+                            type="button"
+                            class="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-br from-green-500 to-green-700 shadow-md text-white cursor-pointer hover:from-green-600 hover:to-green-800 transition-all min-h-[22px]"
+                            [pTooltip]="'crm.customer.update_customer_tooltip' | translate"
+                            tooltipPosition="top"
+                            [attr.aria-label]="'crm.customer.update_customer_tooltip' | translate"
+                            (click)="updateCustomer(m)">
+                            <i class="pi pi-pencil text-xs"></i>
+                          </button>
+                        }
+                        <button
+                          type="button"
+                          *hasPerm="permission.permissionCreateCustomer"
+                          class="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-br from-blue-500 to-blue-700 shadow-md text-white cursor-pointer hover:from-blue-600 hover:to-blue-800 transition-all min-h-[22px]"
+                          [pTooltip]="'crm.customer.create_existing_tooltip' | translate"
+                          tooltipPosition="top"
+                          [attr.aria-label]="'crm.customer.create_existing_tooltip' | translate"
+                          (click)="createCustomerSwitch()">
+                          <i class="pi pi-copy text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm flex-wrap">
+                      <div
+                        class="flex items-center gap-1 px-2 py-1 rounded-md border"
+                        [style.background]="tint(C.rank, 12)"
+                        [style.border-color]="tint(C.rank, 30)"
+                        [pTooltip]="'common.label.member_rank' | translate" tooltipPosition="top">
+                        <i class="text-sm" [class]="m.customerRanking?.icon" [ngClass]="{
+                                    'text-gray-500': m.customerRanking?.value === 0,
+                                    'text-gray-400': m.customerRanking?.value === 1,
+                                    'text-yellow-500': m.customerRanking?.value === 2,
+                                    'text-blue-500': m.customerRanking?.value === 3,
+                                    'text-purple-600': m.customerRanking?.value === 4
+                                }"></i>
+                        <span class="font-medium" [style.color]="shade(C.rank)">{{ m.customerRanking?.label || ('common.label.no_rank' | translate) }}</span>
+                      </div>
+
+                      <div class="flex items-center gap-1 px-2 py-1 rounded-md bg-[var(--p-content-hover-background)] border border-[var(--p-content-border-color)]"
+                           [pTooltip]="'common.label.customer_code' | translate" tooltipPosition="top">
+                        <i class="pi pi-hashtag text-[var(--p-text-muted-color)] text-xs"></i>
+                        <span class="text-[var(--p-text-color)] font-medium" [appCopyText]="m.code">{{ m.code }}</span>
+                      </div>
+                      <button
+                        type="button"
+                        class="flex items-center gap-1 px-2 py-1 rounded-md bg-gradient-to-br from-blue-500 to-blue-700 shadow-md text-white cursor-pointer hover:from-blue-600 hover:to-blue-800 transition-all min-h-[22px]"
+                        [pTooltip]="'crm.customer.customer_timeline_tooltip' | translate"
+                        tooltipPosition="top"
+                        [attr.aria-label]="'crm.customer.customer_timeline_tooltip' | translate"
+                        (click)="timelineCustomer(m.id, m.fullname ?? '')">
+                        <i class="pi pi-sitemap text-xs"></i>
+                      </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm flex-wrap">
+                            <span
+                              [class]="`statusCustomer-10`"
+                              class="cx-badge font-semibold mr-1 inline-flex items-center text-sm">
+                              <app-customer-phone [phone]="m.phone" />
+                            </span>
+                      <span class="cx-badge font-semibold mr-1 inline-block text-sm"
+                            [pTooltip]="'common.label.branch' | translate" tooltipPosition="top"
+                            [class]="`statusCustomer-1`">
+                                <i class="pi pi-map-marker"></i>
+                        {{ m.branchLabel || ('crm.customer.no_branch' | translate) }}
+                            </span>
+
+                      <span class="cx-badge font-semibold mr-1 inline-block text-sm"
+                            [pTooltip]="'crm.customer.progress_tooltip' | translate" tooltipPosition="top"
+                            [class]="`statusCustomer-${m.status}`">
+                              <i class="pi pi-flag"></i> {{ m.statusKey ? (m.statusKey | translate) : m.statusLabel }}
+                            </span>
+                    </div>
+                  </div>
+                }
+              </div>
+              </div>
+
+              <!-- Stats — gom 2 nhóm ngữ nghĩa (Tài chính / Hành vi), mỗi nhóm 1 hue.
+                   Layout để thẳng bằng Tailwind utility trên template (KHÔNG tách class ra
+                   SCSS): markup viết 1 lần trong @for nên không có chuyện lặp, và tile không
+                   thể mất display:flex vì stylesheet riêng chưa kịp build.
+                   Tile giá trị = 0 vẫn LUÔN mount (chỉ mờ) để rail không re-flow ngang sau
+                   mỗi reloadCustomerInfo() khi user lưu ở tab con — B.19 (CLS). -->
+              <div class="w-full flex flex-col gap-3 lg:flex-1 lg:min-w-0 lg:flex-row lg:items-start lg:gap-3">
+                @for (group of statGroups(); track group.titleKey) {
+                  <div class="min-w-0">
+                    <div class="text-[11px] font-semibold uppercase tracking-wide mb-1 px-0.5 text-[var(--p-text-muted-color)]">
+                      {{ group.titleKey | translate }}
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:flex lg:flex-wrap lg:items-center">
+                      @for (s of group.tiles; track s.key) {
+                        <div class="flex items-center gap-2 min-w-0 min-h-[36px] px-3 py-1 rounded-md border shadow-sm lg:min-w-[110px]"
+                             [class.opacity-60]="s.dim"
+                             [style.background]="tint(s.color, s.emphasis ? 16 : 9)"
+                             [style.border-color]="tint(s.color, s.emphasis ? 34 : 20)"
+                             [pTooltip]="s.tooltipKey | translate" tooltipPosition="top">
+                          <i class="shrink-0" [class]="s.icon" [style.color]="s.color"></i>
+                          <div class="leading-tight min-w-0">
+                            <div class="text-xs truncate text-[var(--p-text-muted-color)]">{{ s.labelKey | translate }}</div>
+                            <div class="font-semibold truncate cx-num" [style.color]="shade(s.color)">
+                              {{ s.value | number: s.digits }}{{ s.suffixKey ? ' ' + (s.suffixKey | translate) : '' }}
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-span-12">
+        <div class="card !pt-0">
+          <p-tabs (valueChange)="onTabChange($event)"
+                  [value]="activeTab()">
+            <p-tablist>
+              <p-tab value="0">
+                <i class="pi pi-user mr-1 text-blue-600"></i>
+                <span>{{ 'common.label.info' | translate }}</span>
+              </p-tab>
+              <p-tab *hasPerm="permission.permissionViewReminder" value="1">
+                <i class="pi pi-bell mr-1 text-orange-500"></i>
+                <span>{{ 'common.label.reminders' | translate }}</span>
+              </p-tab>
+              <p-tab *hasPerm="permission.permissionViewAppointment" value="2">
+                <i class="pi pi-calendar mr-1 text-green-600"></i>
+                <span>{{ 'common.label.appointment' | translate }}</span>
+              </p-tab>
+              <p-tab *hasPerm="permission.permissionViewServiceUsed" value="4">
+                <i class="pi pi-shopping-cart mr-1 text-indigo-600"></i>
+                <span>{{ 'common.label.order' | translate }}</span>
+              </p-tab>
+              <p-tab *hasPerm="permission.permissionViewPayment" value="5">
+                <i class="pi pi-money-bill mr-1 text-emerald-600"></i>
+                <span>{{ 'common.label.payment' | translate }}</span>
+              </p-tab>
+            </p-tablist>
+            <p-tabpanels [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'">
+              <p-tabpanel value="0">
+                  <div
+                    [style]="{
+                  minHeight: 'calc(100vh - ' + tableDetail() + 'px)',
+                  maxHeight: 'calc(100vh - ' + tableDetail() + 'px)',
+                }"
+                    class="grid grid-cols-12 gap-2 overflow-auto tab-fade-content" #tabScroll
+                  >
+                    <div class="col-span-12 md:col-span-4 lg:col-span-3 overflow-auto pt-2" [style]="{
+                  minHeight: 'calc(100vh - ' + tableDetail() + 'px)',
+                  maxHeight: 'calc(100vh - ' + tableDetail() + 'px)',
+                }">
+                      @if (loading() && !m.id) {
+                        <div class="grid grid-cols-2 gap-3 mb-4 pb-3 border-b">
+                          @for (_ of skeletonStats; track $index) {
+                            <p-skeleton height="4rem" class="rounded-md"></p-skeleton>
+                          }
+                        </div>
+                        <div class="mb-3">
+                          <p-skeleton height="2.5rem" class="rounded-md"></p-skeleton>
+                        </div>
+                        @for (_ of skeletonRows; track $index) {
+                          <p-skeleton class="mb-3"
+                                      [width]="$index % 3 === 0 ? '85%' : ($index % 3 === 1 ? '70%' : '90%')"></p-skeleton>
+                        }
+                      } @else {
+                      <div class="mb-0 overflow-auto">
+                        <div class="grid grid-cols-2 gap-3 mb-4 pb-3 border-b border-[var(--p-content-border-color)]">
+                          <!-- Liên hệ lần cuối -->
+                          <div class="flex items-center gap-2 min-w-0 min-h-[44px] px-4 py-3 rounded-md shadow-sm" [style.background]="tint(C.lastContact, 10)"
+                               [pTooltip]="'crm.customer.last_contact' | translate"
+                               tooltipPosition="top">
+                            <i class="pi pi-phone shrink-0" [style.color]="C.lastContact"></i>
+                            <div class="leading-tight min-w-0">
+                              <div class="text-xs truncate text-[var(--p-text-muted-color)]">{{ 'crm.customer.last_contact' | translate }}</div>
+                              <div class="font-semibold truncate cx-num" [style.color]="shade(C.lastContact)">{{ lastContactRelative() }}
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Lần ghé gần nhất -->
+                          <div class="flex items-center gap-2 min-w-0 min-h-[44px] px-4 py-3 rounded-md shadow-sm" [style.background]="tint(C.lastVisit, 10)"
+                               [pTooltip]="'common.label.last_visit' | translate"
+                               tooltipPosition="top">
+                            <i class="pi pi-map-marker shrink-0" [style.color]="C.lastVisit"></i>
+                            <div class="leading-tight min-w-0">
+                              <div class="text-xs truncate text-[var(--p-text-muted-color)]">{{ 'common.label.last_visit' | translate }}</div>
+                              <div class="font-semibold truncate cx-num" [style.color]="shade(C.lastVisit)">{{ lastVisitRelative() }}</div>
+                            </div>
+                          </div>
+
+                          <!-- Điểm thưởng -->
+                          <div class="flex items-center gap-2 min-w-0 min-h-[44px] px-4 py-3 rounded-md shadow-sm" [style.background]="tint(C.reward, 10)"
+                               [pTooltip]="'common.label.reward_points' | translate"
+                               tooltipPosition="top">
+                            <i class="pi pi-gift shrink-0" [style.color]="C.reward"></i>
+                            <div class="leading-tight min-w-0">
+                              <div class="text-xs truncate text-[var(--p-text-muted-color)]">{{ 'common.label.reward_points' | translate }}</div>
+                              <div class="font-semibold truncate cx-num" [style.color]="shade(C.reward)">{{ (m.reward_points ?? 0) | number:'1.0-1' }}
+                                {{ 'crm.customer.points_unit' | translate }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Tags Section -->
+                        <div class="flex gap-1 items-center mb-2">
+                          <button
+                            (click)="addTag()"
+                            [disabled]="!newTag.trim()"
+                            class="p-button-success"
+                            pButton
+                            [pTooltip]="'crm.customer.add_tag' | translate"
+                            [attr.aria-label]="'crm.customer.add_tag' | translate"
+                            type="button"
+                          >
+                            <i class="pi pi-plus"></i>
+                          </button>
+                          <input
+                            (keyup.enter)="addTag()"
+                            [(ngModel)]="newTag"
+                            class="w-full"
+                            pInputText
+                            [placeholder]="'crm.customer.add_tag_placeholder' | translate"
+                          />
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap pb-2">
+                          @for (tag of tags(); track tag) {
+                            <p-chip
+                              (onRemove)="removeTag(tag)"
+                              [label]="tag"
+                              [removable]="true"
+                              class="mr-2 py-2 px-3 text-[var(--p-text-color)] font-bold rounded-[20px]"
+                            >
+                            </p-chip>
+                          }
+                        </div>
+                        @for (field of customerInfoFields; track field.key) {
+                          @if (!field.condition || field.condition(m)) {
+                            <app-customer-info-row
+                              [value]="field.getValue ? field.getValue(m) : getNestedValue(m, field.key)"
+                              [label]="field.labelKey"
+                              [isDate]="field.isDate ?? false"
+                              [isLink]="field.isLink ?? false"
+                              [tooltip]="field.getTooltip ? field.getTooltip(m) : ''"
+                            />
+                          }
+                        }
+                      </div>
+                      }
+                    </div>
+                    <div class="col-span-12 md:col-span-8 lg:col-span-9 overflow-auto">
+                      <app-customer-note-ai-tabs
+                        [customer]="m"
+                        [loading]="loading()"
+                        (reasonChange)="selectedAppointmentNotBookedReasons($event)"
+                      ></app-customer-note-ai-tabs>
+                    </div>
+                  </div>
+              </p-tabpanel>
+              <p-tabpanel *hasPerm="permission.permissionViewReminder" value="1">
+                @defer (when activeTab() === '1') {
+                  <div class="cx-tabpanel-fill" [style.--cx-table-detail]="tableDetail() + 'px'">
+                    <app-reminder-mini-list
+                      [customer]="m"
+                      class="w-full tab-fade-content flex-1 min-h-0 flex flex-col"
+                    ></app-reminder-mini-list>
+                  </div>
+                } @placeholder {
+                  <div class="w-full" [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'"></div>
+                } @loading (after 150ms; minimum 250ms) {
+                  <div class="w-full flex items-center justify-center"
+                       [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'">
+                    <i class="pi pi-spin pi-spinner text-2xl text-[var(--p-text-muted-color)]"></i>
+                  </div>
+                }
+              </p-tabpanel>
+              <p-tabpanel *hasPerm="permission.permissionViewAppointment" value="2">
+                @defer (when activeTab() === '2') {
+                  <div class="cx-tabpanel-fill" [style.--cx-table-detail]="tableDetail() + 'px'">
+                    <app-list-appointment-in-contact
+                      (updateAppointment)="reloadCustomerInfo($event)" [customer]="m"
+                      class="w-full tab-fade-content flex-1 min-h-0 flex flex-col"
+                    ></app-list-appointment-in-contact>
+                  </div>
+                } @placeholder {
+                  <div class="w-full" [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'"></div>
+                } @loading (after 150ms; minimum 250ms) {
+                  <div class="w-full flex items-center justify-center"
+                       [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'">
+                    <i class="pi pi-spin pi-spinner text-2xl text-[var(--p-text-muted-color)]"></i>
+                  </div>
+                }
+              </p-tabpanel>
+              <p-tabpanel *hasPerm="permission.permissionViewServiceUsed" value="4">
+                @defer (when activeTab() === '4') {
+                  <div class="cx-tabpanel-fill" [style.--cx-table-detail]="tableDetail() + 'px'">
+                    <app-order-treatment-plan-mini-list
+                      (saveOderTreatmentPlan)="reloadCustomerInfo($event)" [customer]="m"
+                      class="w-full tab-fade-content flex-1 min-h-0 flex flex-col"
+                    >
+                    </app-order-treatment-plan-mini-list>
+                  </div>
+                } @placeholder {
+                  <div class="w-full" [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'"></div>
+                } @loading (after 150ms; minimum 250ms) {
+                  <div class="w-full flex items-center justify-center"
+                       [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'">
+                    <i class="pi pi-spin pi-spinner text-2xl text-[var(--p-text-muted-color)]"></i>
+                  </div>
+                }
+              </p-tabpanel>
+              <p-tabpanel *hasPerm="permission.permissionViewPayment" value="5">
+                @defer (when activeTab() === '5') {
+                  <div class="cx-tabpanel-fill" [style.--cx-table-detail]="tableDetail() + 'px'">
+                    <app-payment-list-detail-customer
+                      (savePayment)="reloadCustomerInfo($event)" [customer]="m"
+                      class="w-full tab-fade-content flex-1 min-h-0 flex flex-col"
+                    ></app-payment-list-detail-customer>
+                  </div>
+                } @placeholder {
+                  <div class="w-full" [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'"></div>
+                } @loading (after 150ms; minimum 250ms) {
+                  <div class="w-full flex items-center justify-center"
+                       [style.min-height]="'calc(100vh - ' + tableDetail() + 'px)'">
+                    <i class="pi pi-spin pi-spinner text-2xl text-[var(--p-text-muted-color)]"></i>
+                  </div>
+                }
+              </p-tabpanel>
+            </p-tabpanels>
+          </p-tabs>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+<!-- Dialog chụp ảnh -->
+<p-dialog
+  (onHide)="onHide()"
+  [(visible)]="showCameraDialog"
+  [modal]="true"
+  [style]="{ width: '600px' }"
+  [header]="'common.label.take_photo' | translate">
+
+  <div class="p-4">
+    @if (!capturedImage) {
+      <video
+        #video autoplay
+        class="mb-2"
+        width="100%"
+      ></video>
+    }
+
+    <canvas #canvas style="display: none"></canvas>
+
+    <!-- Hiển thị ảnh đã chụp -->
+    @if (capturedImage) {
+      <div class="text-center mb-2">
+        <img [src]="capturedImage" [alt]="'crm.customer.captured_image_alt' | translate" width="100%"/>
+      </div>
+    }
+
+  </div>
+
+  <div class="flex justify-center p-4 gap-4">
+    @if (!capturedImage) {
+      <button type="button"
+        pButton
+        (click)="capture()"
+      ><i class="pi pi-camera"></i><span>{{ 'common.label.capture' | translate }}</span></button>
+    }
+    @if (capturedImage) {
+      <button type="button"
+        pButton
+        (click)="retake()"
+      ><i class="pi pi-refresh"></i><span>{{ 'common.label.retake' | translate }}</span></button>
+    }
+    <button type="button" pButton (click)="uploadCaptured()" class="p-button-success"><i class="pi pi-upload"></i><span>{{ 'common.action.upload' | translate }}</span></button>
+    <button type="button" pButton (click)="cancelCaptured()" class="p-button-danger"><i class="pi pi-times"></i><span>{{ 'common.action.cancel' | translate }}</span></button>
+  </div>
+</p-dialog>

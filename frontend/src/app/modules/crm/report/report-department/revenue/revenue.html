@@ -1,0 +1,228 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="selectedCols"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  selectionMode="single"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="p-toolbar-group-start"></div>
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <div class="flex items-center gap-2 w-full">
+            <button type="button" pButton autofocus class="invisible"></button>
+            <p-floatlabel variant="on">
+              <p-datepicker
+                (onClear)="clearStartTime()"
+                [readonlyInput]="true"
+                appendTo="body"
+                dateFormat="dd/mm/yy"
+                formControlName="created_at"
+                id="created_at"
+                selectionMode="range"
+                showIcon="true"
+              >
+                <ng-template #footer>
+                  <app-date-picker-footer
+                    (rangeChange)="onQuickSelect($event)"
+                  ></app-date-picker-footer>
+                </ng-template>
+              </p-datepicker>
+              <label for="created_at">{{ 'common.label.created_at' | translate }}</label>
+            </p-floatlabel>
+            <button pButton
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter-slash"></i></button>
+            <button type="button" pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-refresh"></i></button>
+          </div>
+        </form>
+      }
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">ID</div>
+      </th>
+      <th class="min-w-[200px]">{{ 'common.label.staff' | translate }}</th>
+      <th
+        class="min-w-[70px]"
+        [pTooltip]="'crm.report.department.tooltip_appointment' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'common.label.appointment' | translate }}
+      </th>
+      <th class="min-w-[80px]">
+        {{ 'common.status.arrived' | translate }}
+      </th>
+      <th class="min-w-[70px]">
+        {{ 'common.label.agreed' | translate }}
+      </th>
+      <th
+        class="min-w-[80px]"
+        [pTooltip]="'crm.report.department.tooltip_arrived_per_appointment' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'crm.report.department.h_arrived_per_appointment' | translate }}
+      </th>
+      <th
+        class="min-w-[110px]"
+        [pTooltip]="'crm.report.department.tooltip_agreed_per_arrived' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'crm.report.department.h_agreed_per_arrived_short' | translate }}
+      </th>
+      <th class="min-w-[100px]">{{ 'common.label.revenue' | translate }}</th>
+      <th class="min-w-[100px]">
+        {{ 'crm.order_plan.form.total_to_pay' | translate }}
+      </th>
+      <th class="min-w-[100px]">
+        {{ 'common.label.deposit_amount' | translate }}
+      </th>
+      <th
+        class="min-w-[120px]"
+        [pTooltip]="'crm.report.department.tooltip_average_per_customer' | translate"
+        tooltipPosition="left"
+      >
+        {{ 'common.label.average_customer' | translate }}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [pSelectableRow]="model" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>
+        <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+      </td>
+      <td>
+        <span class="font-semibold text-primary">{{ model.fullname | titlecase }}</span>
+      </td>
+      <td>{{ model.totalAppointment }}</td>
+      <td>
+        {{ model.totalAppointmentDen }}
+      </td>
+      <td>
+        {{ model.totalAppointmentDongY }}
+      </td>
+      <td>{{ model.denLichHen?.toFixed(2) }}%</td>
+      <td>{{ model.dongYDen?.toFixed(2) }}%</td>
+      <td class="text-blue-500">
+        {{ model.totalOrderPlan | currencyFormat }}
+      </td>
+      <td class="text-blue-500">
+        {{ model.totalThanhToan | currencyFormat }}
+      </td>
+      <td class="text-blue-500">
+        {{ model.totalDepositMoney | currencyFormat }}
+      </td>
+      <td class="text-blue-500">
+        {{ model.tbKhach | currencyFormat }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td></td>
+      <td></td>
+      <td
+        alignFrozen="left"
+        class="text-right"
+        pFrozenColumn
+      ></td>
+      <td>
+        <b>{{ modelsTotal().totalAppointment }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().totalAppointmentDen }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().totalAppointmentDongY }}</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().denLichHen?.toFixed(2) }} %</b>
+      </td>
+      <td>
+        <b>{{ modelsTotal().dongYDen?.toFixed(2) }} %</b>
+      </td>
+      <td
+      >
+        <b class="text-blue-500">{{ modelsTotal().totalOrderPlan | currencyFormat }}</b>
+      </td>
+      <td
+      >
+        <b class="text-blue-500">{{ modelsTotal().totalThanhToan | currencyFormat }}</b>
+      </td>
+      <td
+      >
+        <b class="text-blue-500">{{ modelsTotal().totalDepositMoney | currencyFormat }}</b>
+      </td>
+      <td>
+        <b class="text-blue-500">{{ modelsTotal().tbKhach | currencyFormat }}</b>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (num of 30 | toArray; track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="12">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

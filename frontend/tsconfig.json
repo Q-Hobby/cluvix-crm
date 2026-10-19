@@ -1,0 +1,54 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    // Giá trị v19: true
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": false,
+    // Giá trị v19: true
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    // Giá trị v19: bundler
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
+    "allowArbitraryExtensions": true,
+    "paths": {
+      "@/*": ["src/app/*"],
+      "@env/*": ["./src/environments/*"],
+      "@assets/*": ["./src/assets/*"]
+    },
+    // Thêm mới từ bên V17 qua
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "declaration": false,
+    "useDefineForClassFields": true,
+    "noImplicitAny": false,
+    "types": ["node"]
+  },
+  "exclude": ["**/*.spec.ts"],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    // Giá trị v19: true
+    "strictTemplates": true,
+    "extendedDiagnostics": {
+      "checks": {
+        "optionalChainNotNullable": "suppress",
+        "nullishCoalescingNotNullable": "suppress"
+      }
+    }
+  }
+}

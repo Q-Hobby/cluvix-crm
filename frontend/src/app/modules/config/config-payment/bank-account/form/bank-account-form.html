@@ -1,0 +1,58 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 content-start flex-wrap p-fluid pt-6">
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.bank_code!)"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.bank_code!"
+          id="bank_code"
+          pInputText
+          type="text"
+          placeholder="VCB, TCB, MB, BIDV..."
+        />
+        <label for="bank_code">{{ 'config.bank_account.bank_code' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.account_no!)"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.account_no!"
+          id="account_no"
+          pInputText
+          type="text"
+        />
+        <label for="account_no">{{ 'common.label.account_number' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.account_name!)"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.account_name!"
+          id="account_name"
+          pInputText
+          type="text"
+        />
+        <label for="account_name">{{ 'config.bank_account.account_name' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 md:col-span-6 inline-flex items-center gap-2">
+      <p-toggleswitch
+        [trueValue]="1"
+        [falseValue]="0"
+        [formField]="rootField.status!"
+        id="status"
+      ></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ (rootField.status!().value() === 1 ? 'common.label.visible' : 'common.label.hidden') | translate }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)" (saveForm)="onSubmit()" />
+</form>

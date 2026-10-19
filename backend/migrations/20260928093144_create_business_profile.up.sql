@@ -1,0 +1,28 @@
+-- Tạo bảng `business_profile` (keep-set CRM). Idempotent: CREATE TABLE IF NOT EXISTS.
+CREATE TABLE IF NOT EXISTS `business_profile` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'Tên của thương hiệu',
+  `code` varchar(25) DEFAULT NULL COMMENT 'Mã thương hiệu',
+  `hotline` varchar(25) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `website` varchar(50) DEFAULT NULL COMMENT 'Website thương hiệu',
+  `logo_image` varchar(255) DEFAULT NULL COMMENT 'Logo',
+  `tax_code` varchar(50) DEFAULT NULL COMMENT 'Mã số thuế',
+  `timezone` varchar(50) NOT NULL DEFAULT 'Asia/Ho_Chi_Minh' COMMENT 'Múi giờ thương hiệu',
+  `currency` varchar(10) NOT NULL DEFAULT 'VND' COMMENT 'Đơn vị tiền tệ (VND, USD, JPY, KRW...)',
+  `currency_symbol` varchar(10) NOT NULL DEFAULT '₫' COMMENT 'Ký hiệu tiền tệ (₫, $, ¥, ₩...)',
+  `currency_locale` varchar(20) NOT NULL DEFAULT 'vi-VN' COMMENT 'Locale để format số (vi-VN, en-US, ja-JP, ko-KR...)',
+  `weekly_rest_days` varchar(20) DEFAULT NULL COMMENT 'Ngày nghỉ hằng tuần CSV weekday số 0=CN..6=T7 (rỗng = mặc định Chủ nhật)',
+  `allowed_ips` json DEFAULT NULL COMMENT 'Danh sách IP/CIDR nhân viên được phép truy cập (rỗng = không giới hạn)',
+  `require_2fa` tinyint NOT NULL DEFAULT '0' COMMENT '1=bắt buộc 2FA toàn công ty',
+  `require_2fa_roles` json DEFAULT NULL COMMENT 'List role bắt buộc 2FA',
+  `totp_trust_days` int NOT NULL DEFAULT '30' COMMENT 'Số ngày tin thiết bị (0=luôn hỏi 2FA)',
+  `created_at` bigint DEFAULT NULL,
+  `updated_at` bigint DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-business_profile-created_by` (`created_by`),
+  KEY `idx-business_profile-updated_by` (`updated_by`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Hồ sơ doanh nghiệp (1 dòng): thương hiệu + cấu hình chung';

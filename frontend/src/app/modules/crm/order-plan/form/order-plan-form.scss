@@ -1,0 +1,108 @@
+:host ::ng-deep .tooth-status-group {
+  .button-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-left: 1.5rem;
+    padding-bottom: 0.25rem;
+  }
+  .p-button.tooth-status-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  .p-button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.875rem;
+    &.p-button-outlined {
+      background: var(--p-content-background);
+      border-color: var(--p-content-border-color);
+      &:hover { background: var(--p-content-hover-background); border-color: var(--p-content-border-color); transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    }
+    &:not(.p-button-outlined) {
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), inset 0 1px 0 0 rgba(255,255,255,0.2);
+      &:hover { transform: translateY(-2px) scale(1.02); }
+    }
+  }
+  .color-indicator { border: 2px solid white; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2); }
+}
+
+// Services used table — desktop density + mobile horizontal scroll
+:host ::ng-deep .services-used-table {
+  .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--p-content-hover-background);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+    .pCalculator {
+      font-size: 0.65rem;
+      color: #9ca3af;
+      font-weight: 400;
+      font-style: normal;
+    }
+  }
+  .p-datatable-tbody > tr > td {
+    padding: 0.375rem 0.5rem;
+    vertical-align: middle;
+
+    // Force consistent input height across all PrimeNG controls in a row
+    --row-input-height: 2.25rem; // 36px
+
+    .p-inputnumber,
+    .p-inputtext,
+    .p-select,
+    .p-datepicker,
+    .p-autocomplete,
+    .p-inputgroup {
+      width: 100%;
+    }
+
+    // Native inputs / wrappers
+    .p-inputtext,
+    input.p-inputtext,
+    .p-inputnumber-input,
+    .p-select,
+    .p-autocomplete-input,
+    .p-datepicker-input,
+    .p-multiselect,
+    .p-inputgroup p-button,
+    .p-inputgroup .p-button,
+    .p-inputgroup button {
+      height: var(--row-input-height);
+      min-height: var(--row-input-height);
+      box-sizing: border-box;
+    }
+
+    // Inner padding so caret + text don't crop
+    .p-inputtext,
+    input.p-inputtext,
+    .p-inputnumber-input,
+    .p-autocomplete-input,
+    .p-datepicker-input {
+      padding: 0.375rem 0.5rem;
+      line-height: 1.25;
+    }
+
+    // p-select renders its own internal label box — align that too
+    .p-select {
+      display: flex;
+      align-items: center;
+      .p-select-label { padding: 0.375rem 0.5rem; line-height: 1.25; }
+    }
+
+    // Inputgroup button matches input height, never bigger
+    .p-inputgroup p-button,
+    .p-inputgroup .p-button,
+    .p-inputgroup button {
+      padding-top: 0;
+      padding-bottom: 0;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+  .p-datatable-tfoot > tr > td { padding: 0.25rem 0.5rem; background: var(--p-content-hover-background); }
+}

@@ -1,0 +1,30 @@
+@if (model()?.ngayThang) {
+<div class="sheet_body">
+  <div class="sheet_body_top"></div>
+  <div class="sheet_body_mid">
+    <div class="customer_info">
+      <h3 class="flex items-center justify-center w-full font-semibold">{{ 'print.revenue_by_day' | translate }}</h3>
+      <p class="text-center font-italic">
+        {{ 'common.label.day' | translate }} {{ model().ngayThang | date: 'dd' }} {{ 'print.date_month' | translate }} {{ model().ngayThang | date: 'MM' }} {{ 'print.date_year' | translate }}
+        {{ model().ngayThang | date: 'yyyy' }}
+      </p>
+    </div>
+    <div class="invoice_info">
+      <div class="grid mt-1">
+        <div class="col-4 py-1">
+          {{ 'common.label.agreed' | translate }}: <b>{{ model().dongY }}</b>
+        </div>
+        <div class="col-4 py-1">
+          {{ 'common.label.sales' | translate }}: <b>{{ model().doanhSo | currencyFormat }}</b>
+        </div>
+        <div class="col-4 py-1">
+          {{ 'common.label.actual_revenue' | translate }}: <b>{{ model().thucThu | currencyFormat }}</b>
+        </div>
+        <div class="col-4 py-1">
+          {{ 'common.label.deposit' | translate }}: <b>{{ model().datCoc | currencyFormat }}</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

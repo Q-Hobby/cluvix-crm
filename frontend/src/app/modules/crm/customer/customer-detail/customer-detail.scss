@@ -1,0 +1,101 @@
+.p-overlay-badge > button {
+  width: 100%;
+}
+
+// Badge trạng thái (phone / chi nhánh / tiến độ) — dùng ≥3 lần nên tách class
+// thay vì lặp inline style="padding: 4px 6px; border-radius: 4px" từng chỗ (ui.md).
+.cx-badge {
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+// Chỉ căn chữ số cho cột số (B.19). Layout của stat tile CỐ Ý nằm inline ở template,
+// không tách ra đây: nếu stylesheet này lỡ build lệch pha với template thì tile chỉ
+// mất căn chữ số, không sập từ flex về block.
+.cx-num {
+  font-variant-numeric: tabular-nums;
+}
+
+.upload-avatar {
+  transition: 0.3s opacity;
+}
+
+.avatar-contact {
+  position: relative;
+
+  &:hover .upload-avatar {
+    opacity: 1;
+  }
+
+  .p-button.p-button-icon-only.p-button-rounded {
+    width: 1.457rem;
+    height: 1.457rem;
+  }
+
+  .avatar-actions {
+    @apply absolute left-1/2 bottom-0 top-[50%] flex -translate-x-1/2 translate-y-1/2 gap-6;
+
+    button {
+      @apply w-8 h-8 flex items-center justify-center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  // Avatar tối ưu - áp dụng cho cả component và lightbox
+  app-avatar-lazy,
+  app-image-lightbox {
+    display: block;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .wrap,
+    img {
+      border-radius: 50% !important;
+      object-fit: cover !important;
+    }
+
+    .img {
+      border-radius: 0 !important;
+    }
+  }
+}
+
+// ::ng-deep BẮT BUỘC đi sau :host — thiếu :host thì rule bị inject vào global
+// stylesheet và áp cho MỌI màn hình khác sau khi trang này mount.
+:host ::ng-deep .p-rating .p-rating-icon {
+  color: #fbbf24 !important; // màu vàng
+}
+
+:host ::ng-deep .p-rating .p-rating-icon.p-icon-fill {
+  color: #f59e0b !important; // màu vàng đậm hơn cho sao đầy
+}
+
+// ============================================================
+// Full-height SCOPED riêng cho từng <p-tabpanel> đã migrate sang appFillHeight (hiện chỉ tab
+// "Lịch hẹn", value="2") — KHÔNG áp dụng đồng loạt lên toàn bộ <p-tabpanels> (đã thử 1 lần,
+// vỡ 2 chỗ: (1) `display:flex` ép lên MỌI p-tabpanel kể cả tab khác đang cần `display:grid`
+// riêng như tab "Thông tin" (2 cột) — specificity `p-tabpanel > *` cao hơn class `.grid` của
+// Tailwind nên đè mất; (2) `overflow-y:auto` + chiều cao cố định trên toàn bộ p-tabpanel khiến
+// các tab CHƯA migrate (list thường, cao tự nhiên, có paginator) bị kẹp cứng — paginator rớt
+// xuống dưới vùng cuộn nội bộ thay vì hiện ngay, khác hành vi cũ (trang ngoài cuộn tự nhiên).
+// Phát hiện 2026-08-07 qua so sánh trực tiếp với bản production. Bài học: chỉ tab ĐÃ migrate
+// (`<p-table appFillHeight>`) mới cần khung chặn chiều cao; tab khác giữ nguyên hành vi tự
+// nhiên như trước — không có global CSS chung nào an toàn cho cả 2 nhóm.
+// ============================================================
+
+.cx-tabpanel-fill {
+  height: calc(100vh - var(--cx-table-detail, 265px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

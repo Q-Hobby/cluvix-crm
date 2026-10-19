@@ -1,0 +1,159 @@
+<div class="h-full flex flex-col bg-white dark:bg-surface-800 rounded-xl shadow-xl overflow-hidden">
+  <!-- Header -->
+  <div
+    class="px-6 py-4 border-b border-gray-200 dark:border-surface-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-surface-700 dark:to-surface-800">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600 shadow-lg">
+          <i class="pi pi-calendar text-white text-lg"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1">
+            {{ 'crm.appointment.list.detail_list' | translate }}
+          </h2>
+          <div class="flex items-center gap-4 text-sm">
+            <div class="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+              <i class="pi pi-clock"></i>
+              <span class="font-semibold">{{ timeSlot }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-purple-600 dark:text-purple-400">
+              <i class="pi pi-building"></i>
+              <span class="font-semibold">{{ displayName }}</span>
+            </div>
+            @if (totalRecords > 0) {
+              <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400">
+                <i class="pi pi-list"></i>
+                <span
+                  class="font-semibold">{{ totalRecords }} {{ 'crm.appointment.list.appointments' | translate }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      <button (click)="closeDialog()"
+              class="flex items-center justify-center w-8 h-8 rounded-lg bg-white dark:bg-surface-700 border border-gray-200 dark:border-surface-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-surface-600 transition-all">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="flex-1 overflow-hidden">
+    <p-table
+      (onLazyLoad)="loadAppointments($event)"
+      [first]="first"
+      [lazy]="true"
+      [loading]="loading()"
+      [paginator]="true"
+      [rowHover]="true"
+      [rows]="pageSize"
+      [scrollHeight]="'flex'"
+      [scrollable]="true"
+      [showCurrentPageReport]="true"
+      [showLoader]="false"
+      [stripedRows]="true"
+      [tableStyle]="{'min-width': '100%'}"
+      [totalRecords]="totalRecords"
+      [value]="appointments"
+      [currentPageReportTemplate]="'common.page.current_report' | translate"
+      dataKey="id">
+
+      <ng-template #header>
+        <tr class="!bg-blue-100 dark:!bg-blue-900/30 !border-b !border-blue-200 dark:!border-blue-700">
+          <th class="w-[30px]">
+            <div class="flex items-center justify-center">
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ 'common.label.no' | translate }}</span>
+            </div>
+          </th>
+          <th class="min-w-[80px]">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-clock text-orange-600 dark:text-orange-400 text-sm"></i>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ 'common.label.time' | translate }}</span>
+            </div>
+          </th>
+          <th class="min-w-[200px]">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-user text-blue-600 dark:text-blue-400 text-sm"></i>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ 'common.label.customer' | translate }}</span>
+            </div>
+          </th>
+          <th class="min-w-[250px]">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-briefcase text-green-600 dark:text-green-400 text-sm"></i>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ 'common.label.service' | translate }}</span>
+            </div>
+          </th>
+          <th class="min-w-[250px]">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-file-edit text-indigo-600 dark:text-indigo-400 text-sm"></i>
+              <span
+                class="font-semibold text-gray-800 dark:text-gray-200 text-sm">{{ 'common.label.content' | translate }}</span>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template let-appointment let-rowIndex="rowIndex" #body>
+        <tr
+          class="hover:bg-gray-50 dark:hover:bg-surface-700/30 transition-all border-b border-gray-100 dark:border-surface-600">
+          <td>
+            <div class="flex items-center justify-center">
+              <span class="font-semibold text-gray-600 dark:text-gray-400">{{ rowIndex + 1 }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="font-semibold">{{ (appointment.appointment_date | customDate: true)?.slice(-5) || '—' }}</span>
+          </td>
+          <td>
+            <app-customer-name
+              [id]="appointment.customer?.id"
+              [customer]="appointment.customer"
+              [name]="appointment.customerDisplayName"
+            />
+          </td>
+          <td>
+                        <span [appCopyText]="appointment.serviceInfo?.name" class="font-semibold text-primary">
+                            {{ appointment.serviceInfo?.name || '—' }}
+                        </span>
+          </td>
+          <td>
+            <div [innerHTML]="appointment.content || '—' | safeHtml" class="prose min-w-[300px] break-words"></div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #loadingbody>
+        @for (_ of [1, 2, 3, 4, 5]; track _) {
+          <tr class="h-[60px]">
+            @for (_ of [1, 2, 3, 4, 5]; track _) {
+              <td>
+                <p-skeleton></p-skeleton>
+              </td>
+            }
+          </tr>
+        }
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td class="!py-12" colspan="7">
+            <div class="flex flex-col items-center justify-center">
+              <div
+                class="flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 dark:bg-surface-700 border-2 border-gray-200 dark:border-surface-600 mb-4">
+                <i class="pi pi-calendar-times text-gray-400 dark:text-gray-500 text-2xl"></i>
+              </div>
+              <p
+                class="text-gray-700 dark:text-gray-300 font-bold text-lg mb-2">{{ 'crm.appointment.list.no_appointments' | translate }}</p>
+              <p
+                class="text-gray-500 dark:text-gray-400 text-sm">{{ 'crm.appointment.list.no_appointments_in_slot' | translate }}</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

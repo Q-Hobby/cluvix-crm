@@ -1,0 +1,554 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="selectedCols"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  selectionMode="single"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center justify-between">
+      <div class="p-toolbar-group-start"></div>
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <div class="flex items-center gap-2 w-full">
+            <button type="button" pButton autofocus class="invisible"></button>
+            <p-floatlabel variant="on">
+              <p-datepicker
+                (onClear)="clearStartTime()"
+                [readonlyInput]="true"
+                appendTo="body"
+                dateFormat="dd/mm/yy"
+                formControlName="created_at"
+                id="created_at"
+                selectionMode="range"
+                showIcon="true"
+              >
+                <ng-template #footer>
+                  <app-date-picker-footer
+                    (rangeChange)="onQuickSelect($event)"
+                  ></app-date-picker-footer>
+                </ng-template>
+              </p-datepicker>
+              <label for="created_at">{{ 'common.label.created_at' | translate }}</label>
+            </p-floatlabel>
+            <button pButton
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter-slash"></i></button>
+            <button type="button" pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-refresh"></i></button>
+            <button pButton
+              (click)="colsTpl.toggle($event)"
+              [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-th-large"></i></button>
+          </div>
+        </form>
+      }
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th alignFrozen="left" class="w-[30px] min-w-[30px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th
+          alignFrozen="left"
+          class="w-[30px] min-w-[30px]"
+          pFrozenColumn
+        >
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('fullname')()) {
+        <th
+          alignFrozen="left"
+          class="min-w-[200px]"
+          pFrozenColumn
+        >
+          {{ 'common.label.staff' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalTuongTac')()) {
+        <th
+          class="min-w-[40px]"
+          [pTooltip]="'common.label.interaction' | translate"
+          tooltipPosition="top"
+        >
+          TT
+        </th>
+      }
+      @if (isColVisible('totalComment')()) {
+        <th class="min-w-[70px]">{{ 'crm.report.telesales.h_comment' | translate }}</th>
+      }
+      @if (isColVisible('totalLead')()) {
+        <th class="min-w-[50px]">{{ 'common.label.lead' | translate }}</th>
+      }
+      @if (isColVisible('totalChamLai')()) {
+        <th
+          class="min-w-[90px]"
+          [pTooltip]="'crm.report.telesales.tooltip_care_back' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_care_back' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalAppointmentNew')()) {
+        <th
+          class="min-w-[90px]"
+          [pTooltip]="'crm.report.telesales.tooltip_new_appointment' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_new_appointment' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalAppointmentNewPlus')()) {
+        <th
+          class="min-w-[90px]"
+          [pTooltip]="'crm.report.telesales.tooltip_new_appointment_plus' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_new_appointment_plus' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalAppointment')()) {
+        <th
+          class="min-w-[90px]"
+          [pTooltip]="'crm.report.department.tooltip_appointment' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'common.label.appointment' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalAppointmentDen')()) {
+        <th class="min-w-[100px]">
+          {{ 'common.status.arrived' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalAppointmentDongY')()) {
+        <th class="min-w-[80px]">
+          {{ 'common.label.agreed' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalDeposit')()) {
+        <th
+          class="min-w-[50px]"
+          [pTooltip]="'crm.report.telesales.tooltip_deposit_count' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'common.label.deposit' | translate }}
+        </th>
+      }
+      @if (isColVisible('leadTuongTac')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.telesales.tooltip_lead_per_interaction' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_lead_per_interaction' | translate }}
+        </th>
+      }
+      @if (isColVisible('lichMoiLead')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.telesales.tooltip_new_per_lead' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_new_per_lead' | translate }}
+        </th>
+      }
+      @if (isColVisible('lichMoiMinusLead')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.telesales.tooltip_new_minus_per_lead' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_new_minus_per_lead' | translate }}
+        </th>
+      }
+      @if (isColVisible('lichMoiPlusChamLai')()) {
+        <th
+          class="min-w-[140px]"
+          [pTooltip]="'crm.report.telesales.tooltip_new_plus_per_care_back' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_new_plus_per_care_back' | translate }}
+        </th>
+      }
+      @if (isColVisible('denLead')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.telesales.tooltip_arrived_per_lead' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_arrived_per_lead' | translate }}
+        </th>
+      }
+      @if (isColVisible('denLichHen')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.department.tooltip_arrived_per_appointment' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.department.h_arrived_per_appointment' | translate }}
+        </th>
+      }
+      @if (isColVisible('dongYDen')()) {
+        <th
+          class="min-w-[110px]"
+          [pTooltip]="'crm.report.department.tooltip_agreed_per_arrived' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.department.h_agreed_per_arrived_short' | translate }}
+        </th>
+      }
+      @if (isColVisible('denTuongTac')()) {
+        <th
+          class="min-w-[90px]"
+          [pTooltip]="'crm.report.telesales.tooltip_arrived_per_interaction' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_arrived_per_interaction' | translate }}
+        </th>
+      }
+      @if (isColVisible('dongYTuongTac')()) {
+        <th
+          class="min-w-[100px]"
+          [pTooltip]="'crm.report.telesales.tooltip_agreed_per_interaction' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'crm.report.telesales.h_agreed_per_interaction' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalOrderPlan')()) {
+        <th class="min-w-[120px]">{{ 'common.label.revenue' | translate }}</th>
+      }
+      @if (isColVisible('totalThanhToan')()) {
+        <th class="min-w-[120px]">
+          {{ 'crm.order_plan.form.total_to_pay' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalDepositMoney')()) {
+        <th class="min-w-[120px]">
+          {{ 'common.label.deposit_amount' | translate }}
+        </th>
+      }
+      @if (isColVisible('tbKhach')()) {
+        <th
+          class="min-w-[150px]"
+          [pTooltip]="'crm.report.department.tooltip_average_per_customer' | translate"
+          tooltipPosition="left"
+        >
+          {{ 'common.label.average_customer' | translate }}
+        </th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [pSelectableRow]="model" class="vertical-align-top">
+      <td alignFrozen="left" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td alignFrozen="left" pFrozenColumn>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('fullname')()) {
+        <td alignFrozen="left" pFrozenColumn>
+          <span class="font-semibold text-primary">{{ model.fullname | titlecase }}</span>
+        </td>
+      }
+      @if (isColVisible('totalTuongTac')()) {
+        <td>{{ model.totalTuongTac }}</td>
+      }
+      @if (isColVisible('totalComment')()) {
+        <td>{{ model.totalComment }}</td>
+      }
+      @if (isColVisible('totalLead')()) {
+        <td>{{ model.totalLead }}</td>
+      }
+      @if (isColVisible('totalChamLai')()) {
+        <td>{{ model.totalChamLai }}</td>
+      }
+      @if (isColVisible('totalAppointmentNew')()) {
+        <td>
+          {{ model.totalAppointmentNew }}
+        </td>
+      }
+      @if (isColVisible('totalAppointmentNewPlus')()) {
+        <td>
+          {{ model.totalAppointmentNewPlus }}
+        </td>
+      }
+      @if (isColVisible('totalAppointment')()) {
+        <td>{{ model.totalAppointment }}</td>
+      }
+      @if (isColVisible('totalAppointmentDen')()) {
+        <td>
+          {{ model.totalAppointmentDen }}
+        </td>
+      }
+      @if (isColVisible('totalAppointmentDongY')()) {
+        <td>
+          {{ model.totalAppointmentDongY }}
+        </td>
+      }
+      @if (isColVisible('totalDeposit')()) {
+        <td>{{ model.totalDeposit }}</td>
+      }
+      @if (isColVisible('leadTuongTac')()) {
+        <td>
+          {{ model.leadTuongTac?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('lichMoiLead')()) {
+        <td>
+          {{ model.lichMoiLead?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('lichMoiMinusLead')()) {
+        <td>
+          {{ model.lichMoiMinusLead?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('lichMoiPlusChamLai')()) {
+        <td>
+          {{ model.lichMoiPlusChamLai?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('denLead')()) {
+        <td>{{ model.denLead?.toFixed(2) }}%</td>
+      }
+      @if (isColVisible('denLichHen')()) {
+        <td>{{ model.denLichHen?.toFixed(2) }}%</td>
+      }
+      @if (isColVisible('dongYDen')()) {
+        <td>{{ model.dongYDen?.toFixed(2) }}%</td>
+      }
+      @if (isColVisible('denTuongTac')()) {
+        <td>
+          {{ model.denTuongTac?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('dongYTuongTac')()) {
+        <td>
+          {{ model.dongYTuongTac?.toFixed(2) }}%
+        </td>
+      }
+      @if (isColVisible('totalOrderPlan')()) {
+        <td class="text-blue-500">
+          {{ model.totalOrderPlan | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('totalThanhToan')()) {
+        <td class="text-blue-500">
+          {{ model.totalThanhToan | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('totalDepositMoney')()) {
+        <td class="text-blue-500">
+          {{ model.totalDepositMoney | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('tbKhach')()) {
+        <td class="text-blue-500">
+          {{ model.tbKhach | currencyFormat }}
+        </td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td alignFrozen="left" pFrozenColumn></td>
+      @if (isColVisible('id')()) {
+        <td alignFrozen="left" pFrozenColumn></td>
+      }
+      @if (isColVisible('fullname')()) {
+        <td alignFrozen="left" class="text-right" pFrozenColumn></td>
+      }
+      @if (isColVisible('totalTuongTac')()) {
+        <td>
+          <b>{{ modelsTotal().totalTuongTac }}</b>
+        </td>
+      }
+      @if (isColVisible('totalComment')()) {
+        <td>
+          <b>{{ modelsTotal().totalComment }}</b>
+        </td>
+      }
+      @if (isColVisible('totalLead')()) {
+        <td>
+          <b>{{ modelsTotal().totalLead }}</b>
+        </td>
+      }
+      @if (isColVisible('totalChamLai')()) {
+        <td>
+          <b>{{ modelsTotal().totalChamLai }}</b>
+        </td>
+      }
+      @if (isColVisible('totalAppointmentNew')()) {
+        <td>
+          <b>{{ modelsTotal().totalAppointmentNew }}</b>
+        </td>
+      }
+      @if (isColVisible('totalAppointmentNewPlus')()) {
+        <td>
+          <b>{{ modelsTotal().totalAppointmentNewPlus }}</b>
+        </td>
+      }
+      @if (isColVisible('totalAppointment')()) {
+        <td>
+          <b>{{ modelsTotal().totalAppointment }}</b>
+        </td>
+      }
+      @if (isColVisible('totalAppointmentDen')()) {
+        <td>
+          <b>{{ modelsTotal().totalAppointmentDen }}</b>
+        </td>
+      }
+      @if (isColVisible('totalAppointmentDongY')()) {
+        <td>
+          <b>{{ modelsTotal().totalAppointmentDongY }}</b>
+        </td>
+      }
+      @if (isColVisible('totalDeposit')()) {
+        <td>
+          <b>{{ modelsTotal().totalDeposit }}</b>
+        </td>
+      }
+      @if (isColVisible('leadTuongTac')()) {
+        <td>
+          <b>{{ modelsTotal().leadTuongTac?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('lichMoiLead')()) {
+        <td>
+          <b>{{ modelsTotal().lichMoiLead?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('lichMoiMinusLead')()) {
+        <td>
+          <b>{{ modelsTotal().lichMoiMinusLead?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('lichMoiPlusChamLai')()) {
+        <td>
+          <b>{{ modelsTotal().lichMoiPlusChamLai?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('denLead')()) {
+        <td>
+          <b>{{ modelsTotal().denLead?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('denLichHen')()) {
+        <td>
+          <b>{{ modelsTotal().denLichHen?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('dongYDen')()) {
+        <td>
+          <b>{{ modelsTotal().dongYDen?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('denTuongTac')()) {
+        <td>
+          <b>{{ modelsTotal().denTuongTac?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('dongYTuongTac')()) {
+        <td>
+          <b>{{ modelsTotal().dongYTuongTac?.toFixed(2) }} %</b>
+        </td>
+      }
+      @if (isColVisible('totalOrderPlan')()) {
+        <td>
+          <b class="text-blue-500">{{ modelsTotal().totalOrderPlan | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('totalThanhToan')()) {
+        <td>
+          <b class="text-blue-500">{{ modelsTotal().totalThanhToan | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('totalDepositMoney')()) {
+        <td>
+          <b class="text-blue-500">{{ modelsTotal().totalDepositMoney | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('tbKhach')()) {
+        <td>
+          <b class="text-blue-500">{{ modelsTotal().tbKhach | currencyFormat }}</b>
+        </td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (num of 30 | toArray; track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

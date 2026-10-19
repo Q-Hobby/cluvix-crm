@@ -1,0 +1,151 @@
+<app-slide-over
+  [(visible)]="visible"
+  [title]="'crm.order_plan.tooltip.detail' | translate"
+  [subtitle]="model().code ? '#' + model().code : ''"
+  icon="pi pi-shopping-cart"
+  size="lg"
+  [loading]="loadingDetail()"
+  [errorMessage]="loadErrorKey() ? (loadErrorKey() | translate) : ''"
+  (retry)="retryLoad()"
+  (closed)="onClosed()"
+>
+  <!-- ── Giá trị đơn & thanh toán: câu hỏi số 1 khi mở một đơn ─────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_money">
+    <div class="grid grid-cols-3 gap-2">
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">
+          {{ 'crm.order_plan.detail_panel.order_total' | translate }}
+        </div>
+        <div class="text-sm font-semibold">{{ orderTotal() | currencyFormat }}</div>
+      </div>
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">
+          {{ 'common.label.collected' | translate }}
+        </div>
+        <div class="text-sm font-semibold text-green-600">{{ collected() | currencyFormat }}</div>
+      </div>
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">
+          {{
+            (isOverpaid() ? 'common.label.overpaid' : 'common.label.remaining')
+              | translate
+          }}
+        </div>
+        <div
+          class="text-sm font-semibold"
+          [class.text-red-600]="remaining() > 0"
+          [class.text-orange-600]="isOverpaid()"
+        >
+          {{ (isOverpaid() ? -remaining() : remaining()) | currencyFormat }}
+        </div>
+      </div>
+    </div>
+
+    @if (refunded()) {
+      <app-slide-over-row label="common.label.refunded">
+        <span class="text-orange-600">{{ refunded() | currencyFormat }}</span>
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Danh sách dịch vụ con: phần lõi phân biệt đơn với dịch vụ lẻ ──────── -->
+  <app-slide-over-section label="common.label.service_list">
+    <span sectionActions class="text-xs text-muted-color">{{ services().length }}</span>
+
+    @if (services().length > 0) {
+      <div class="flex flex-col gap-2">
+        @for (svc of services(); track svc.id) {
+          <div class="rounded-lg border border-surface p-3 flex flex-col gap-2">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex flex-col gap-1 min-w-0">
+                <span class="text-sm font-medium">{{ svc.serviceInfo?.name || '—' }}</span>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  @if (svc.isLock === 2) {
+                    <p-tag
+                      severity="danger"
+                      [value]="'common.status.locked' | translate"
+                    />
+                  } @else if (svc.isLock === 3) {
+                    <p-tag
+                      severity="warn"
+                      [value]="'crm.treatment_service.detail.lock_paused' | translate"
+                    />
+                  }
+                </div>
+              </div>
+              <span class="text-sm font-semibold shrink-0">{{ svc.totalEnd | currencyFormat }}</span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-color">
+              <span>
+                {{ svc.quantity ?? 0 }} {{ svc.unitInfo?.name || '' }} ×
+                {{ svc.unit_price | currencyFormat }}
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-surface">
+              <span class="text-xs text-muted-color">
+                {{ 'common.label.collected' | translate }}:
+                <span class="text-green-600 font-medium">{{ svc.payment | currencyFormat }}</span>
+              </span>
+              <!-- Bắc cầu sang panel chi tiết dịch vụ: SlideOver xếp chồng được nên panel dịch vụ
+                   mở lên trên panel đơn, đóng lại là quay về đúng đơn đang xem. -->
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                (click)="serviceSelected.emit(svc)"
+              >
+                <i class="pi pi-arrow-up-right text-[0.6rem]"></i>
+                {{ 'crm.order_plan.detail_panel.open_service' | translate }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col items-center gap-2 py-6 text-center text-muted-color">
+        <i class="pi pi-inbox text-xl"></i>
+        <span class="text-sm">{{ 'crm.order_plan.detail_panel.no_service' | translate }}</span>
+      </div>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Thông tin đơn ─────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_info">
+    <app-slide-over-row label="common.label.order_date">
+      {{ model().created_timeFormatted || '—' }}
+    </app-slide-over-row>
+    @if (orderPlanTypeLabelKey(); as planTypeKey) {
+      <app-slide-over-row label="crm.order_plan.order_type">
+        {{ planTypeKey | translate }}
+      </app-slide-over-row>
+    }
+    <app-slide-over-row label="common.label.branch">{{ model().branchLabel || '—' }}</app-slide-over-row>
+    <app-slide-over-row label="common.label.source">{{ model().sourceLabel || '—' }}</app-slide-over-row>
+    @if (model().note) {
+      <app-slide-over-row label="common.label.note" [vertical]="true">
+        <div
+          class="prose prose-sm max-w-none text-sm"
+          appWhitespaceControl
+          [innerHTML]="model().note | sanitizeQuill | safeHtml"
+        ></div>
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Hệ thống ──────────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_system">
+    <app-slide-over-row label="common.label.user_created">
+      {{ model().createdByInfo?.fullname || '—' }}
+      @if (model().created_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().created_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.user_updated">
+      {{ model().updatedByInfo?.fullname || '—' }}
+      @if (model().updated_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().updated_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+  </app-slide-over-section>
+</app-slide-over>

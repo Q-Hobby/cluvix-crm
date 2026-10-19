@@ -1,0 +1,231 @@
+<app-slide-over
+  [(visible)]="visible"
+  [title]="'crm.payment.detail_panel.title' | translate"
+  [subtitle]="model().code ? '#' + model().code : ''"
+  icon="pi pi-wallet"
+  size="lg"
+  [loading]="loadingDetail()"
+  [errorMessage]="loadErrorKey() ? (loadErrorKey() | translate) : ''"
+  (retry)="retryLoad()"
+  (closed)="onClosed()"
+>
+  <ng-container slideOverActions>
+    <button
+      type="button"
+      pButton
+      text
+      rounded
+      size="small"
+      severity="secondary"
+      [appCopyText]="copyText()"
+      [attr.aria-label]="'common.action.copy' | translate"
+      [pTooltip]="'common.action.copy' | translate"
+      tooltipPosition="bottom"
+    >
+      <i class="pi pi-copy"></i>
+    </button>
+  </ng-container>
+
+  <!-- ── Thông tin thu tiền ────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.payment.detail_panel.section_payment">
+    <div class="flex items-center gap-3 rounded-lg bg-primary/5 px-3 py-2.5">
+      <i class="pi pi-wallet text-primary text-lg"></i>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold">{{ model().amount | currencyFormat }}</span>
+        <span class="text-xs text-muted-color">{{ model().payment_timeFormatted || '—' }}</span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      @if (paymentForKey(); as forKey) {
+        <p-tag severity="info" [value]="forKey | translate" />
+      }
+      @if (model().paymentMethodLabel) {
+        <p-tag severity="secondary" [value]="model().paymentMethodLabel" />
+      }
+    </div>
+
+    @if (model().bank_code) {
+      <app-slide-over-row label="crm.payment.detail_panel.bank_code">
+        {{ model().bank_code }}
+      </app-slide-over-row>
+    }
+    <!-- Loại cọc: ký gửi / cọc tạm / cọc khuyến mại đều lưu chung là "đặt cọc" nên chỉ nhìn badge
+         không phân biệt được — `deposit_type` mới là thứ tách chúng ra. -->
+    @if (model().typeDepositInfo; as depositType) {
+      <app-slide-over-row label="common.label.deposit_type">
+        {{ depositType.labelKey ? (depositType.labelKey | translate) : depositType.label }}
+      </app-slide-over-row>
+    }
+    @if (model().deposit_after) {
+      <app-slide-over-row label="crm.payment.detail_panel.deposit_after">
+        {{ model().deposit_after | currencyFormat }}
+      </app-slide-over-row>
+    }
+    @if (model().emr_insurance_amount) {
+      <app-slide-over-row label="crm.payment.detail_panel.insurance">
+        {{ model().emr_insurance_amount | currencyFormat }}
+        @if (model().emr_insurance_ratio) {
+          <span class="text-muted-color font-normal"> ({{ model().emr_insurance_ratio }}%)</span>
+        }
+      </app-slide-over-row>
+    }
+    @if (model().emr_patient_amount) {
+      <app-slide-over-row label="crm.payment.detail_panel.patient_amount">
+        {{ model().emr_patient_amount | currencyFormat }}
+      </app-slide-over-row>
+    }
+    <app-slide-over-row label="common.label.branch">{{ model().branchLabel || '—' }}</app-slide-over-row>
+    @if (model().note) {
+      <app-slide-over-row label="common.label.note" [vertical]="true">
+        <div
+          class="prose prose-sm max-w-none text-sm"
+          appWhitespaceControl
+          [innerHTML]="model().note | sanitizeQuill | safeHtml"
+        ></div>
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Khách hàng ────────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="common.label.customer_info">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-11 h-11 shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold"
+      >
+        {{ ((model().customerDisplayName || '') | avatarWord) || '?' }}
+      </div>
+      <div class="flex flex-col gap-1 min-w-0">
+        @if (model().customer_id) {
+          <app-customer-name
+            [id]="model().customer_id!"
+            [name]="model().customerDisplayName"
+            [customer]="model().customer"
+          />
+        } @else {
+          <span class="font-medium">{{ model().customerDisplayName || '—' }}</span>
+        }
+        @if (model().customer?.code) {
+          <span
+            class="text-xs text-muted-color inline-flex items-center gap-1 cursor-pointer"
+            [appCopyText]="model().customer?.code"
+          >
+            <i class="pi pi-id-card"></i>{{ model().customer?.code }}
+          </span>
+        }
+      </div>
+    </div>
+    <app-slide-over-row label="common.label.phone">
+      <app-customer-phone [phone]="model().customer?.phone" />
+    </app-slide-over-row>
+  </app-slide-over-section>
+
+  <!-- ── Thu cho (đơn / dịch vụ / lượt khám) — ẩn hẳn với phiếu thu/chi phòng khám ── -->
+  @if (hasTarget()) {
+  <app-slide-over-section label="crm.payment.detail_panel.section_target">
+    <app-slide-over-row label="common.label.order_code">
+      <span class="cursor-pointer" [appCopyText]="model().orderPlan?.code">
+        {{ model().orderPlan?.code || '—' }}
+      </span>
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.service">{{ serviceName() || '—' }}</app-slide-over-row>
+    @if (model().serviceUsed?.code) {
+      <app-slide-over-row label="common.label.treatment_service_code">
+        {{ model().serviceUsed?.code }}
+      </app-slide-over-row>
+    }
+    @if (model().appointment?.code) {
+      <app-slide-over-row label="common.label.appointment">
+        {{ model().appointment?.code }}
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+  }
+
+  <!-- ── Phân bổ trên đơn hàng ─────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.payment.detail_panel.section_allocation">
+    @if (allocations().length > 0) {
+      <!-- Giải thích tại chỗ vì đây là điểm dễ hiểu nhầm nhất của màn này: một lần thu tiền cho đơn
+           sinh ra NHIỀU phiếu, mỗi dịch vụ một phiếu. -->
+      <p class="text-xs text-muted-color m-0">
+        {{ 'crm.payment.detail_panel.allocation_hint' | translate }}
+      </p>
+
+      <div class="flex flex-col gap-1.5">
+        @for (row of allocations(); track row.id) {
+          <div
+            class="rounded-lg border px-3 py-2 flex items-start justify-between gap-2"
+            [class]="row.isCurrent ? 'border-primary/40 bg-primary/5' : 'border-surface'"
+          >
+            <div class="flex flex-col gap-0.5 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-medium">{{ row.code || '—' }}</span>
+                @if (row.isCurrent) {
+                  <p-tag severity="info" [value]="'crm.payment.detail_panel.this_receipt' | translate" />
+                }
+              </div>
+              <div class="flex flex-wrap items-center gap-x-2 text-xs text-muted-color">
+                @if (row.serviceName) {
+                  <span>{{ row.serviceName }}</span>
+                }
+                @if (row.paymentForKey) {
+                  <span>· {{ row.paymentForKey | translate }}</span>
+                }
+                @if (row.timestamp) {
+                  <span>· {{ row.timestamp * 1000 | date: 'dd/MM/yyyy' }}</span>
+                }
+              </div>
+            </div>
+            <span class="text-sm font-semibold shrink-0">{{ row.amount | currencyFormat }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1 pt-2 border-t border-surface">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-muted-color">
+            {{ 'crm.payment.detail_panel.collected_on_order' | translate }}
+          </span>
+          <span class="text-sm font-semibold text-green-600">
+            {{ collectedTotal() | currencyFormat }}
+          </span>
+        </div>
+        @if (refundedTotal()) {
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-muted-color">
+              {{ 'crm.payment.detail_panel.refunded_on_order' | translate }}
+            </span>
+            <span class="text-sm font-semibold text-orange-600">
+              {{ refundedTotal() | currencyFormat }}
+            </span>
+          </div>
+        }
+        <!-- Nói rõ công thức ngay tại chỗ: đây chính là con số hay bị hiểu lệch giữa 2 màn tiền. -->
+        <p class="text-[0.7rem] text-muted-color m-0">
+          {{ 'crm.payment.detail_panel.collected_hint' | translate }}
+        </p>
+      </div>
+    } @else {
+      <div class="flex flex-col items-center gap-2 py-6 text-center text-muted-color">
+        <i class="pi pi-inbox text-xl"></i>
+        <span class="text-sm">{{ 'crm.payment.detail_panel.no_allocation' | translate }}</span>
+      </div>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Hệ thống ──────────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_system">
+    <app-slide-over-row label="common.label.user_created">
+      {{ model().createdByInfo?.fullname || '—' }}
+      @if (model().created_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().created_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.user_updated">
+      {{ model().updatedByInfo?.fullname || '—' }}
+      @if (model().updated_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().updated_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+  </app-slide-over-section>
+</app-slide-over>

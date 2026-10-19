@@ -1,0 +1,240 @@
+<div class="sheet_body">
+  <div class="sheet_body_top">
+    <div class="flex items-center justify-between italic">
+      <div class="pl-1">
+        {{ 'common.label.order_code' | translate }}:
+        <span class="invoice_id">{{ model()?.orderPlan?.code }}</span>
+      </div>
+      <div class="text-sm pr-2">
+        {{ 'common.label.day' | translate }} <span class="font-semibold">{{ orderData().date }}</span> {{ 'print.date_month' | translate }} <span
+        class="font-semibold">{{ orderData().month }}</span> {{ 'print.date_year' | translate }} <span
+        class="font-semibold">{{ orderData().year }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="sheet_body_mid">
+    <div class="customer_info">
+      <h3 class="flex items-center justify-center w-full font-semibold">
+        {{ 'common.label.order' | translate | uppercase }}
+      </h3>
+      <app-customer-info-layout [customer]="model()?.orderPlan?.customer"/>
+    </div>
+
+    <div class="invoice_info">
+      <span class="font-semibold text-xl">{{ 'common.label.service_list' | translate }}</span>
+      <p-table
+        [showLoader]="false"
+        [value]="model()?.orderPlan?.orderServiceUseds"
+        class="services p-datatable-gridlines"
+      >
+        <ng-template #header>
+          <tr class="font-semibold">
+            <th class="w-[35px]">
+              <div class="flex items-center justify-center w-full">{{ 'common.label.no' | translate }}</div>
+            </th>
+            <th>
+              {{ 'common.label.service' | translate }}
+            </th>
+            <th>
+              {{ 'common.label.quantity' | translate }}<i class="pCalculator block">(1)</i>
+            </th>
+            <th>
+              {{ 'common.label.unit_price' | translate }}<i class="pCalculator block">(2)</i>
+            </th>
+            <th>
+              {{ 'common.label.subtotal' | translate }}<i class="pCalculator block">(3)=(1)x(2)</i>
+            </th>
+            <th>
+              {{ 'common.label.discount' | translate }}<i class="pCalculator block">(4)</i>
+            </th>
+            <th>
+              {{ 'common.label.payable' | translate }}<i class="pCalculator block">(5)=(3)-(4)</i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-index="rowIndex" let-value>
+          <tr>
+            <td>
+              <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 0 1px 1px' }
+                  : null
+              "
+            >
+              {{ value.service.name }}
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 0 1px 1px' }
+                  : null
+              "
+            >
+              {{ value.quantity }}
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 0 1px 1px' }
+                  : null
+              "
+              class="text-right"
+            >
+              {{ value.unit_price | numberFormat }}
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 0 1px 1px' }
+                  : null
+              "
+              class="text-right"
+            >
+              {{ value.unit_price * value.quantity | numberFormat }}
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 0 1px 1px' }
+                  : null
+              "
+              class="text-right"
+            >
+              @if (value.service_discount_type === SERVICE_DISCOUNT_TYPE_SELECT.SERVICE_DISCOUNT_TYPE_PERCENT) {
+                <span
+                >
+                {{
+                    +(value.quantity * value.unit_price * (value.service_discount / 100)) +
+                    +value?.discount_other +
+                    +value?.discount | numberFormat
+                  }}
+              </span>
+              }
+              @if (value.service_discount_type === SERVICE_DISCOUNT_TYPE_SELECT.SERVICE_DISCOUNT_TYPE_CURRENCY) {
+                <span
+                >
+                {{
+                    +value.service_discount + +value?.discount_other + +value?.discount | numberFormat
+                  }}
+              </span>
+              }
+            </td>
+            <td
+              [ngStyle]="
+                (model()?.orderPlan?.orderServiceUseds?.length ?? 0) < 2
+                  ? { 'border-width': '0 1px 1px 1px' }
+                  : null
+              "
+              class="text-right"
+            >
+              {{ value.totalEnd | numberFormat }}
+            </td>
+          </tr>
+        </ng-template>
+        @if ((model()?.orderPlan?.orderServiceUseds?.length ?? 0) >= 2) {
+          <ng-template #footer>
+            @if ((model()?.orderPlan?.orderServiceUseds?.length ?? 0) >= 2) {
+              <tr class="font-semibold">
+                <td class="!text-right" colspan="4" style="border-right: 0">
+                  {{ 'common.label.total' | translate }}
+                </td>
+                <td style="border-right: 0">
+                  {{ totalPrice | currencyFormat }}
+                </td>
+                <td style="border-right: 0">
+                  {{ totalDiscount | currencyFormat }}
+                </td>
+                <td>
+                  {{ totalSerices | currencyFormat }}
+                </td>
+              </tr>
+            }
+            @if (model()?.orderPlan?.couponUsedByOrderPlan) {
+              <tr>
+                <td colspan="7" style="border-top: 0">
+                  <!--              <span class="pl-2">-->
+                  <!--                {{ 'CTV:' + model()?.orderPlan?.couponUsedByOrderPlan?.broker?.fullname }}-->
+                  <!--                {{-->
+                  <!--                  ' | SĐT:' + model()?.orderPlan?.couponUsedByOrderPlan?.broker?.phone-->
+                  <!--                }}-->
+                  <!--                {{-->
+                  <!--                  ' | Giảm: ' +-->
+                  <!--                  (model()?.orderPlan?.couponUsedByOrderPlan?.coupon_value | currencyFormat) +-->
+                  <!--                  (model()?.orderPlan?.couponUsedByOrderPlan?.coupon_type_id === 1 ? '%' : 'VND')-->
+                  <!--                }}-->
+                  <!--                {{ '(' + (model()?.orderPlan?.discount | currencyFormat) + ')' }}-->
+                  <!--              </span>-->
+                </td>
+              </tr>
+            }
+          </ng-template>
+        }
+      </p-table>
+
+      @if (model()?.orderPlan?.note) {
+        <div>
+          {{ 'common.label.note' | translate }}:
+          <span [innerHTML]="model()?.orderPlan?.note | safeHtml" class="whitespace-pre-wrap font-semibold"></span>
+        </div>
+      }
+
+      @if ((model()?.historyPayment?.length ?? 0) > 0) {
+        <div class="mt-2">
+          <span class="font-semibold text-xl">{{ 'common.label.payment_history' | translate }}</span>
+          <p-table
+            [showLoader]="false"
+            [value]="model()?.historyPayment"
+            class="services p-datatable-gridlines"
+          >
+            <ng-template #header>
+              <tr>
+                <th class="w-[35px]">
+                  <div class="flex items-center justify-center w-full">{{ 'common.label.no' | translate }}</div>
+                </th>
+                <th>
+                  {{ 'common.label.branch' | translate }}
+                </th>
+                <th>
+                  {{ 'common.label.payment_method' | translate }}
+                </th>
+                <th>
+                  {{ 'common.label.amount_paid' | translate }}
+                </th>
+                <th class="text-center whitespace-nowrap" style="width: 15%">
+                  {{ 'common.label.payment_time' | translate }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-value>
+              <tr>
+                <td>
+                  <div class="flex items-center justify-center w-full">{{ value.lanThanhToan }}</div>
+                </td>
+                <td>{{ value?.chiNhanh }}</td>
+                <td>{{ value?.method }}</td>
+                <td class="text-right">
+                  {{ value.amount ?? 0 | currencyFormat }}
+                </td>
+                <td>{{ value.payment_of_date * 1000 | customDate }}</td>
+              </tr>
+            </ng-template>
+            <ng-template #footer>
+              <tr class="font-semibold">
+                <td colspan="3" style="border-right: 0">
+                  <span class="block text-right">{{ 'crm.order_plan.form.outstanding_balance' | translate }}</span>
+                </td>
+                <td class="text-right" style="border-right: 0">
+                  {{ totalConLai | currencyFormat }}
+                </td>
+                <td></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<div class="overflow-x-auto">
+  <p-table
+    (selectionChange)="onSelectionChange($event)"
+    [columns]="cols()"
+    [filterDelay]="300"
+    [lazy]="false"
+    [loading]="loading()"
+    [paginator]="false"
+    [rowHover]="true"
+    [scrollHeight]="'flex'"
+    [scrollable]="true"
+    [selection]="selectedRecords()"
+    [showLoader]="false"
+    [stripedRows]="true"
+    [tableStyle]="{ 'min-width': calcMinWidth()}"
+    [value]="matrix?.rows || []"
+  >
+    <ng-template #header>
+      <tr>
+        <th class="sticky left-0 bg-white z-10 w-[140px] min-w-[140px]" rowspan="2">
+          <div class="flex items-center justify-center w-full">
+            {{ 'crm.appointment.list.time_slot' | translate }}
+          </div>
+        </th>
+        @if (matrix?.columns?.length) {
+          @for (g of (matrix?.columns ?? []); track g.branchId) {
+            <th
+              [attr.colspan]="g.cols.length"
+              class="text-center"
+              [style.width.px]="colW"
+              [style.min-width.px]="colW"
+              [style.background-color]="headerBg(g.branchId)"
+            >
+              <div class="flex items-center justify-center w-full">{{ g.groupLabel }}</div>
+            </th>
+          }
+        }
+      </tr>
+
+      @if (matrix?.columns?.length) {
+        <tr>
+          @for (g of (matrix?.columns ?? []); track g.branchId) {
+            @for (c of g.cols; track c.key; let first = $first) {
+              <th
+                class="text-center"
+                [style.background-color]="headerBg(g.branchId)"
+              >
+                {{ c.label }}
+              </th>
+            }
+          }
+        </tr>
+      }
+    </ng-template>
+    <ng-template let-row #body>
+      <tr>
+        <td class="sticky left-0 bg-white z-10">
+          <div class="flex items-center justify-center w-full"><b>{{ row.timeSlot }}</b></div>
+        </td>
+
+        @if (flatCols.length) {
+          @for (c of flatCols; track c.key) {
+            <td
+              class="text-center"
+              [style.background-color]="headerBg(c.branchId)"
+              [class.cursor-pointer]="!isStatusCol(c) && (row.cells[c.key] ?? 0) > 0"
+              [class.hover:bg-opacity-80]="!isStatusCol(c) && (row.cells[c.key] ?? 0) > 0"
+              (click)="onCellClick(row.timeSlot, c.branchId, c.key, row.cells[c.key])"
+            >
+              @if (isStatusCol(c)) {
+                <p-badge
+                  [value]="row.cells[c.key]"
+                  [severity]="tagSeverityOf(row.cells[c.key])"
+                  class="flex justify-center whitespace-nowrap"
+                />
+              } @else {
+                @if ((row.cells[c.key] ?? 0) > 0) {
+                  <p-tag [value]="row.cells[c.key]" severity="danger"/>
+                } @else {
+                  <span class="text-gray-500">{{ row.cells[c.key] ?? 0 }}</span>
+                }
+              }
+            </td>
+          }
+        } @else {
+          <td class="text-center"></td>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td [attr.colspan]="1 + (flatCols.length || 0)">
+          <div class="text-left pl-6 py-6">{{ 'common.message.no_data' | translate }}</div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -1,0 +1,549 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  appFillHeight
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  class="w-full"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  groupRowsBy="order_plan_id"
+  rowGroupMode="rowspan"
+  sortField="order_plan_id"
+  [sortOrder]="-1"
+  sortMode="single"
+>
+  <ng-template #caption>
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+      <ng-container *hasPerm="permission.permissionCreatePlanOrder">
+        <button type="button"
+          pButton
+          (click)="createOrderPlan()"
+        ><i class="pi pi-plus"></i><span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span></button>
+      </ng-container>
+      </div>
+      <div class="p-toolbar-group-end">
+      <div class="flex gap-2">
+        <button type="button"
+          pButton
+          (click)="resetPage()"
+          [attr.aria-label]="'common.action.refresh' | translate"
+          [pTooltip]="'common.action.reload_page' | translate"
+          severity="secondary"
+          tooltipPosition="top"
+          [iconOnly]="true"
+        ><i class="pi pi-refresh"></i></button>
+        <button
+          pButton
+          (click)="colsTpl.toggle($event)"
+          [attr.aria-label]="'common.action.view_more' | translate"
+          [pTooltip]="'common.action.view_more' | translate"
+          tooltipPosition="top"
+          type="button"
+          [iconOnly]="true"
+        ><i class="pi pi-th-large"></i></button>
+      </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      <th class="w-[90px] min-w-[90px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('orderCode')()) {
+        <th class="min-w-[130px]">{{ 'common.label.order_code' | translate }}</th>
+      }
+      @if (isColVisible('code')()) {
+        <th class="min-w-[160px]">{{ 'common.label.treatment_service_code' | translate }}</th>
+      }
+      <ng-container *hasPerm="permission.permissionCreatePayment">
+        <th class="min-w-[90px]">
+          <div class="flex items-center justify-center w-full">#</div>
+        </th>
+      </ng-container>
+      @if (isColVisible('codeSerice')()) {
+        <th class="min-w-[120px]">{{ 'common.label.service_code' | translate }}</th>
+      }
+      @if (isColVisible('orderServiceUseds')()) {
+        <th class="min-w-[350px]">
+          {{ 'common.label.service' | translate }}
+        </th>
+      }
+      @if (isColVisible('unit')()) {
+        <th class="min-w-[100px]">{{ 'common.label.unit' | translate }}</th>
+      }
+      @if (isColVisible('quantity')()) {
+        <th
+          class="min-w-[60px]"
+          [pTooltip]="'common.label.quantity' | translate"
+          tooltipPosition="top"
+        >
+          {{ 'common.label.qty' | translate }}
+        </th>
+      }
+      @if (isColVisible('totalEnd')()) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.subtotal' | translate }} <i class="pCalculator block">(1)</i>
+        </th>
+      }
+      @if (isColVisible('payment')()) {
+        <th class="min-w-[130px]">
+          {{ 'common.status.paid' | translate }}<i class="pCalculator block">(2)</i>
+        </th>
+      }
+      @if (isColVisible('refundServiceTotal')()) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.service_refund' | translate }}<i class="pCalculator block">(3)</i>
+        </th>
+      }
+      @if (isColVisible('conLai')()) {
+        <th class="min-w-[130px]">
+          {{ 'crm.order_plan.form.outstanding_balance' | translate }}<i class="pCalculator block">(4)=1-2-3</i>
+        </th>
+      }
+      @if (isColVisible('tuVan')()) {
+        <th class="min-w-[200px]">{{ 'common.label.consultant' | translate }}</th>
+      }
+      @if (isColVisible('doctorRevenue_id')()) {
+        <th class="min-w-[200px]">{{ 'common.label.consulting_doctor' | translate }}</th>
+      }
+      @if (isColVisible('note')()) {
+        <th class="min-w-[250px]">
+          {{ 'common.label.note' | translate }}
+        </th>
+      }
+      @if (isColVisible('branch')()) {
+        <th class="min-w-[130px]">
+          {{ 'common.label.branch' | translate }}
+        </th>
+      }
+      @if (isColVisible('source')()) {
+        <th class="min-w-[200px]">{{ 'common.label.source' | translate }}</th>
+      }
+      @if (isColVisible('orderPlanType')()) {
+        <th class="min-w-[150px]">{{ 'crm.order_plan.order_type' | translate }}</th>
+      }
+      @if (isColVisible('created_time')()) {
+        <th class="min-w-[140px]">
+          {{ 'common.label.order_date' | translate }}
+        </th>
+      }
+      @if (isColVisible('expires_at')()) {
+        <th class="min-w-[140px]">
+          {{ 'common.label.expires_at' | translate }}
+        </th>
+      }
+      @if (isColVisible('userCreated')()) {
+        <th class="min-w-[200px]">{{ 'common.label.user_created' | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      @if (isColVisible('updated_by')()) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.user_updated' | translate }}
+        </th>
+      }
+      @if (isColVisible('updated_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.updated_at' | translate }}</th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template
+    #body
+    let-index="rowIndex"
+    let-model
+    let-rowgroup="rowgroup"
+    let-rowspan="rowspan"
+  >
+    <tr class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.treatmentPlan?.id }}</td>
+      }
+      @if (rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          <div class="cx-row-actions">
+            <p-buttongroup>
+              <!-- Đã check quyền trong TS-->
+              @if (checkOrderPlanUpdate(model.created_at, model.created_by)) {
+                <p-button
+      icon="pi pi-pencil"
+                  (onClick)="updateOrderPlan(model.order_plan_id)" [ariaLabel]="'common.action.edit' | translate"
+                  [pTooltip]="'common.label.update_order' | translate"
+                  severity="success"
+                  size="small"
+                  tooltipPosition="top"
+                  [iconOnly]="true"
+                
+    ></p-button>
+              }
+              <p-button
+      icon="pi pi-trash"
+                (onClick)="deleteRecordTreatmentPlan($event, model.order_plan_id)"
+                *hasPerm="permission.permissionDeletePlanOrder"
+                [ariaLabel]="'common.action.delete' | translate"
+                [pTooltip]="'crm.order_plan.tooltip.delete' | translate"
+                severity="danger"
+                size="small"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              
+    ></p-button>
+              <p-button
+      icon="pi pi-eye"
+                (onClick)="treatmentPlanDetail(model)"
+                [ariaLabel]="'crm.order_plan.tooltip.detail' | translate"
+                [pTooltip]="'crm.order_plan.tooltip.detail' | translate"
+                size="small"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              
+    ></p-button>
+            </p-buttongroup>
+            <p-buttongroup>
+              @if (+model.treatmentPlan?.paymentPlan === 0) {
+                <p-button
+      icon="pi pi-dollar"
+                  (onClick)="createPaymentOrder(model.treatmentPlan)" [ariaLabel]="'common.label.order_payment' | translate"
+                  *hasPerm="permission.permissionCreatePayment"
+                  [pTooltip]="'common.label.order_payment' | translate"
+                  severity="help"
+                  size="small"
+                  tooltipPosition="top"
+                  [iconOnly]="true"
+                
+    ></p-button>
+              }
+              <p-button
+      icon="pi pi-print"
+                (onClick)="printOrderPlan(model.order_plan_id)"
+                [ariaLabel]="'crm.order_plan.tooltip.print' | translate"
+                [pTooltip]="'crm.order_plan.tooltip.print' | translate"
+                severity="info"
+                size="small"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              
+    ></p-button>
+            </p-buttongroup>
+          </div>
+        </td>
+      }
+      @if (isColVisible('orderCode')() && rowgroup) {
+        <td [appCopyText]="model.treatmentPlan?.code" [attr.rowspan]="rowspan">
+          {{ model.treatmentPlan?.code }}
+        </td>
+      }
+      @if (isColVisible('code')()) {
+        <td [appCopyText]="model.code">
+          {{ model.code }}
+        </td>
+      }
+      <ng-container *hasPerm="permission.permissionCreatePayment">
+        <td>
+          <div class="cx-row-actions">
+            <p-buttongroup>
+              @if (model.isLock === modelService.NOT_LOCK) {
+                @if (model.payment > 0) {
+                  <p-button
+                    (click)="refundServiceUsed($event, model.order_plan_id, model.id, model.payment)"
+                    icon="pi pi-minus" [ariaLabel]="'crm.order_plan.tooltip.refund' | translate"
+                    [pTooltip]="'crm.order_plan.tooltip.refund' | translate"
+                    size="small"
+                    tooltipPosition="top"
+                  ></p-button>
+                }
+              }
+              <ng-container *hasPerm="permission.permissionLockServiceUsed">
+                <p-button
+                  (click)="lockServiceUsed($event, model.id, model.isLock, model.updated_at)"
+                  [icon]="model.isLock === modelService.NOT_LOCK ? 'pi pi-lock-open' : 'pi pi-lock'"
+                  [pTooltip]="(model.isLock === modelService.IS_LOCK
+                      ? 'crm.order_plan.tooltip.service_locked'
+                      : 'crm.order_plan.tooltip.service_unlocked') | translate"
+                  [severity]="model.isLock === modelService.NOT_LOCK ? 'warn' : 'danger'"
+                  size="small"
+                  tooltipPosition="left"
+                ></p-button>
+              </ng-container>
+            </p-buttongroup>
+          </div>
+        </td>
+      </ng-container>
+      @if (isColVisible('codeSerice')()) {
+        <td>{{ model.serviceInfo?.code }}</td>
+      }
+      @if (isColVisible('orderServiceUseds')()) {
+        <td>
+          <span class="font-semibold text-primary"
+                [appCopyText]="model.serviceInfo?.name">{{ model.serviceInfo?.name || '—' }}</span>
+        </td>
+      }
+      @if (isColVisible('unit')()) {
+        <td>{{ model.unitInfo?.name }}</td>
+      }
+      @if (isColVisible('quantity')()) {
+        <td>
+          @if (model.quantity) {
+            <p-badge severity="warn" value="{{ model.quantity }}"></p-badge>
+          } @else {
+            {{ model.quantity || '—' }}
+          }
+        </td>
+      }
+      @if (isColVisible('totalEnd')()) {
+        <td class="text-blue-500">
+          {{ model.totalEnd | currencyFormat }}
+        </td>
+      }
+
+      @if (isColVisible('payment')()) {
+        <td class="text-blue-500">
+          {{ model.payment | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('refundServiceTotal')()) {
+        <td class="text-red-500">
+          {{ model.refundServiceUsed | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('conLai')()) {
+        <td class="text-blue-500">
+          {{ +model.totalEnd - +model.payment | currencyFormat }}
+        </td>
+      }
+      @if (isColVisible('tuVan')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          <div class="flex flex-wrap gap-2">
+            @for (u of model.revenueList; track u?.id) {
+              <p-chip [label]="u?.fullname" [image]="u?.avatar" [alt]="u?.fullname"/>
+            } @empty {
+              —
+            }
+          </div>
+        </td>
+      }
+      @if (isColVisible('doctorRevenue_id')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          <div class="flex flex-wrap gap-2">
+            @for (u of model.doctorList; track u?.id) {
+              <p-chip [label]="u?.fullname" [image]="u?.avatar" [alt]="u?.fullname"/>
+            } @empty {
+              —
+            }
+          </div>
+        </td>
+      }
+      @if (isColVisible('note')() && rowgroup) {
+        <td [attr.rowspan]="rowspan" class="whitespace-pre-wrap">
+          <span [innerHTML]="model.treatmentPlan?.note || '—' | safeHtml"></span>
+        </td>
+      }
+      @if (isColVisible('branch')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.branchLabel || '—' }}</td>
+      }
+      @if (isColVisible('source')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.sourceLabel || '—' }}</td>
+      }
+      @if (isColVisible('orderPlanType')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.treatmentPlan?.orderPlanType | oldNewType }}</td>
+      }
+      @if (isColVisible('created_time')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          {{ model.created_dayFormatted }}
+        </td>
+      }
+      @if (isColVisible('expires_at')()) {
+        <td>
+          {{ model.expires_atFormatted || '—' }}
+        </td>
+      }
+      @if (isColVisible('userCreated')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          <p-chip label="{{model.createdByInfo?.fullname}}" image="{{ model.createdByInfo?.avatar }}"
+                  alt="{{model.createdByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('created_at')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.created_atFormatted }}</td>
+      }
+      @if (isColVisible('updated_by')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">
+          <p-chip label="{{model.updatedByInfo?.fullname}}" image="{{ model.updatedByInfo?.avatar }}"
+                  alt="{{model.updatedByInfo?.fullname}}"/>
+        </td>
+      }
+      @if (isColVisible('updated_at')() && rowgroup) {
+        <td [attr.rowspan]="rowspan">{{ model.updated_atFormatted }}</td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td></td>
+      <td></td>
+      @if (isColVisible('id')()) {
+        <td></td>
+      }
+      @if (isColVisible('orderCode')()) {
+        <td></td>
+      }
+      @if (isColVisible('code')()) {
+        <td></td>
+      }
+      <ng-container *hasPerm="permission.permissionCreatePayment">
+        <td></td>
+      </ng-container>
+      @if (isColVisible('codeSerice')()) {
+        <td></td>
+      }
+      @if (isColVisible('orderServiceUseds')()) {
+        <td></td>
+      }
+      @if (isColVisible('unit')()) {
+        <td></td>
+      }
+      @if (isColVisible('quantity')()) {
+        <td></td>
+      }
+      @if (isColVisible('totalEnd')()) {
+        <td>
+          <b class="text-blue-500">{{ getTotal('totalEnd') | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('payment')()) {
+        <td>
+          <b class="text-blue-500">{{ getPayment('payment') | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('refundServiceTotal')()) {
+        <td>
+          <b class="text-red-500">{{ getTotal('refundServiceUsed') | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('conLai')()) {
+        <td>
+          <b class="text-blue-500">{{ getTotal('totalEnd') - getPayment('payment') | currencyFormat }}</b>
+        </td>
+      }
+      @if (isColVisible('tuVan')()) {
+        <td></td>
+      }
+      @if (isColVisible('doctorRevenue_id')()) {
+        <td></td>
+      }
+      @if (isColVisible('orderPlanType')()) {
+        <td></td>
+      }
+      @if (isColVisible('created_time')()) {
+        <td></td>
+      }
+      @if (isColVisible('expires_at')()) {
+        <td></td>
+      }
+      @if (isColVisible('note')()) {
+        <td></td>
+      }
+      @if (isColVisible('branch')()) {
+        <td></td>
+      }
+      @if (isColVisible('source')()) {
+        <td></td>
+      }
+      @if (isColVisible('userCreated')()) {
+        <td></td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td></td>
+      }
+      @if (isColVisible('updated_by')()) {
+        <td></td>
+      }
+      @if (isColVisible('updated_at')()) {
+        <td></td>
+      }
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 3">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>
+
+<!--
+  @defer: 2 panel chi tiết chỉ tải khi người dùng thật sự mở — không nằm chung chunk với tab đơn hàng.
+  Panel dịch vụ mở CHỒNG lên panel đơn (SlideOver có xếp lớp z-index), đóng lại quay về đúng đơn.
+-->
+@defer (when orderDetailVisible(); prefetch on idle) {
+  <app-order-plan-detail-panel
+    [(visible)]="orderDetailVisible"
+    [orderPlanId]="orderDetailId()"
+    [seed]="orderDetailSeed()"
+    (serviceSelected)="openServiceFromOrder($event)"
+  />
+}
+
+@defer (when serviceDetailVisible(); prefetch on idle) {
+  <app-treatment-service-detail-panel
+    [(visible)]="serviceDetailVisible"
+    [serviceUsedId]="serviceDetailId()"
+    [seed]="serviceDetailSeed()"
+  />
+}

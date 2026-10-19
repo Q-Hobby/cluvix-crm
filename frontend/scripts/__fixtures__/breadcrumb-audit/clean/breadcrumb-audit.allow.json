@@ -1,0 +1,4 @@
+[
+  {"code": "B6", "route": "/config/print-template/:id", "reason": "fixture: placeholder không có model"},
+  {"code": "B1", "route": "/crm/gone", "reason": "fixture: mục lỗi thời phải ra cảnh báo"}
+]

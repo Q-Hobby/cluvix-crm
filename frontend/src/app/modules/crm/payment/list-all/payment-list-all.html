@@ -1,0 +1,617 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  selectionMode="single"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+        <ng-container *hasPerm="permission.permissionExtPayment">
+          <button pButton
+            (click)="exportExcel()"
+            [disabled]="isSubmitting()"
+            [attr.aria-label]="cfg.exportTooltipKey | translate"
+            [pTooltip]="cfg.exportTooltipKey | translate"
+            severity="help"
+            type="button"
+            [iconOnly]="true"
+          ><i class="pi pi-download"></i></button>
+        </ng-container>
+      </div>
+      <div class="p-toolbar-group-end">
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <p-popover #op>
+            <div class="grid grid-cols-12 gap-4 !w-[300px]">
+              @if (hasFilter('payment_for')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-select [multiple]="true"
+                      [options]="paymentForOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      appendTo="body"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="payment_for"
+                      inputId="payment_for"
+                      [resetFilterOnHide]="true"
+                      class="w-full"
+                    ></p-select>
+                    <label for="payment_for">{{ 'crm.payment_list.col.transaction_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('branch_id')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-branch-multiselect-form-control formControlName="branch_id"/>
+                    <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('service_type')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-service-type-multiselect-form-control formControlName="service_type"/>
+                    <label for="service_type">{{ 'common.label.service_group' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('service_id')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-services-multiselect-form-control formControlName="service_id" [ignoreTypeFilter]="true"/>
+                    <label for="service_id">{{ 'common.label.service' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('source_id')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-source-multiselect-form-control formControlName="source_id"/>
+                    <label for="source_id">{{ 'common.label.source' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('_listRevenues')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-department-user-multiselect formControlName="_listRevenues" [department]="telesaleDepartment"/>
+                    <label for="_listRevenues">{{ 'common.label.consultant' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('method')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-payment-method-multiselect-form-control formControlName="method"/>
+                    <label for="method">{{ 'common.label.payment_method' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('card_type_id')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <app-payment-type-multiselect-form-control formControlName="card_type_id"/>
+                    <label for="card_type_id">{{ 'crm.payment_list.col.payment_channel' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('deposit_type')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-select [multiple]="true"
+                      [options]="typeDepositOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      appendTo="body"
+                      [emptyFilterMessage]="'common.label.no_results' | translate"
+                      formControlName="deposit_type"
+                      inputId="deposit_type"
+                      [resetFilterOnHide]="true"
+                      class="w-full"
+                    ></p-select>
+                    <label for="deposit_type">{{ 'common.label.deposit_type' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('_groupLocal')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <group-local-multiselect-from-control formControlName="_groupLocal"/>
+                    <label for="_groupLocal">{{ 'common.label.domestic_area' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('_groupCountry')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <group-country-multiselect-from-control formControlName="_groupCountry"/>
+                    <label for="_groupCountry">{{ 'common.label.international_area' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (hasFilter('created_time')) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      (onClear)="clearCreatedTime()"
+                      [readonlyInput]="true"
+                      [showClear]="true"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      formControlName="created_time"
+                      inputId="created_time"
+                      selectionMode="range"
+                      [showIcon]="true"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer (rangeChange)="onQuickSelectCreatedTime($event)"></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="created_time">{{ 'crm.report.debt.label.order_created_date' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              @if (isMobile()) {
+                <div class="col-span-12">
+                  <p-floatlabel variant="on">
+                    <p-datepicker
+                      (onClear)="clearDate()"
+                      [readonlyInput]="true"
+                      [showClear]="true"
+                      appendTo="body"
+                      dateFormat="dd/mm/yy"
+                      [formControlName]="cfg.dateField"
+                      inputId="payment_date_mobile"
+                      selectionMode="range"
+                      [showIcon]="true"
+                    >
+                      <ng-template #footer>
+                        <app-date-picker-footer (rangeChange)="onQuickSelectDate($event)"></app-date-picker-footer>
+                      </ng-template>
+                    </p-datepicker>
+                    <label for="payment_date_mobile">{{ cfg.dateLabelKey | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+            </div>
+          </p-popover>
+          <div class="flex items-center gap-2 w-full">
+            @if (isDesktop()) {
+              <div class="flex-grow">
+                <p-floatlabel variant="on">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input
+                      autocomplete="off"
+                      formControlName="_keyword"
+                      id="search_keyword"
+                      pInputText
+                      type="text"
+                    />
+                  </p-iconfield>
+                  <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <p-floatlabel variant="on">
+                <p-datepicker
+                  (onClear)="clearDate()"
+                  [readonlyInput]="true"
+                  [showClear]="true"
+                  appendTo="body"
+                  dateFormat="dd/mm/yy"
+                  [formControlName]="cfg.dateField"
+                  inputId="payment_date_desktop"
+                  selectionMode="range"
+                  [showIcon]="true"
+                >
+                  <ng-template #footer>
+                    <app-date-picker-footer (rangeChange)="onQuickSelectDate($event)"></app-date-picker-footer>
+                  </ng-template>
+                </p-datepicker>
+                <label for="payment_date_desktop">{{ cfg.dateLabelKey | translate }}</label>
+              </p-floatlabel>
+            }
+            <button pButton
+              (click)="op.toggle($event)"
+              [attr.aria-label]="'common.action.filter' | translate"
+              [pTooltip]="'common.action.filter' | translate"
+              severity="info"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter"></i></button>
+            <button pButton
+              (click)="clearFilter()"
+              [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-filter-slash"></i></button>
+            <button type="button" pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            ><i class="pi pi-refresh"></i></button>
+            <button pButton
+              (click)="colsTpl.toggle($event)"
+              [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            ><i class="pi pi-th-large"></i></button>
+          </div>
+        </form>
+      }
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @for (c of visibleCols(); track c.value) {
+        <th [class]="c.width">{{ c.labelKey | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[50px] min-w-[50px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [pSelectableRow]="model" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @for (c of visibleCols(); track c.value) {
+        @switch (c.cell) {
+          @case ('id') {
+            <td>{{ model.id }}</td>
+          }
+          @case ('customerCode') {
+            <td [appCopyText]="model.customer?.code">{{ model.customer?.code || '—' }}</td>
+          }
+          @case ('customerOldCode') {
+            <td [appCopyText]="model.customer?.old_code">{{ model.customer?.old_code || '—' }}</td>
+          }
+          @case ('customer') {
+            <td>
+              @if (model.customer?.id) {
+                <app-customer-name
+                  [id]="model.customer?.id"
+                  [customer]="model.customer"
+                  [name]="model.customerDisplayName"
+                />
+              } @else {
+                —
+              }
+              @if (c.value === cfg.detailCol) {
+                <ng-container [ngTemplateOutlet]="detailLink" [ngTemplateOutletContext]="{ $implicit: model }"/>
+              }
+            </td>
+          }
+          @case ('phone') {
+            <td><app-customer-phone [phone]="model.customer?.phone"/></td>
+          }
+          @case ('code') {
+            <td [appCopyText]="model.code">{{ model.code }}</td>
+          }
+          @case ('orderCode') {
+            <td [appCopyText]="model.orderPlan?.code">{{ model.orderPlan?.code || '—' }}</td>
+          }
+          @case ('oseCode') {
+            <td [appCopyText]="model.orderServiceUsed?.code">{{ model.orderServiceUsed?.code || '—' }}</td>
+          }
+          @case ('serviceCode') {
+            <td [appCopyText]="model.serviceInfo?.code">{{ model.serviceInfo?.code || '—' }}</td>
+          }
+          @case ('service') {
+            <td>
+              <div [appCopyText]="model.serviceInfo?.name">
+                @if (model.serviceInfo?.name) {
+                  <span class="font-semibold text-primary">{{ model.serviceInfo?.name }}</span>
+                } @else {
+                  —
+                }
+              </div>
+              @if (c.value === cfg.detailCol) {
+                <ng-container [ngTemplateOutlet]="detailLink" [ngTemplateOutletContext]="{ $implicit: model }"/>
+              }
+            </td>
+          }
+          @case ('quantity') {
+            <td>
+              @if (model.orderServiceUsed?.quantity) {
+                <p-badge severity="warn" [value]="model.orderServiceUsed?.quantity"/>
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('totalEnd') {
+            <td class="text-blue-500">{{ model.orderServiceUsed?.totalEnd | currencyFormat }}</td>
+          }
+          @case ('serviceType') {
+            <td>{{ model.serviceTypeLabel || '—' }}</td>
+          }
+          @case ('statusPayment') {
+            <td>
+              @if (!model.orderServiceUsed) {
+                —
+              } @else if (model.orderServiceUsed.totalEnd === 0) {
+                {{ 'common.label.free_service' | translate }}
+              } @else if (model.orderServiceUsed.payment === 0) {
+                <span class="text-red-500">{{ 'common.status.unpaid' | translate }}</span>
+              } @else if (model.orderServiceUsed.totalEnd === model.orderServiceUsed.payment) {
+                <span class="text-blue-500">{{ 'common.label.fully_paid' | translate }}</span>
+              } @else {
+                <span class="text-yellow-600">{{ 'common.label.partial_payment' | translate }}</span>
+              }
+            </td>
+          }
+          @case ('type') {
+            <td>
+              <span class="font-semibold px-3 py-[5px] rounded-full shadow-sm text-sm mr-1 mb-1 inline-block"
+                    [class]="model.paymentForClass">
+                {{ model.paymentForKey ? (model.paymentForKey | translate) : model.paymentForLabel }}
+              </span>
+            </td>
+          }
+          @case ('method') {
+            <td><b>{{ model.paymentMethodLabel || '—' }}</b></td>
+          }
+          @case ('cardType') {
+            <td>{{ model.paymentTypeLabel || '—' }}</td>
+          }
+          @case ('typeDeposit') {
+            <td>
+              @if (model.typeDepositInfo) {
+                {{ model.typeDepositInfo.labelKey ? (model.typeDepositInfo.labelKey | translate) : model.typeDepositInfo.label }}
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('amount') {
+            <td class="text-blue-500">{{ model.amountFormatted }}</td>
+          }
+          @case ('amountRefund') {
+            <td class="text-red-500">{{ model.amountFormatted }}</td>
+          }
+          @case ('depositAfter') {
+            <td class="text-blue-500">{{ model.deposit_afterFormatted }}</td>
+          }
+          @case ('depositCode') {
+            <td [appCopyText]="model.deposit?.code">{{ model.deposit?.code || '—' }}</td>
+          }
+          @case ('depositNote') {
+            <td class="whitespace-pre-wrap"><div [innerHTML]="model.deposit?.note || '—' | safeHtml"></div></td>
+          }
+          @case ('contentOld') {
+            <td class="whitespace-pre-wrap"><div [innerHTML]="model.deposit?.note || model.note || '—' | safeHtml"></div></td>
+          }
+          @case ('note') {
+            <td class="whitespace-pre-wrap"><div [innerHTML]="model.note || '—' | safeHtml"></div></td>
+          }
+          @case ('revenue') {
+            <td>
+              @if (model.revenue) {
+                <p-chip [label]="model.revenue?.fullname" [image]="model.revenue?.avatar" [alt]="model.revenue?.fullname"/>
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('sourceCustomer') {
+            <td>{{ model.sourceCustomerLabel || '—' }}</td>
+          }
+          @case ('sourcePayment') {
+            <td>{{ model.sourceLabel || '—' }}</td>
+          }
+          @case ('serviceInterested') {
+            <td>{{ model.serviceInterestedLabel || '—' }}</td>
+          }
+          @case ('province') {
+            <td>{{ model.provinceLabel || '—' }}</td>
+          }
+          @case ('country') {
+            <td>
+              @if (model.customer?.country_id) {
+                <div class="flex items-center gap-2">
+                  <img
+                    class="w-[20px] min-w-[20px]"
+                    [class]="'flag flag-' + model.countryInfo?.code?.toLowerCase()"
+                    [alt]="model.countryInfo?.code"
+                    src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                  />
+                  <span>{{ model.countryInfo?.name }}</span>
+                </div>
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('address') {
+            <td>{{ model.customer?.address || '—' }}</td>
+          }
+          @case ('createdOrder') {
+            <td>
+              @if (model.orderServiceUsed?.created_day) {
+                {{ model.orderServiceUsed.created_day * 1000 | customDate }}
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('paymentOfDate') {
+            <td>{{ model.payment_of_date ? model.payment_of_dateFormatted : '—' }}</td>
+          }
+          @case ('paymentTime') {
+            <td>{{ model.payment_time ? model.payment_timeFormatted : '—' }}</td>
+          }
+          @case ('appointmentDate') {
+            <td>
+              @if (model.customer?.appointment?.appointment_date) {
+                {{ model.customer.appointment.appointment_date * 1000 | customDate: false }}
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('branch') {
+            <td>{{ model.branchLabel || '—' }}</td>
+          }
+          @case ('createdAt') {
+            <td>{{ model.created_atFormatted || '—' }}</td>
+          }
+          @case ('createdBy') {
+            <td>
+              @if (model.createdByInfo) {
+                <p-chip [label]="model.createdByInfo?.fullname" [image]="model.createdByInfo?.avatar" [alt]="model.createdByInfo?.fullname"/>
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('updatedBy') {
+            <td>
+              @if (model.updatedByInfo) {
+                <p-chip [label]="model.updatedByInfo?.fullname" [image]="model.updatedByInfo?.avatar" [alt]="model.updatedByInfo?.fullname"/>
+              } @else {
+                —
+              }
+            </td>
+          }
+          @case ('updatedAt') {
+            <td>{{ model.updated_atFormatted || '—' }}</td>
+          }
+          @default {
+            <td>—</td>
+          }
+        }
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <app-customer-timeline-button
+            (clickTimeLine)="timelineCustomer($event.event, $event.id, $event.fullname)"
+            [customer]="model.customer"
+          />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #footer>
+    <tr>
+      <td></td>
+      @for (c of visibleCols(); track c.value) {
+        <td>
+          @switch (c.total) {
+            @case ('sum') {
+              <b [class]="c.cell === 'amountRefund' ? 'text-red-500' : 'text-blue-500'">{{ amountTotal() | currencyFormat }}</b>
+            }
+            @case ('depositAfter') {
+              <b class="text-blue-500">{{ depositAfterTotal() | currencyFormat }}</b>
+            }
+          }
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn></td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr class="h-[46px]">
+      <td [attr.colspan]="visibleCols().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- Lối vào chi tiết phiếu: <button> (không phải <a> không href) để tab bàn phím tới được; đặt NGOÀI
+     vùng [appCopyText] để bấm không copy nhầm nội dung ô. Neo vào cột BẬT mặc định của từng màn. -->
+<ng-template #detailLink let-model>
+  <div class="mt-0.5">
+    <button
+      type="button"
+      class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+      (click)="openPaymentDetail(model)"
+    >
+      <i class="pi pi-arrow-up-right text-[0.6rem]"></i>
+      {{ 'common.label.detail' | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>
+
+<!--
+  @defer: panel chi tiết chỉ tải khi người dùng thật sự mở lần đầu — `prefetch on idle` kéo sẵn chunk
+  lúc trình duyệt rảnh nên lần bấm đầu vẫn mở ngay.
+-->
+@defer (when detail.visible(); prefetch on idle) {
+  <app-payment-detail-panel
+    [(visible)]="detail.visible"
+    [paymentId]="detail.id()"
+    [seed]="detail.seed()"
+  />
+}

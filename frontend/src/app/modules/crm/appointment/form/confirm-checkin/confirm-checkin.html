@@ -1,0 +1,38 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid mt-2">
+    <div class="col-span-4 ">
+      <p-floatlabel variant="on">
+        <p-select
+          appendTo="body"
+          #serviceUsed
+          [class.ng-invalid]="isFieldInvalid(rootField.confirmAppointment!)"
+          [options]="CONFIRM_APPOINTMENT_OPTION"
+          class="ng-dirty"
+          emptyFilterMessage="{{ 'common.message.no_data' | translate }}"
+          filterBy="label"
+          [formField]="$any(rootField.confirmAppointment!)"
+          id="confirmAppointment"
+          inputId="confirmAppointment"
+          optionLabel="label"
+          optionValue="value"
+          resetFilterOnHide="true"
+        ></p-select>
+        <label for="confirmAppointment">{{ 'crm.appointment.label.confirm_status' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+      <textarea
+        [class.ng-invalid]="isFieldInvalid(rootField.noteAppointment!)"
+        class="h-full w-full"
+        [rows]="4"
+        pTextarea
+        [formField]="$any(rootField.noteAppointment!)"
+        id="noteAppointment"
+      ></textarea>
+        <label for="noteAppointment">{{ 'common.label.appointment_note' | translate }}</label>
+      </p-floatlabel>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)" (saveForm)="onSubmit()"/>
+</form>

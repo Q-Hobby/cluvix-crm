@@ -1,0 +1,210 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [filters]="initialFilters()"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rows]="perPage()"
+  [first]="first()"
+  [totalRecords]="paginationInfo()?.totalCount || 0"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rowHover]="true"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  [filterDelay]="0"
+  dataKey="id"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start flex gap-2">
+        <button
+          pButton
+          (click)="exportPaymentByDate($event)"
+          [disabled]="isSubmitting()"
+          [pTooltip]="'common.tooltip.export_data' | translate"
+          severity="help"
+          type="button"
+        >
+          <i class="pi pi-download"></i>
+          <span>{{ isDesktop() ? ('common.action.export' | translate) : '' }}</span>
+        </button>
+        <button
+          pButton
+          (click)="copyData()"
+          [pTooltip]="'common.action.copy' | translate"
+          severity="secondary"
+          type="button"
+        >
+          <i class="pi pi-copy"></i>
+          <span>{{ isDesktop() ? ('common.action.copy' | translate) : '' }}</span>
+        </button>
+      </div>
+      <div class="p-toolbar-group-end">
+        @if (rfFilterModel) {
+          <form [formGroup]="rfFilterModel" novalidate>
+            <div class="flex items-center gap-2 w-full">
+              <p-floatlabel variant="on">
+                <p-datepicker
+                  [readonlyInput]="true"
+                  appendTo="body"
+                  dateFormat="dd/mm/yy"
+                  formControlName="_ngay_thang"
+                  inputId="rbd_ngay_thang"
+                  selectionMode="range"
+                  showIcon="true"
+                >
+                  <ng-template #footer>
+                    <app-date-picker-footer (rangeChange)="onQuickSelect($event)"></app-date-picker-footer>
+                  </ng-template>
+                </p-datepicker>
+                <label for="rbd_ngay_thang">{{ 'common.label.collection_time' | translate }}</label>
+              </p-floatlabel>
+              <p-floatlabel variant="on" class="min-w-[180px]">
+                <app-branch-multiselect-form-control formControlName="branch_id"></app-branch-multiselect-form-control>
+                <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+              </p-floatlabel>
+              <button
+                pButton
+                (click)="clearFilter()"
+                [attr.aria-label]="'common.action.clear_filter' | translate"
+                [pTooltip]="'common.action.clear_filter' | translate"
+                severity="warn"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-filter-slash"></i>
+              </button>
+              <button
+                type="button"
+                pButton
+                (click)="resetPage()"
+                [attr.aria-label]="'common.action.refresh' | translate"
+                [pTooltip]="'common.action.reload_page' | translate"
+                severity="secondary"
+                tooltipPosition="top"
+                [iconOnly]="true"
+              >
+                <i class="pi pi-refresh"></i>
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[50px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      <th class="min-w-[140px]">{{ 'common.label.date' | translate }}</th>
+      <th
+        class="min-w-[60px]"
+        [pTooltip]="'crm.report.revenue.by_date.accepted_tooltip' | translate"
+        tooltipPosition="top"
+      >
+        {{ 'common.label.accepted' | translate }}
+      </th>
+      <th class="min-w-[130px]">{{ 'common.label.sales' | translate }}</th>
+      <th class="min-w-[130px]">{{ 'accountant.report_revenue_common.payment' | translate }}</th>
+      <th class="min-w-[130px]">{{ 'common.label.deposit' | translate }}</th>
+      <th class="min-w-[130px]">{{ 'common.label.refund_deposit' | translate }}</th>
+      <th class="min-w-[130px]">{{ 'common.label.refund_service' | translate }}</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr>
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      <td>
+        <div class="cx-row-actions">
+          <button
+            type="button"
+            pButton
+            (click)="printPaymentInDay(model.ngayThang)"
+            [attr.aria-label]="'crm.report.revenue.by_date.print_tooltip' | translate"
+            [pTooltip]="'crm.report.revenue.by_date.print_tooltip' | translate"
+            severity="info"
+            size="small"
+            tooltipPosition="top"
+            [iconOnly]="true"
+          >
+            <i class="pi pi-print"></i>
+          </button>
+        </div>
+      </td>
+      <td>
+        <b>{{ model.ngayThang * 1000 | customDate }}</b>
+      </td>
+      <td>{{ model.dongY }}</td>
+      <td class="text-blue-500">{{ model.doanhSo | currencyFormat }}</td>
+      <td class="text-blue-500">{{ model.thucThu | currencyFormat }}</td>
+      <td class="text-blue-500">{{ model.deposit | currencyFormat }}</td>
+      <td class="text-red-500">{{ model.refundDepoit | currencyFormat }}</td>
+      <td class="text-red-500">{{ model.refundService | currencyFormat }}</td>
+    </tr>
+  </ng-template>
+  <ng-template #footer>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="text-left font-bold">
+        <b>{{ summary().dongY }}</b>
+      </td>
+      <td>
+        <b class="text-blue-500">{{ summary().doanhSo | currencyFormat }}</b>
+      </td>
+      <td>
+        <b class="text-blue-500">{{ summary().thucThu | currencyFormat }}</b>
+      </td>
+      <td>
+        <b class="text-blue-500">{{ summary().deposit | currencyFormat }}</b>
+      </td>
+      <td>
+        <b class="text-red-500">{{ summary().refundDepoit | currencyFormat }}</b>
+      </td>
+      <td>
+        <b class="text-red-500">{{ summary().refundService | currencyFormat }}</b>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (num of 30 | toArray; track $index) {
+      <tr class="h-[46px]">
+        @for (col of 9 | toArray; track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="9">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

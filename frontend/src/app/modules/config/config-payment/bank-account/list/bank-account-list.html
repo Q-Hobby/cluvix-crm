@@ -1,0 +1,237 @@
+<p-table
+  #dt
+  (onEditComplete)="onCellEditComplete($event)"
+  (onEditInit)="onCellEditInit($event)"
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  editMode="cell"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+      <button type="button" pButton
+        (click)="createBankAccount()"
+        *hasPerm="permission.permissionManageConfig"
+      >
+        <i class="pi pi-plus"></i>
+        <span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span>
+      </button>
+      </div>
+      <div class="p-toolbar-group-end">
+    @if (rfFilterModel) {
+      <form [formGroup]="rfFilterModel" novalidate class="w-full">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full">
+          <p-floatlabel variant="on" class="flex-1 min-w-0">
+            <p-iconfield class="w-full">
+              <p-inputicon class="pi pi-search"/>
+              <input
+                autocomplete="off"
+                formControlName="_keyword"
+                id="search_keyword"
+                pInputText
+                type="text"
+                class="w-full"
+              />
+            </p-iconfield>
+            <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+          </p-floatlabel>
+          <p-floatlabel variant="on" class="flex-1 min-w-0">
+            <p-select [multiple]="true"
+              [options]="STATUS_OPTION"
+              [resetFilterOnHide]="true"
+              appendTo="body"
+              class="w-full"
+              [emptyFilterMessage]="'common.label.no_results' | translate"
+              formControlName="status"
+              id="status"
+            >
+            </p-select>
+            <label for="status">{{ 'common.label.status' | translate }}</label>
+          </p-floatlabel>
+          <div class="flex gap-2 shrink-0">
+            <button pButton
+              (click)="colsTpl.toggle($event)"
+              [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+              [iconOnly]="true"
+            >
+              <i class="pi pi-th-large"></i>
+            </button>
+            <button type="button" pButton
+              (click)="resetPage()"
+              [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            >
+              <i class="pi pi-refresh"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('bank_code')()) {
+        <th class="min-w-[120px]">{{ 'config.bank_account.bank_code' | translate }}</th>
+      }
+      @if (isColVisible('account_no')()) {
+        <th class="min-w-[150px]">{{ 'common.label.account_number' | translate }}</th>
+      }
+      @if (isColVisible('account_name')()) {
+        <th class="min-w-[200px]">{{ 'config.bank_account.account_name' | translate }}</th>
+      }
+      @if (isColVisible('status')()) {
+        <th class="min-w-[80px]">{{ 'common.label.status' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[120px] min-w-[120px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [class.tr-disabled]="!model.status" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('bank_code')()) {
+        <td [appCopyText]="model.bank_code">
+          <span class="font-semibold text-primary">{{ model.bank_code }}</span>
+        </td>
+      }
+      @if (isColVisible('account_no')()) {
+        <td [appCopyText]="model.account_no">{{ model.account_no }}</td>
+      }
+      @if (isColVisible('account_name')()) {
+        <td [appCopyText]="model.account_name">{{ model.account_name }}</td>
+      }
+      @if (isColVisible('status')()) {
+        <td>
+          <p-toggleswitch
+            (onChange)="handleStatusChange(model.id)"
+            [(ngModel)]="model.status"
+            [disabled]="canUpdate"
+            [pTooltip]="(model.status ? 'common.label.visible' : 'common.label.hidden') | translate"
+            [trueValue]="1" [falseValue]="0"
+          ></p-toggleswitch>
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            <p-button
+      icon="pi pi-clone"
+              (onClick)="cloneBankAccount(model)"
+              *hasPerm="permission.permissionManageConfig"
+              [ariaLabel]="'common.action.copy' | translate"
+              [pTooltip]="'common.action.copy' | translate"
+              severity="info"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            
+    ></p-button>
+            <p-button
+      icon="pi pi-pencil"
+              (onClick)="updateBankAccount(model)"
+              *hasPerm="permission.permissionManageConfig"
+              [ariaLabel]="'common.action.edit' | translate"
+              [pTooltip]="'common.action.update' | translate"
+              severity="success"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            
+    ></p-button>
+            <p-button
+      icon="pi pi-trash"
+              (onClick)="deleteRecord($event, model.id)"
+              *hasPerm="permission.permissionManageConfig"
+              [ariaLabel]="'common.action.delete' | translate"
+              [pTooltip]="'common.action.delete' | translate"
+              severity="danger"
+              size="small"
+              tooltipPosition="top"
+              [iconOnly]="true"
+            
+    ></p-button>
+          </p-buttongroup>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 10">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

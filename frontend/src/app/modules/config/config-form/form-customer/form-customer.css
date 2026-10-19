@@ -1,0 +1,30 @@
+:host ::ng-deep .p-datatable .p-datatable-tbody tr td {
+  padding: 0.5rem !important;
+}
+
+:host ::ng-deep .p-tabmenu-nav {
+  display: flex;
+  flex-direction: column;
+  border: none;
+}
+
+:host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  border: none;
+}
+
+:host ::ng-deep .p-toolbar {
+  position: sticky;
+  position: -webkit-sticky;
+  z-index: 100;
+  top: 0;
+}
+
+:host ::ng-deep a {
+  color: unset;
+}
+
+:host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+  color: var(--active-menuitem-text-color);
+}
+
+/*# sourceMappingURL=form-customer.css.map */

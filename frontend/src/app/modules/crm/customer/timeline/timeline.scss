@@ -1,0 +1,70 @@
+/* Layout timeline chuẩn 2 cột */
+.customized-timeline .p-timeline-event {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr !important; /* LEFT | MARKER | RIGHT */
+  align-items: center;
+  width: 100%;
+}
+
+/* Tạo max-width đồng nhất cho card */
+.customized-timeline .p-timeline-event-opposite,
+.customized-timeline .p-timeline-event-content {
+  max-width: 460px !important; /* chỉnh tùy modal rộng bao nhiêu */
+  width: 100%;
+}
+
+/* Căn trái/phải chính xác */
+.customized-timeline .p-timeline-event:nth-child(odd) .p-timeline-event-content {
+  justify-self: start; /* card nằm bên trái */
+}
+
+.customized-timeline .p-timeline-event:nth-child(even) .p-timeline-event-content {
+  justify-self: end; /* card nằm bên phải */
+}
+
+/* Marker nằm chính giữa */
+.customized-timeline .p-timeline-event-marker {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  margin: 0 12px !important;
+}
+
+/* Fix line chạy giữa */
+.customized-timeline .p-timeline-event-connector {
+  margin: 0 auto !important;
+  width: 3px !important;
+}
+
+/* Khoảng cách đều giữa các event */
+.customized-timeline .p-timeline-event {
+  margin: 40px 0 !important;
+}
+
+/* Override cho align left - tất cả lệch trái */
+:host ::ng-deep .p-timeline-left .p-timeline-event {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
+
+:host ::ng-deep .p-timeline-left .p-timeline-event-opposite {
+  display: none !important;
+}
+
+:host ::ng-deep .p-timeline-left .p-timeline-event-separator {
+  flex: 0 0 auto !important;
+  align-self: stretch !important;
+}
+
+:host ::ng-deep .p-timeline-left .p-timeline-event-marker {
+  margin: 0 !important;
+}
+
+:host ::ng-deep .p-timeline-left .p-timeline-event-content {
+  flex: 1 !important;
+  margin-left: 1rem !important;
+  max-width: 100% !important;
+}

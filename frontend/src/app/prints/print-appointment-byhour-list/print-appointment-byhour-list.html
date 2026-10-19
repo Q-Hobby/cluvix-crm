@@ -1,0 +1,99 @@
+<div class="sheet_body">
+  <div class="sheet_body_top">
+    <div class="flex items-center justify-between italic">
+      <div class="pl-1">
+      </div>
+      <div class="text-sm pr-2">
+        {{ 'common.label.day' | translate }} <span class="font-semibold">{{ appointmentDate() | date:'dd' }}</span> {{ 'print.date_month' | translate }} <span
+        class="font-semibold">{{ appointmentDate() | date:'MM' }}</span> {{ 'print.date_year' | translate }} <span
+        class="font-semibold">{{ appointmentDate() | date:'yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet_body_mid">
+    <div class="appointment_info">
+      <h3 class="flex items-center justify-center w-full font-semibold text-lg mb-4">
+        {{ 'print.appointment_list_by_hour' | translate }}
+      </h3>
+
+      @for (group of groupedData(); track group.branch_id) {
+        <div class="branch-section mb-6">
+          <div class="services p-datatable">
+            <table class="w-full">
+              <thead class="p-datatable-thead">
+              <tr class="bg-blue-50">
+                <th colspan="7" class="p-3">
+                  <div class="flex items-center gap-2">
+                    <i class="pi pi-building text-blue-600 text-lg"></i>
+                    <span class="font-semibold text-blue-800 text-lg">{{ group.branch_name }}
+                      ({{ 'print.appointment_count' | translate: { count: group.appointments.length } }})</span>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <th class="min-w-[80px] text-left">
+                  {{ 'print.appointment_time' | translate }}
+                </th>
+                <th class="min-w-[150px] text-left">
+                  {{ 'common.label.customer' | translate }}
+                </th>
+                <th class="min-w-[80px] text-left">
+                  {{ 'print.appointment_type' | translate }}
+                </th>
+                <th class="min-w-[80px] text-left">
+                  {{ 'common.label.status' | translate }}
+                </th>
+                <th class="min-w-[200px] text-left">
+                  {{ 'print.appointment_service' | translate }}
+                </th>
+                <th class="w-[300px] text-left">
+                  {{ 'print.appointment_content' | translate }}
+                </th>
+              </tr>
+              </thead>
+              <tbody class="p-datatable-tbody">
+                @for (appointment of group.appointments; track appointment.id) {
+                  <tr class="hover:bg-gray-50">
+                    <td>
+                      {{ appointment.appointment_date * 1000 | date:'HH:mm' }}
+                    </td>
+                    <td>
+                      {{ appointment.customer_name }}
+                    </td>
+                    <td>
+                      {{ appointment.appointment_type_name }}
+                    </td>
+                    <td>
+                      {{ appointment.statusInfo?.label }}
+                    </td>
+                    <td>
+                      {{ appointment.service_name || '—' }}
+                    </td>
+                    <td class="max-w-xs">
+                      <div [innerHTML]="(appointment.content || '—') | sanitizeQuill | safeHtml"
+                           class="text-sm break-words"></div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @if (groupedData().length === 0) {
+        <div class="text-center py-8">
+          <p class="text-gray-500 text-lg">{{ 'print.no_appointments_today' | translate }}</p>
+        </div>
+      }
+
+      <div class="print-footer mt-8">
+        <div class="flex justify-between text-sm text-gray-600">
+          <span>{{ 'print.printed_at' | translate }} {{ getCurrentDate() | date:'dd/MM/yyyy HH:mm' }}</span>
+          <span>{{ 'common.label.total' | translate }}: {{ 'print.appointment_count' | translate: { count: getTotalAppointments() } }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

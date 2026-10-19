@@ -1,0 +1,27 @@
+-- Tạo bảng `location_province` (keep-set CRM). Idempotent: CREATE TABLE IF NOT EXISTS.
+CREATE TABLE IF NOT EXISTS `location_province` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `codeProvince` varchar(10) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `slug` varchar(255) DEFAULT NULL,
+  `Type` int DEFAULT NULL,
+  `TelephoneCode` int DEFAULT NULL,
+  `ZipCode` varchar(255) DEFAULT NULL,
+  `CountryId` int DEFAULT NULL,
+  `CountryCode` varchar(255) DEFAULT NULL,
+  `SortOrder` int DEFAULT NULL,
+  `status` tinyint(1) DEFAULT '1',
+  `language` enum('vi','en','jp') NOT NULL DEFAULT 'vi' COMMENT 'Language',
+  `IsDeleted` tinyint(1) DEFAULT '0',
+  `created_at` bigint DEFAULT NULL,
+  `updated_at` bigint DEFAULT NULL,
+  `created_by` int DEFAULT '1',
+  `updated_by` int DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `fk_location_province_country_id_location_country` (`CountryId`),
+  KEY `fk_location_province_created_by_user` (`created_by`),
+  KEY `fk_location_province_updated_by_user` (`updated_by`),
+  KEY `index-language` (`language`),
+  KEY `index-slug` (`slug`),
+  CONSTRAINT `fk_location_province_country_id_location_country` FOREIGN KEY (`CountryId`) REFERENCES `location_country` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

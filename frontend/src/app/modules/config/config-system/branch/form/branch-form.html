@@ -1,0 +1,93 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.name!"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.branch' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.code!)"
+          [pKeyFilter]="blockSpace"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.code!"
+          id="code"
+          pInputText
+          type="text"
+        />
+        <label for="code">{{ 'config.branch.branch_code' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.email!)"
+          [pKeyFilter]="blockSpace"
+          autocomplete="off"
+          class="ng-dirty"
+          [formField]="rootField.email!"
+          id="email"
+          pInputText
+          type="text"
+        />
+        <label for="email">Email</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-4">
+      <p-floatlabel variant="on">
+        <input
+          [class.ng-invalid]="isFieldInvalid(rootField.hotline!)"
+          [pKeyFilter]="blockSpace"
+          class="ng-dirty"
+          [formField]="rootField.hotline!"
+          id="hotline"
+          pInputText
+          type="text"
+        />
+        <label for="hotline">Hotline</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <textarea
+          [class.ng-invalid]="isFieldInvalid(rootField.address!)"
+          class="ng-dirty w-full"
+          cols="10"
+          [formField]="rootField.address!"
+          id="address"
+          pTextarea
+          rows="2"
+        ></textarea>
+        <label for="address">{{ 'common.label.address' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12">
+      <div class="flex flex-wrap gap-6">
+        <div class=" inline-flex items-center gap-2">
+          <p-toggleswitch [formField]="rootField.status!" id="status" [trueValue]="1" [falseValue]="0"></p-toggleswitch>
+          <label for="status" class="min-w-32">{{ rootField.status!().value() === 1 ? ('common.label.visible' | translate) : ('common.label.hidden' | translate) }}</label>
+        </div>
+        <div class=" inline-flex items-center gap-2">
+          <p-toggleswitch [formField]="rootField.statusOpenAppointment!" id="statusOpenAppointment"
+                          [trueValue]="1" [falseValue]="0"></p-toggleswitch>
+          <label for="statusOpenAppointment"
+                 class="min-w-40">{{ rootField.statusOpenAppointment!().value() === 1 ? ('config.branch.accept_customer' | translate) : ('config.branch.reject_customer' | translate) }}</label>
+        </div>
+      </div>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

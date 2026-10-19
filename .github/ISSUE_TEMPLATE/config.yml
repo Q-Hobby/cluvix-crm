@@ -1,0 +1,7 @@
+blank_issues_enabled: false
+# Security vulnerabilities must NOT be reported through public issues — see SECURITY.md.
+# When the public repository URL is known, enable the link below (GitHub requires an absolute URL):
+# contact_links:
+#   - name: Report a security vulnerability
+#     url: <repository-url>/security/advisories/new
+#     about: Do not use public issues for security vulnerabilities — see SECURITY.md

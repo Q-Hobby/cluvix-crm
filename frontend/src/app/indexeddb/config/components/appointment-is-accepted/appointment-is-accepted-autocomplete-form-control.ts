@@ -1,0 +1,112 @@
+import { ChangeDetectionStrategy, Component, forwardRef, inject, OnInit, signal } from '@angular/core';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { AutoComplete } from 'primeng/autocomplete';
+import { AppointmentIsAcceptedCacheService } from './appointment-is-accepted-cache.service';
+import { calculateScrollHeight } from '@/indexeddb/config/components/base/scroll-height.util';
+import { AppointmentIsAcceptedModel } from '@/core/models/config/appointment/appointment-is-accepted.model';
+import { TranslateService } from '@ngx-translate/core';
+
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-appointment-is-accepted-autocomplete-form-control',
+  standalone: true,
+  imports: [FormsModule, AutoComplete],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AppointmentIsAcceptedAutocompleteFormControl),
+      multi: true,
+    },
+  ],
+  template: `
+    <p-autocomplete
+      [(ngModel)]="selectedItem"
+      [suggestions]="filteredItems()"
+      (completeMethod)="filterItems($event)"
+      (onSelect)="onSelect($event)"
+      (onClear)="onClear()"
+      (onBlur)="onBlur()"
+      [dropdown]="true"
+      optionLabel="name"
+      [showClear]="true"
+      appendTo="body"
+      [emptyMessage]="emptyMessage"
+      class="w-full"
+    />
+  `,
+})
+export class AppointmentIsAcceptedAutocompleteFormControl implements ControlValueAccessor, OnInit {
+  selectedItem: AppointmentIsAcceptedModel | null = null;
+  filteredItems = signal<AppointmentIsAcceptedModel[]>([]);
+  protected readonly calculateScrollHeight = calculateScrollHeight;
+  private cache = inject(AppointmentIsAcceptedCacheService);
+
+  protected emptyMessage = '';
+  private translate = inject(TranslateService);
+  async ngOnInit() {
+    this.emptyMessage = this.translate.instant('common.label.no_results');
+    await this.cache.ensureAppointmentIsAcceptedsLoaded();
+  }
+
+  filterItems(event: any) {
+    const query = (event.query || '').toLowerCase();
+    let items = this.getFilteredItems();
+
+    if (!query) {
+      this.filteredItems.set(items.slice(0, 100)); // Giới hạn 100 items khi dropdown
+      return;
+    }
+
+    const filtered = items.filter((item) => item.name && item.name.toLowerCase().includes(query));
+    this.filteredItems.set(filtered);
+  }
+
+  onSelect(event: any) {
+    this.onChange(event.value?.id || null);
+    this.onTouched();
+  }
+
+  onClear() {
+    this.selectedItem = null;
+    this.onChange(null);
+    this.onTouched();
+  }
+
+  onBlur() {
+    if (typeof this.selectedItem === 'string' || (this.selectedItem && !this.selectedItem.id)) {
+      this.selectedItem = null;
+    }
+  }
+
+  writeValue(id: number | null): void {
+    this.selectedItem = id ? this.cache.getById(id) || null : null;
+  }
+
+  registerOnChange(fn: (value: number | null) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  private onChange = (value: number | null) => {};
+
+  private onTouched = () => {};
+
+  private getFilteredItems(): AppointmentIsAcceptedModel[] {
+    let allItems = this.cache.getAll();
+
+    // Đảm bảo selected item luôn có trong danh sách
+    let finalItems = allItems;
+
+    if (this.selectedItem) {
+      // Thêm selected item vào đầu danh sách
+      const nonSelectedItems = allItems.filter((item) => item.id !== this.selectedItem!.id);
+      finalItems = [this.selectedItem, ...nonSelectedItems];
+    }
+
+    return finalItems;
+  }
+}

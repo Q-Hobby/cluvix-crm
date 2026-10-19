@@ -1,0 +1,40 @@
+/* B.18 dark-theme-safe: hex/rgba cứng ở đây khiến khối "Không có dữ liệu" gần như vô hình ở dark
+   mode (chữ đen 25% trên nền tối) và hình minh hoạ sáng chói ngược lại. rgba(0,0,0,.25) cũng chỉ
+   ~1.6:1 ngay ở light mode — trượt AA. Toàn bộ chuyển sang token PrimeNG. */
+.ant-empty {
+  margin: 0 8px;
+  font-size: 1.0769rem;
+  line-height: 1.5715;
+  text-align: center;
+}
+
+.ant-empty-normal {
+  margin: 10px 0;
+  color: var(--p-text-muted-color);
+
+  .ant-empty-image {
+    height: 40px;
+  }
+}
+
+.ant-empty-image {
+  height: 100px;
+  margin-bottom: 8px;
+
+  svg {
+    height: 100%;
+    margin: auto;
+  }
+}
+
+.ant-empty-img-simple-ellipse {
+  fill: var(--p-content-border-color);
+}
+
+.ant-empty-img-simple-g {
+  stroke: var(--p-text-muted-color);
+}
+
+.ant-empty-img-simple-path {
+  fill: var(--p-content-hover-background);
+}

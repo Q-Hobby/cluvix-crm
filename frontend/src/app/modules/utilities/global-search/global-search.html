@@ -1,0 +1,285 @@
+<p-dialog
+  appendTo="body"
+  styleClass="global-search-dialog"
+  (onHide)="onHide()"
+  (onShow)="onShow()"
+  (visibleChange)="globalSearchService.visible.set($event)"
+  [closable]="false"
+  [closeOnEscape]="true"
+  [dismissableMask]="true"
+  [focusTrap]="false"
+  [modal]="true"
+  [style]="isDesktop() ? { width: '50vw' } : { width: '100%' }"
+  [visible]="globalSearchService.visible()"
+>
+  <div class="h-[544px] mt-6">
+    <div class="flex w-full items-center justify-between border border-gray-300 rounded-lg mb-2">
+      <p-iconfield class="w-full">
+        <p-inputicon class="pi pi-search"/>
+        <input
+          #searchInput
+          (input)="textSearch.set($any($event.target).value)"
+          (keydown.escape)="closeDialog()"
+          (keyup.enter)="triggerSearch()"
+          [value]="textSearch()"
+          autofocus
+          class="w-full border-none shadow-none outline-none"
+          pInputText
+          placeholder="{{ 'common.label.search_by_keyword' | translate }}"
+          size="large"
+          type="text"
+        />
+        @if (textSearch()) {
+          <p-inputicon
+            (click)="textSearch.set('')"
+            class="pi pi-times cursor-pointer"
+          />
+        }
+      </p-iconfield>
+    </div>
+    <div class="flex justify-end gap-2">
+      <button
+        (click)="closeDialog()"
+        class="p-button-sm"
+        pButton
+        severity="secondary"
+        type="button"
+      >
+        <i class="pi pi-arrow-left"></i>
+        <span>{{ 'common.action.cancel' | translate }}</span>
+      </button>
+      <button (click)="triggerSearch()" class="p-button-sm" pButton type="button">
+        <i class="pi pi-search"></i>
+        <span>{{ 'common.action.search' | translate }}</span>
+      </button>
+    </div>
+
+    <div class="overflow-y-auto max-h-[420px] mt-4 pr-1">
+      <!-- Recent favourite -->
+      @if (textSearch() === '') {
+        @if (!textSearch() && recent().length) {
+          <h2 class="font-semibold text-sm text-500 my-2"><a>{{ 'utilities.global_search.recent' | translate }}</a></h2>
+          <p-dataview #dv [value]="recent() || []">
+            <ng-template #list let-index="rowIndex" let-recentItem>
+              <div class="grid grid-cols-12">
+                @for (item of recentItem; track item) {
+                  <div
+                    class="col-span-12 cursor-pointer item_line_search px-0 py-2"
+                  >
+                    @if (item) {
+                      <div
+                        (click)="goToCustomer(item.customer)"
+                        (mouseenter)="selected.set(item.customer)"
+                        [class.bg-blue-100]="selected()?.id === item.customer?.id"
+                        [class.selected-customer]="selected()?.id === item.customer?.id"
+                        class="grid grid-cols-12 gap-2 px-4 py-2 h-full items-center"
+                      >
+                        <div class="flex items-center justify-start gap-1 col-span-4">
+                          <i class="pi pi-history text-sky-500 mr-4"></i>
+                          <i class="pi pi-user search-customer-item-icon text-blue-500"></i>
+                          <span class="search-customer-item-value">{{ item?.customer?.fullname }}</span>
+                        </div>
+                        <div class="col-span-3 flex items-center gap-2">
+                          <i class="pi pi-qrcode search-customer-item-icon text-gray-500"></i>
+                          <span class="search-customer-item-value customer-code">{{ item.customer?.code }}</span>
+                        </div>
+                        <div class="col-span-3 flex items-center gap-1">
+                          <i class="pi pi-fw pi-phone search-customer-item-icon text-blue-500"></i>
+                          <span class="search-customer-item-value customer-code">{{ item.customer?.phone }}</span>
+                        </div>
+
+                        <div class="col-span-2 flex items-center justify-end gap-4">
+                      <span
+                        (click)="$event.stopImmediatePropagation(); openNewTab(item.customer)"
+                        [pTooltip]="'utilities.global_search.open_new_tab' | translate"
+                        class="inline-flex hover:bg-black/10 rounded-full"
+                      >
+                        <i class="pi pi-arrow-up-right"></i>
+                      </span>
+                          <span
+                            (click)="markFavorite($event, item)"
+                            class="inline-flex hover:bg-black/10 rounded-full"
+                          >
+                        <i
+                          [class.pi-star-fill]="item.favourite"
+                          [class.pi-star]="!item.favourite"
+                          class="pi text-blue-500"
+                        ></i>
+                      </span>
+                          <span
+                            (click)="removeRecent($event, item)"
+                            class="inline-flex hover:bg-black/10 rounded-full"
+                          >
+                        <i class="pi pi-times text-red-500"></i>
+                      </span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </ng-template>
+          </p-dataview>
+        }
+
+        @if (favourite().length && textSearch() === '') {
+          <h2 class="font-semibold text-sm text-500 my-2"><a>{{ 'utilities.global_search.favourite' | translate }}</a></h2>
+          <p-dataview #dv [value]="favourite() || []">
+            <ng-template #list let-index="rowIndex" let-recentItem>
+              <div class="grid grid-cols-12">
+                @for (item of recentItem; track item.customer) {
+                  <div
+                    class="col-span-12 cursor-pointer item_line_search px-0 py-2"
+                  >
+                    <div
+                      (click)="goToCustomer(item.customer)"
+                      (mouseenter)="selected.set(item.customer)"
+                      [class.bg-blue-100]="selected()?.id === item.customer?.id"
+                      [class.selected-customer]="selected()?.id === item.customer?.id"
+                      class="grid grid-cols-12 gap-2 px-4 py-2 h-full items-center"
+                    >
+                      <div class="flex items-center justify-start gap-1 col-span-4">
+                        <i class="pi pi-star text-green-500 mr-4"></i>
+                        <i class="pi pi-user search-customer-item-icon text-blue-500"></i>
+                        <span class="search-customer-item-value">{{ item?.customer?.fullname }}</span>
+                      </div>
+
+                      <div class="flex items-center gap-1 col-span-3">
+                        <i class="pi pi-qrcode search-customer-item-icon text-gray-500"></i>
+                        <span class="search-customer-item-value customer-code">{{
+                            item.customer?.code
+                          }}</span>
+                      </div>
+
+                      <div class="flex items-center gap-1 col-span-3">
+                        <i class="pi pi-phone search-customer-item-icon text-blue-500"></i>
+                        <span class="search-customer-item-value customer-code">{{ item.customer?.phone }}</span>
+                      </div>
+
+                      <div class="flex items-center justify-end gap-4 col-span-2">
+                      <span
+                        (click)="$event.stopImmediatePropagation(); openNewTab(item.customer)"
+                        [pTooltip]="'utilities.global_search.open_new_tab' | translate"
+                        class="inline-flex hover:bg-black/10 rounded-full"
+                      >
+                        <i class="pi pi-arrow-up-right"></i>
+                      </span>
+                        <span
+                          (click)="removeFavorite($event, item)"
+                          class="inline-flex hover:bg-black/10 rounded-full"
+                        >
+                        <i class="pi pi-times text-red-500"></i>
+                      </span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </ng-template>
+          </p-dataview>
+        }
+      }
+      <!-- Search data-->
+      @if (textSearch() !== '' && isSearched()) {
+        @if (loading()) {
+          <!-- Skeleton list: giữ đúng lưới & cao giống item thật -->
+          <div class="grid grid-cols-12 mt-1" aria-busy="true">
+            @for (n of skeletonRows; track n) {
+              <div class="col-span-12 px-0 py-2">
+                <div class="grid grid-cols-12 gap-2 px-4 py-2 items-center">
+                  <div class="col-span-5 flex items-center gap-2">
+                    <p-skeleton shape="circle" width="1.25rem" height="1.25rem" class="shrink-0"></p-skeleton>
+                    <p-skeleton width="60%" height="1rem"></p-skeleton>
+                  </div>
+
+                  <div class="col-span-3 flex items-center gap-2">
+                    <p-skeleton shape="circle" width="1.25rem" height="1.25rem" class="shrink-0"></p-skeleton>
+                    <p-skeleton width="50%" height="1rem"></p-skeleton>
+                  </div>
+
+                  <div class="col-span-3 flex items-center gap-2">
+                    <p-skeleton shape="circle" width="1.25rem" height="1.25rem" class="shrink-0"></p-skeleton>
+                    <p-skeleton width="70%" height="1rem"></p-skeleton>
+                  </div>
+
+                  <div class="col-span-1 flex justify-end">
+                    <p-skeleton shape="circle" width="1.25rem" height="1.25rem"></p-skeleton>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p-dataview [value]="filteredCustomers()">
+            @if (!loading()) {
+              <ng-template #list let-customer>
+                <div class="grid grid-cols-12 mt-1">
+                  @for (item of customer; track item.id) {
+                    <div
+                      class="col-span-12 cursor-pointer item_line_search px-0 py-2"
+                    >
+                      <div
+                        (click)="goToCustomer(item)"
+                        (mouseenter)="selected.set(item)"
+                        [class.bg-blue-100]="selected()?.id === item?.id"
+                        [class.selected-customer]="selected()?.id === item?.id"
+                        class="grid grid-cols-12 gap-2 px-4 py-2 h-full items-center"
+                      >
+                        <div class="col-span-5 flex justify-start items-center gap-1">
+                          <i class="pi pi-user search-customer-item-icon text-blue-500"></i>
+                          <span
+                            class="search-customer-item-value">{{ item?.fullname === "" ? item?.nickname : item?.fullname | titlecase }}</span>
+                        </div>
+                        <div class="flex items-center gap-1 col-span-3">
+                          <i class="pi pi-qrcode search-customer-item-icon text-gray-500"></i>
+                          <span class="search-customer-item-value customer-code">{{ item.code }}</span>
+                        </div>
+                        <div class="flex items-center gap-1 col-span-3">
+                          <i class="pi pi-phone search-customer-item-icon text-blue-500"></i>
+                          <span class="search-customer-item-value customer-code">{{ item?.phone }}</span>
+                        </div>
+                        <div class="flex items-center justify-end gap-1 col-span-1">
+                    <span
+                      (click)="$event.stopImmediatePropagation(); openNewTab(item)"
+                      [pTooltip]="'utilities.global_search.open_new_tab' | translate"
+                      class="inline-flex hover:bg-black/10 rounded-full"
+                    >
+                      <i class="pi pi-arrow-up-right"></i>
+                    </span>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </ng-template>
+            }
+            <ng-template #emptymessage>
+              @if (loading()) {
+                <div class="loading-spinner">
+                  <p-skeleton height="4rem" class="mb-3" width="100%"></p-skeleton>
+                </div>
+              }
+              @if (!loading()) {
+                <div class="flex justify-between flex-wrap">
+                  <div class="flex items-center justify-center">{{ 'utilities.global_search.no_customer_found' | translate }}</div>
+                  <div class="flex items-center justify-center">
+                    <button
+                      pButton
+                      (click)="createCustomer()"
+                      [attr.aria-label]="'common.label.add_new_customer' | translate"
+                      [pTooltip]="'common.label.add_new_customer' | translate"
+                      [iconOnly]="true"
+                      size="small"
+                      tooltipPosition="top"
+                      type="button"
+                    ><i class="pi pi-plus"></i></button>
+                  </div>
+                </div>
+              }
+            </ng-template>
+          </p-dataview>
+        }
+      }
+    </div>
+  </div>
+</p-dialog>

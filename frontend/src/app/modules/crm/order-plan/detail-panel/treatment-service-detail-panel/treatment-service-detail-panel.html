@@ -1,0 +1,191 @@
+<app-slide-over
+  [(visible)]="visible"
+  [title]="model().serviceInfo?.name || ('crm.treatment_service.detail.title' | translate)"
+  [subtitle]="model().code ? '#' + model().code : ''"
+  icon="pi pi-heart"
+  size="lg"
+  [loading]="loadingDetail()"
+  [errorMessage]="loadErrorKey() ? (loadErrorKey() | translate) : ''"
+  (retry)="retryLoad()"
+  (closed)="onClosed()"
+>
+  <!-- ── Tiến độ điều trị: thông tin người dùng mở panel này để tìm, nên đặt trên cùng ── -->
+  <app-slide-over-section label="crm.treatment_service.detail.section_progress">
+    <div class="flex flex-wrap items-center gap-2">
+      @if (lockState(); as lock) {
+        <p-tag [severity]="lock.severity" [value]="lock.labelKey | translate" />
+      }
+      @if (orderPlanTypeLabelKey(); as planTypeKey) {
+        <p-tag severity="secondary" [value]="planTypeKey | translate" />
+      }
+    </div>
+  </app-slide-over-section>
+
+  <!-- ── Dịch vụ ───────────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="common.label.service">
+    <app-slide-over-row label="common.label.service">
+      {{ model().serviceInfo?.name || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.service_code">
+      {{ model().serviceInfo?.code || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.service_group">
+      {{ model().serviceTypeLabel || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.quantity">
+      {{ model().quantity ?? 0 }} {{ model().unitInfo?.name || '' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.branch">{{ model().branchLabel || '—' }}</app-slide-over-row>
+  </app-slide-over-section>
+
+  <!-- ── Giá & thanh toán ──────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.treatment_service.detail.section_finance">
+    <!-- Bảng số: doanh số / đã thu / còn lại là 3 con số người dùng đối chiếu nhiều nhất -->
+    <div class="grid grid-cols-3 gap-2">
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">{{ 'common.label.total_sales' | translate }}</div>
+        <div class="text-sm font-semibold">{{ model().totalEnd | currencyFormat }}</div>
+      </div>
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">{{ 'common.label.collected' | translate }}</div>
+        <div class="text-sm font-semibold text-green-600">{{ collected() | currencyFormat }}</div>
+      </div>
+      <div class="rounded-lg border border-surface px-3 py-2">
+        <div class="text-xs text-muted-color">
+          {{
+            (isOverpaid() ? 'common.label.overpaid' : 'common.label.remaining')
+              | translate
+          }}
+        </div>
+        <div
+          class="text-sm font-semibold"
+          [class.text-red-600]="remaining() > 0"
+          [class.text-orange-600]="isOverpaid()"
+        >
+          {{ (isOverpaid() ? -remaining() : remaining()) | currencyFormat }}
+        </div>
+      </div>
+    </div>
+
+    <div class="flex">
+      @switch (paymentState()) {
+        @case ('free') {
+          <p-tag severity="secondary" [value]="'common.label.free_service' | translate" />
+        }
+        @case ('pending') {
+          <p-tag severity="danger" [value]="'crm.order_service_used.payment_pending' | translate" />
+        }
+        @case ('partial') {
+          <p-tag severity="warn" [value]="'common.label.partial_payment' | translate" />
+        }
+        @case ('paid') {
+          <p-tag severity="success" [value]="'common.label.fully_paid' | translate" />
+        }
+      }
+    </div>
+
+    <!-- Chi tiết cấu thành giá: chỉ hiện dòng có số, tránh một cột toàn số 0 -->
+    <div class="flex flex-col gap-2 pt-2 border-t border-surface">
+      <app-slide-over-row label="common.label.unit_price">
+        {{ model().unit_price | currencyFormat }}
+      </app-slide-over-row>
+      <app-slide-over-row label="crm.payment.detail.subtotal">
+        {{ subtotal() | currencyFormat }}
+      </app-slide-over-row>
+      @if (model().service_discount) {
+        <app-slide-over-row label="common.label.service_discount">
+          −{{ model().service_discount | currencyFormat }}
+        </app-slide-over-row>
+      }
+      @if (model().discount) {
+        <app-slide-over-row label="common.label.coupon_discount">
+          −{{ model().discount | currencyFormat }}
+        </app-slide-over-row>
+      }
+      @if (model().discount_other) {
+        <app-slide-over-row label="common.label.other_discount">
+          −{{ model().discount_other | currencyFormat }}
+        </app-slide-over-row>
+      }
+      @if (model().rank_discount_amount) {
+        <app-slide-over-row label="common.label.member_rank_discount">
+          −{{ model().rank_discount_amount | currencyFormat }}
+        </app-slide-over-row>
+      }
+      @if (model().discountServiceLock) {
+        <app-slide-over-row label="crm.treatment_service.detail.lock_discount">
+          −{{ model().discountServiceLock | currencyFormat }}
+        </app-slide-over-row>
+      }
+      @if (refunded()) {
+        <app-slide-over-row label="common.label.refunded">
+          <span class="text-orange-600">{{ refunded() | currencyFormat }}</span>
+        </app-slide-over-row>
+      }
+      @if (model().note_discount) {
+        <app-slide-over-row label="crm.treatment_service.detail.discount_reason" [vertical]="true">
+          {{ model().note_discount }}
+        </app-slide-over-row>
+      }
+      @if (model().installment_config) {
+        <app-slide-over-row label="common.label.installment">
+          <p-tag severity="info" [value]="'common.label.installment' | translate" />
+        </app-slide-over-row>
+      }
+    </div>
+  </app-slide-over-section>
+
+  <!-- ── Mốc thời gian ─────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.treatment_service.detail.section_timeline">
+    <app-slide-over-row label="common.label.service_creation_date">
+      {{ model().created_dayFormatted || '—' }}
+    </app-slide-over-row>
+    @if (model().activated_at; as activatedAt) {
+      <app-slide-over-row label="common.label.start_date_2">
+        {{ activatedAt | date: 'dd/MM/yyyy' }}
+      </app-slide-over-row>
+    }
+    @if (model().expires_at) {
+      <app-slide-over-row label="common.label.expires_at">
+        {{ model().expires_atFormatted || '—' }}
+      </app-slide-over-row>
+    }
+    @if (model().dayComplete) {
+      <app-slide-over-row label="common.label.treatment_completion_date">
+        {{ model().dayCompleteFormatted || '—' }}
+      </app-slide-over-row>
+    }
+    @if (model().dayReExploitation; as reExploitation) {
+      <app-slide-over-row label="common.label.re_exploitation_date">
+        {{ reExploitation | date: 'dd/MM/yyyy' }}
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Ghi chú ───────────────────────────────────────────────────────────── -->
+  @if (model().note) {
+    <app-slide-over-section label="common.label.note">
+      <div
+        class="prose prose-sm max-w-none text-sm"
+        appWhitespaceControl
+        [innerHTML]="model().note | sanitizeQuill | safeHtml"
+      ></div>
+    </app-slide-over-section>
+  }
+
+  <!-- ── Hệ thống ──────────────────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_system">
+    <app-slide-over-row label="common.label.user_created">
+      {{ model().createdByInfo?.fullname || '—' }}
+      @if (model().created_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().created_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.user_updated">
+      {{ model().updatedByInfo?.fullname || '—' }}
+      @if (model().updated_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().updated_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+  </app-slide-over-section>
+</app-slide-over>

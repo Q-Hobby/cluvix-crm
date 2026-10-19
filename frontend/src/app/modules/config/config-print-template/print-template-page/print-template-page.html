@@ -1,0 +1,32 @@
+<!-- Fixed dưới topbar (4rem), thoát khỏi layout-content padding -->
+<div class="flex flex-col bg-white" style="position: fixed; top: 4rem; left: 0; right: 0; bottom: 0; z-index: 50; overflow: hidden;">
+
+  <!-- ══ Header ══ -->
+  <div class="flex items-center gap-2 px-4 py-2 border-b bg-white flex-none">
+    <button type="button"
+      pButton
+      [iconOnly]="true"
+      [attr.aria-label]="'common.action.back' | translate"
+      severity="secondary"
+      [text]="true"
+      size="small"
+      (click)="goBack()"
+      pTooltip="Quay lại danh sách"
+      tooltipPosition="right"
+    ><i class="pi pi-arrow-left"></i></button>
+    <span class="text-sm font-semibold text-gray-700 flex-1">Template in</span>
+  </div>
+
+  <!-- ══ Under development ══ -->
+  <div class="flex flex-col items-center justify-center flex-1 gap-3 text-center px-4">
+    <i class="pi pi-wrench text-6xl text-gray-300"></i>
+    <p class="text-lg font-semibold text-gray-600">Tính năng đang phát triển</p>
+    <p class="text-sm text-gray-400 max-w-md">
+      Trình soạn thảo template in đang được nâng cấp, vui lòng quay lại sau.
+    </p>
+    <button type="button" pButton severity="secondary" size="small" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i><span>Quay lại danh sách</span>
+    </button>
+  </div>
+
+</div>

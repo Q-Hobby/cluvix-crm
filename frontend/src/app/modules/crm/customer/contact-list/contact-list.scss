@@ -1,0 +1,31 @@
+.avatar-image {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center top;
+  border-radius: 100%;
+  margin: 0 auto;
+}
+
+.p-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 2rem;
+  background-color: #dee2e6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  margin: 0 auto;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr.p-highlight {
+  color: #495057;
+}
+
+@media screen and (max-width: 40em) {
+  .width_search_keyword_SP {
+    width: 56%;
+  }
+}

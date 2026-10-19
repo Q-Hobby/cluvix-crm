@@ -1,0 +1,405 @@
+<p-table
+  #dt
+  (onEditComplete)="onCellEditComplete($event)"
+  (onEditInit)="onCellEditInit($event)"
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  editMode="cell"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+          <div class="flex gap-2">
+            <button type="button"
+              pButton
+              (click)="exportService($event)"
+              *hasPerm="permission.permissionManageConfig"
+              [iconOnly]="true"
+              [pTooltip]="'common.tooltip.export_data' | translate"
+              severity="help"
+              tooltipPosition="top"
+            ><i class="pi pi-download"></i></button>
+
+            <ng-container *hasPerm="permission.permissionManageConfig">
+              <button type="button"
+                pButton
+                [iconOnly]="true"
+                [pTooltip]="'common.tooltip.import_data' | translate"
+                tooltipPosition="top"
+                (click)="openImportDialog()"
+              ><i class="pi pi-upload"></i></button>
+            </ng-container>
+            <button type="button"
+              pButton
+              (click)="createService()"
+              *hasPerm="permission.permissionManageConfig"
+            ><i class="pi pi-plus"></i><span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span></button>
+          </div>
+      </div>
+      <div class="p-toolbar-group-end">
+      @if (rfFilterModel) {
+        <form [formGroup]="rfFilterModel" novalidate>
+          <p-popover #op>
+            <div class="grid grid-cols-12 gap-4 !w-[300px]">
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <p-select [multiple]="true"
+                    [options]="SERVICE_CATEGORY_OPTIONS"
+                    [resetFilterOnHide]="true"
+                    appendTo="body"
+                    class="w-full"
+                    [emptyFilterMessage]="'common.label.no_results' | translate"
+                    formControlName="serviceCategory_id"
+                    id="serviceCategory_id"
+                  >
+                  </p-select>
+                  <label for="serviceCategory_id">{{ 'common.label.service' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <app-service-type-multiselect-form-control
+                    formControlName="service_type_id">
+                  </app-service-type-multiselect-form-control>
+                  <label for="service_type_id">{{ 'common.label.service_group' | translate }}</label>
+                </p-floatlabel>
+              </div>
+              <div class="col-span-12">
+                <p-floatlabel variant="on">
+                  <p-select
+                    [options]="SERVICE_FOR_OPTIONS"
+                    [showClear]="true"
+                    appendTo="body"
+                    class="w-full"
+                    [emptyFilterMessage]="'common.label.no_results' | translate"
+                    formControlName="child"
+                    id="child"
+                  >
+                  </p-select>
+                  <label for="child">{{ 'common.label.age_group' | translate }}</label>
+                </p-floatlabel>
+              </div>
+            </div>
+          </p-popover>
+          <div class="flex items-center gap-2 w-full">
+            @if (isDesktop()) {
+              <div class="flex-grow">
+                <p-floatlabel variant="on">
+                  <p-iconfield>
+                    <p-inputicon class="pi pi-search"/>
+                    <input
+                      autocomplete="off"
+                      formControlName="_keyword"
+                      id="search_keyword"
+                      pInputText
+                      type="text"
+                    />
+                  </p-iconfield>
+                  <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                </p-floatlabel>
+              </div>
+            }
+            <button
+              pButton
+              (click)="op.toggle($event)"
+              [iconOnly]="true" [attr.aria-label]="'common.action.filter' | translate"
+              [pTooltip]="'common.action.filter' | translate"
+              severity="info"
+              tooltipPosition="top"
+              type="button"
+            ><i class="pi pi-filter"></i></button>
+            <button
+              pButton
+              (click)="clearFilter()"
+              [iconOnly]="true" [attr.aria-label]="'common.action.clear_filter' | translate"
+              [pTooltip]="'common.action.clear_filter' | translate"
+              severity="warn"
+              tooltipPosition="top"
+              type="button"
+            ><i class="pi pi-filter-slash"></i></button>
+            <button type="button"
+              pButton
+              (click)="resetPage()"
+              [iconOnly]="true" [attr.aria-label]="'common.action.refresh' | translate"
+              [pTooltip]="'common.action.reload_page' | translate"
+              severity="secondary"
+              tooltipPosition="top"
+            ><i class="pi pi-refresh"></i></button>
+            <button
+              pButton
+              (click)="colsTpl.toggle($event)"
+              [iconOnly]="true" [attr.aria-label]="'common.action.view_more' | translate"
+              [pTooltip]="'common.action.view_more' | translate"
+              tooltipPosition="top"
+              type="button"
+            ><i class="pi pi-th-large"></i></button>
+          </div>
+        </form>
+      }
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[30px] min-w-[30px]">
+          <div class="flex items-center justify-center w-full">ID</div>
+        </th>
+      }
+      @if (isColVisible('code')()) {
+        <th class="min-w-[90px]">{{ 'common.label.service_code' | translate }}</th>
+      }
+      @if (isColVisible('code_old')()) {
+        <th class="min-w-[110px]">{{ 'config.config_clinic.service.service_code_old' | translate }}</th>
+      }
+      @if (isColVisible('name')()) {
+        <th class="min-w-[250px]">
+          {{ 'common.label.service_name' | translate }}
+        </th>
+      }
+      @if (isColVisible('service_type_id')()) {
+        <th class="min-w-[200px]">
+          {{ 'common.label.service_group' | translate }}
+        </th>
+      }
+      @if (isColVisible('serviceCategory_id')()) {
+        <th class="min-w-[150px]">
+          {{ 'common.label.service_category' | translate }}
+        </th>
+      }
+      @if (isColVisible('min_price')()) {
+        <th class="min-w-[180px]">
+          {{ 'common.label.price_info_min_max' | translate }}
+        </th>
+      }
+      @if (isColVisible('time_reminder')()) {
+        <th class="min-w-[100px]">{{ 'common.label.re_engagement' | translate }}</th>
+      }
+      @if (isColVisible('child')()) {
+        <th class="min-w-[120px]">{{ 'common.label.age_group' | translate }}</th>
+      }
+      @if (isColVisible('numTreatment')()) {
+        <th class="min-w-[130px]">{{ 'common.label.treatment_progress' | translate }}</th>
+      }
+      @if (isColVisible('unit')()) {
+        <th class="min-w-[120px]">{{ 'common.label.unit' | translate }}</th>
+      }
+      @if (isColVisible('commission_telesale')()) {
+        <th class="min-w-[150px]">{{ 'common.label.telesale_commission' | translate }}</th>
+      }
+      @if (isColVisible('status')()) {
+        <th class="min-w-[100px]">{{ 'common.label.status' | translate }}</th>
+      }
+      @if (isColVisible('SortOrder')()) {
+        <th class="min-w-[80px] w-[80px]">{{ 'common.label.sort_order' | translate }}</th>
+      }
+      <th [frozen]="isDesktop()" alignFrozen="right" class="w-[120px] min-w-[120px]" pFrozenColumn>
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [class.tr-disabled]="!model.status" class="vertical-align-top">
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>
+          <div class="flex items-center justify-center w-full">{{ model.id }}</div>
+        </td>
+      }
+      @if (isColVisible('code')()) {
+        <td [appCopyText]="model.code">{{ model.code }}</td>
+      }
+      @if (isColVisible('code_old')()) {
+        <td>{{ model.code_old || '—' }}</td>
+      }
+      @if (isColVisible('name')()) {
+        <td [appCopyText]="model.name">
+          <span class="font-semibold text-primary">{{ model.name }}</span>
+        </td>
+      }
+      @if (isColVisible('service_type_id')()) {
+        <td>{{ model.serviceTypeLabel || '—' }}</td>
+      }
+      @if (isColVisible('serviceCategory_id')()) {
+        <td>
+          {{ findValue(model.serviceCategory_id, SERVICE_CATEGORY_OPTIONS) }}
+        </td>
+      }
+      @if (isColVisible('min_price')()) {
+        <td class="text-blue-500">
+          @if (model.min_price === model.max_price) {
+            {{ model.min_price | currencyFormat }}
+          } @else {
+            <ng-container [ngTemplateOutlet]="minMax"></ng-container>
+          }
+          <ng-template #minMax>
+            {{ model.min_price | currencyFormat }}/ {{ model.max_price | currencyFormat }}
+          </ng-template>
+        </td>
+      }
+      @if (isColVisible('time_reminder')()) {
+        <td>
+          {{ model.time_reminder ? ('config.config_clinic.service.after_n_days' | translate: { days: model.time_reminder }) : ('common.label.no_text' | translate) }}
+        </td>
+      }
+      @if (isColVisible('child')()) {
+        <td>
+          @if (model.child) {
+            {{ model.child | adultOrChild }}
+          } @else {
+            {{ model.child || '—' }}
+          }
+        </td>
+      }
+      @if (isColVisible('numTreatment')()) {
+        <td>
+          @if (model.numTreatment === -1) {
+            <label class="text-red-500">{{ 'common.label.unlimited' | translate }}</label>
+          }
+          @if (model.numTreatment !== -1 && model.numTreatment) {
+            <p-badge [value]="model.numTreatment"/>
+          }
+        </td>
+      }
+      @if (isColVisible('unit')()) {
+        <td>{{ model.unitLabel || '—' }}</td>
+      }
+      @if (isColVisible('commission_telesale')()) {
+        <td class="text-blue-500">{{ model.commission_telesale | currencyFormat }}</td>
+      }
+      @if (isColVisible('status')()) {
+        <td>
+          <p-toggleswitch
+            [trueValue]="1" [falseValue]="0"
+            (onChange)="handleStatusChange(model.id)"
+            [(ngModel)]="model.status"
+            [disabled]="checkUpdatePermission()"
+            [pTooltip]="(model.status ? 'common.label.visible' : 'common.label.hidden') | translate"
+            tooltipPosition="top"
+          ></p-toggleswitch>
+        </td>
+      }
+      @if (isColVisible('SortOrder')()) {
+        <td
+          [pEditableColumn]="model"
+          pEditableColumnField="SortOrder"
+          [pEditableColumnRowIndex]="index"
+          [pEditableColumnDisabled]="checkUpdatePermission()">
+          <p-celleditor>
+            <ng-template #input>
+              <input
+                pInputText
+                type="number"
+                class="w-full"
+                [(ngModel)]="model.SortOrder"
+              />
+            </ng-template>
+            <ng-template #output>
+              @if (model.SortOrder) {
+                <p-badge value="{{ model.SortOrder }}"></p-badge>
+              }
+            </ng-template>
+          </p-celleditor>
+        </td>
+      }
+      <td [frozen]="isDesktop()" alignFrozen="right" pFrozenColumn>
+        <div class="cx-row-actions">
+          <p-buttongroup>
+            <p-button
+      icon="pi pi-clone"
+              (onClick)="cloneService(model)"
+              *hasPerm="permission.permissionManageConfig"
+              [iconOnly]="true" [ariaLabel]="'common.action.copy' | translate"
+              [pTooltip]="'common.action.copy' | translate"
+              severity="info"
+              size="small"
+              tooltipPosition="top"
+            
+    ></p-button>
+            <p-button
+      icon="pi pi-pencil"
+              (onClick)="updateService(model)"
+              *hasPerm="permission.permissionManageConfig"
+              [iconOnly]="true" [ariaLabel]="'common.action.edit' | translate"
+              [pTooltip]="'common.action.update' | translate"
+              severity="success"
+              size="small"
+              tooltipPosition="top"
+            
+    ></p-button>
+            <p-button
+      icon="pi pi-trash"
+              (onClick)="deleteRecord($event, model.id)"
+              *hasPerm="permission.permissionManageConfig"
+              [iconOnly]="true" [ariaLabel]="'common.action.delete' | translate"
+              [pTooltip]="'common.action.delete' | translate"
+              severity="danger"
+              size="small"
+              tooltipPosition="top"
+            
+    ></p-button>
+          </p-buttongroup>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td>
+            <p-skeleton></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="selectedColumns().length + 2">
+        <app-empty-message></app-empty-message>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>

@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "http://backend:8011",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/uploads": {
+    "target": "http://backend:8011",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

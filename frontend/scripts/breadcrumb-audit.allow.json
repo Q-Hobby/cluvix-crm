@@ -1,0 +1,32 @@
+[
+  {
+    "code": "B6",
+    "route": "/config/print-template/:id",
+    "reason": "PrintTemplatePage placeholder, không có model (D4)"
+  },
+  {
+    "code": "B6",
+    "route": "/cx-sale/opportunity/macro/:id",
+    "reason": "danh sách lọc theo id, Q3"
+  },
+  {
+    "code": "B6",
+    "route": "/cx-sale/opportunity/not-booked/:id",
+    "reason": "danh sách lọc theo id, Q3"
+  },
+  {
+    "code": "B6",
+    "route": "/cx-sale/opportunity/portrait-status/:id",
+    "reason": "danh sách lọc theo id, Q3"
+  },
+  {
+    "code": "B6",
+    "route": "/cx-sale/opportunity/portrait-group-customer/:id",
+    "reason": "danh sách lọc theo id, Q3"
+  },
+  {
+    "code": "B6",
+    "route": "/cx-sale/opportunity/portrait-event/:id",
+    "reason": "danh sách lọc theo id, Q3"
+  }
+]

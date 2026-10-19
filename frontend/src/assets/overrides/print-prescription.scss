@@ -1,0 +1,123 @@
+// Styles cho đơn thuốc
+.prescription-title {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 1rem 0 0.5rem 0;
+  letter-spacing: 1px;
+}
+
+.prescription-date {
+  text-align: center;
+  font-style: italic;
+  font-size: 13px;
+  margin-bottom: 1rem;
+}
+
+.diagnosis-section {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  
+  .diagnosis-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 14px;
+  }
+  
+  .diagnosis-content {
+    margin: 0;
+    padding-left: 1rem;
+    font-style: italic;
+  }
+}
+
+.prescription-content {
+  margin-top: 1.5rem;
+  
+  .prescription-label {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+}
+
+.medicine-list {
+  margin-bottom: 2rem;
+}
+
+.medicine-item {
+  margin-bottom: 1.25rem;
+  padding-left: 0.5rem;
+  
+  .medicine-header {
+    margin-bottom: 0.25rem;
+    
+    .medicine-number {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    
+    .medicine-name {
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: capitalize;
+    }
+  }
+  
+  .medicine-details {
+    padding-left: 1.5rem;
+    margin-bottom: 0.25rem;
+    
+    .medicine-quantity {
+      font-size: 13px;
+    }
+  }
+  
+  .medicine-usage {
+    padding-left: 1.5rem;
+    font-style: italic;
+    font-size: 13px;
+    
+    .usage-label {
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+    
+    .usage-content {
+      color: #333;
+    }
+  }
+}
+
+.instruction-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ccc;
+  
+  .instruction-label {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .instruction-content {
+    padding-left: 1rem;
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 13px;
+  }
+}
+
+@media print {
+  .prescription-title {
+    page-break-after: avoid;
+  }
+  
+  .medicine-item {
+    page-break-inside: avoid;
+  }
+}

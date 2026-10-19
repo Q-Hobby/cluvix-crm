@@ -1,0 +1,213 @@
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
+    width: 297mm;
+    height: 210mm;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #printable,
+  #printable * {
+    visibility: visible;
+  }
+
+  #printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  .sheet {
+    width: 297mm !important;
+    max-width: 297mm !important;
+    height: 210mm !important;
+    min-height: 210mm !important;
+    margin: 0 !important;
+    padding: 5mm !important;
+    box-shadow: none !important;
+    page-break-after: avoid !important;
+  }
+
+  .sheet_body {
+    width: 100% !important;
+  }
+
+  .services.p-datatable {
+    width: 100% !important;
+    border-collapse: collapse !important;
+
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+
+    tr > th,
+    tr > td {
+      font-size: 10px !important;
+      padding: 1mm !important;
+      border: 0.5pt solid #666 !important;
+    }
+  }
+}
+
+.logo img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+body {
+  background-color: transparent;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.pCalculator {
+  font-size: 11px;
+  color: red;
+}
+
+.sheet {
+  width: 277mm; /* A4 landscape width - margins (297mm - 20mm) */
+  max-width: 277mm;
+  min-height: 190mm; /* A4 landscape height - margins (210mm - 20mm) */
+  margin: 0 auto;
+  padding: 5mm;
+  box-sizing: border-box;
+  page-break-after: always;
+
+  &_head {
+    border-bottom: 1px solid #cecece;
+    margin-bottom: 0;
+
+    .info {
+      .company {
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  &_body {
+    margin-top: 0;
+    padding-top: 0;
+
+    &_top {
+      margin-bottom: 3mm;
+    }
+
+    &_mid {
+      margin-top: 0;
+    }
+
+    .invoice {
+      &_id {
+        font-weight: 600;
+      }
+
+      &_title {
+        background-color: transparent;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 16px !important;
+        color: #000000;
+        margin: 0.5rem 0;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      &_info {
+        .services {
+          margin-bottom: 1rem;
+
+          &.p-datatable {
+            table-layout: fixed;
+            width: 100%;
+
+            tr > th,
+            tr > td {
+              background-color: transparent;
+              font-family: 'Times New Roman', Times, serif;
+              font-size: 11px !important;
+              color: #000000;
+              padding: 2mm 1mm !important;
+              border: 1px solid #ebebef;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+
+          .p-datatable-thead {
+            tr > th {
+              background: transparent;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+
+    .customer {
+      &_info {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}
+
+@media screen {
+  body {
+    background: #e0e0e0;
+  }
+  .sheet {
+    width: 277mm;
+    max-width: 277mm;
+    min-height: 190mm;
+    background: white;
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3);
+    margin: 10mm auto;
+    padding: 5mm;
+    overflow-x: auto;
+  }
+
+  .services.p-datatable {
+    table {
+      table-layout: fixed;
+      width: 100%;
+    }
+
+    tr > th,
+    tr > td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.layout-content-wrapper,
+.layout-content,
+.layout-topbar-end,
+.layout-breadcrumb-container {
+  padding-top: unset !important;
+  margin-top: unset !important;
+}
+

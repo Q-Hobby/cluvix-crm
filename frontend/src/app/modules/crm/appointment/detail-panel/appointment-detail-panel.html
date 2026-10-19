@@ -1,0 +1,422 @@
+<app-slide-over
+  [(visible)]="visible"
+  [title]="'common.label.appointment_detail' | translate"
+  [subtitle]="model().code ? '#' + model().code : ''"
+  icon="pi pi-calendar"
+  size="lg"
+  [loading]="loadingDetail()"
+  [errorMessage]="loadErrorKey() ? (loadErrorKey() | translate) : ''"
+  (retry)="retryLoad()"
+  (closed)="onClosed()"
+>
+  <!--
+    Hành động trên header. ⚠ Bọc trong MỘT `ng-container slideOverActions`: node nằm trong `@if`
+    hoặc dưới structural directive (`*hasPerm`) KHÔNG mang attribute ra ngoài, nên nếu đặt
+    `slideOverActions` thẳng trên nút thì content projection trượt về slot mặc định (nút rơi xuống
+    thân panel thay vì nằm ở header).
+  -->
+  <ng-container slideOverActions>
+    <!-- Sao chép: hành động phụ → nút chữ, không cạnh tranh thị giác với nút Sửa. -->
+    <button
+      type="button"
+      pButton
+      text
+      rounded
+      size="small"
+      severity="secondary"
+      [appCopyText]="copyText()"
+      [attr.aria-label]="'crm.appointment.tooltip.copy_appointment' | translate"
+      [pTooltip]="'crm.appointment.tooltip.copy_appointment' | translate"
+      tooltipPosition="bottom"
+    >
+      <i class="pi pi-copy"></i>
+    </button>
+
+    @if (canEdit()) {
+      <!-- Sửa: hành động chính của panel → nút primary đặc, giống CTA trong mẫu thiết kế. -->
+      <button
+        *hasPerm="permission.permissionUpdateAppointment"
+        type="button"
+        pButton
+        size="small"
+        (click)="edited.emit(model())"
+      >
+        <i class="pi pi-pencil"></i>
+        <span>{{ 'common.action.edit' | translate }}</span>
+      </button>
+    }
+  </ng-container>
+
+  <!-- ── Khách hàng ─────────────────────────────────────────────── -->
+  <app-slide-over-section label="common.label.customer_info">
+    <div class="flex items-center gap-3">
+      <div
+        class="w-11 h-11 shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold"
+      >
+        {{ ((model().customerDisplayName || '') | avatarWord) || '?' }}
+      </div>
+      <div class="flex flex-col gap-1 min-w-0">
+        @if (model().customer_id) {
+          <app-customer-name
+            [id]="model().customer_id!"
+            [name]="model().customerDisplayName"
+            [customer]="model().customer"
+          />
+        } @else {
+          <span class="font-medium">{{ model().customerDisplayName || '—' }}</span>
+        }
+        <div class="flex items-center gap-2 text-xs text-muted-color">
+          @if (model().customer?.code) {
+            <span class="inline-flex items-center gap-1 cursor-pointer" [appCopyText]="model().customer?.code">
+              <i class="pi pi-id-card"></i>{{ model().customer?.code }}
+            </span>
+          }
+          @if (customerAge()) {
+            <span>· {{ customerAge() }}</span>
+          }
+          @if (model().genderLabel) {
+            <span>· {{ model().genderLabel }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <app-slide-over-row label="common.label.phone">
+      <app-customer-phone [phone]="model().customer?.phone" />
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.birthday">
+      {{ (model().customer?.birthday | customDate) || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.province_city">
+      {{ model().provinceLabel || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.address" [vertical]="true">
+      {{ model().customer?.address || '—' }}
+    </app-slide-over-row>
+  </app-slide-over-section>
+
+  <!-- ── Trạng thái ─────────────────────────────────────────────── -->
+  <app-slide-over-section label="common.label.appointment_status">
+    @if (isCancelled()) {
+      <div class="flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-950/40 px-3 py-2 text-red-600">
+        <i class="pi pi-times-circle"></i>
+        <span class="text-sm font-medium">{{ 'crm.appointment.detail.cancelled_note' | translate }}</span>
+      </div>
+      <!-- Lịch đã hủy không vẽ thanh bước, nhưng nếu khách TỪNG đến thì mốc giờ vẫn phải thấy được
+           (thanh bước là nơi duy nhất còn lại hiển thị 2 mốc này). -->
+      @if (model().checkin_date; as checkinDate) {
+        <app-slide-over-row label="common.label.check_in_time">
+          {{ checkinDate | date: 'HH:mm dd/MM/yyyy' }}
+        </app-slide-over-row>
+      }
+      @if (model().checkout_date; as checkoutDate) {
+        <app-slide-over-row label="crm.appointment.detail.checkout_time">
+          {{ checkoutDate | date: 'HH:mm dd/MM/yyyy' }}
+        </app-slide-over-row>
+      }
+    } @else {
+      <!--
+        Thanh bước theo mẫu "circles" của PrimeBlocks: vòng tròn + icon, nối bằng gạch ngang, nhãn
+        nằm dưới. Khác mẫu gốc ở 2 điểm, do panel chỉ rộng ~600px chứ không phải cả trang:
+        - luôn nằm ngang (mẫu gốc đổi sang dọc ở `md:` theo VIEWPORT — vô nghĩa ở đây vì panel hẹp
+          hơn breakpoint ngay cả trên màn hình lớn);
+        - "description" là mốc giờ THẬT (check-in/check-out), không phải câu mô tả — chỗ này người
+          dùng cần biết khách đến/về lúc mấy giờ.
+      -->
+      <div class="flex items-start">
+        @for (step of statusSteps(); track step.info.value; let index = $index) {
+          <div class="flex flex-1 flex-col gap-2 min-w-0">
+            <div class="flex items-center">
+              <div
+                class="flex items-center justify-center w-8 h-8 shrink-0 rounded-full border"
+                [class]="
+                  step.current
+                    ? 'bg-primary border-transparent text-primary-contrast'
+                    : step.done
+                      ? 'bg-primary/10 border-primary/20 text-primary'
+                      : 'bg-surface-100 dark:bg-surface-800 border-surface text-muted-color'
+                "
+              >
+                @if (step.done) {
+                  <i class="pi pi-check text-xs"></i>
+                } @else {
+                  <i [class]="step.icon + ' text-xs'"></i>
+                }
+              </div>
+              @if (index < statusSteps().length - 1) {
+                <div
+                  class="h-0.5 flex-1"
+                  [class]="step.done ? 'bg-primary' : 'bg-surface-200 dark:bg-surface-700'"
+                ></div>
+              }
+            </div>
+
+            <div class="flex flex-col gap-0.5 pr-2">
+              <span
+                class="text-xs leading-tight"
+                [class]="step.current ? 'text-color font-semibold' : 'text-muted-color'"
+              >
+                {{ (step.info.labelKey || step.info.label) | translate }}
+              </span>
+              @if (step.time) {
+                <span class="text-[0.65rem] leading-tight text-muted-color">
+                  {{ step.time | date: 'HH:mm dd/MM' }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="flex flex-wrap items-center gap-2 pt-1">
+      @if (statusInfo()) {
+        <span
+          class="px-2.5 py-1 rounded-full text-xs font-semibold"
+          [style.background]="statusInfo()?.background"
+          [style.color]="statusInfo()?.color"
+        >
+          {{ (statusInfo()?.labelKey || statusInfo()?.label) | translate }}
+        </span>
+      }
+      @if (model().confirmAppointmentInfo; as confirm) {
+        <p-tag
+          [severity]="confirmSeverity()"
+          [value]="(confirm.labelKey || confirm.label) | translate"
+        />
+      }
+      @if (model().bookTypeInfo; as bookType) {
+        <p-tag severity="secondary" [value]="(bookType.labelKey || bookType.label) | translate" />
+      }
+    </div>
+  </app-slide-over-section>
+
+  <!-- ── Lịch hẹn ───────────────────────────────────────────────── -->
+  <app-slide-over-section label="crm.appointment.detail.appointment_info">
+    <div class="flex items-center gap-3 rounded-lg bg-primary/5 px-3 py-2.5">
+      <i class="pi pi-clock text-primary text-lg"></i>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold">{{ model().appointment_dateFormatted || '—' }}</span>
+        @if (durationMinutes()) {
+          <span class="text-xs text-muted-color">
+            {{ 'common.label.expected_time' | translate }}: {{ durationMinutes() }}'
+          </span>
+        }
+      </div>
+    </div>
+
+    <app-slide-over-row label="common.label.appointment_type">
+      {{ model().appointmentTypeLabel || '—' }}
+    </app-slide-over-row>
+    @if (model().appointment_date_firstFormatted) {
+      <app-slide-over-row label="crm.appointment.detail.first_appointment_date">
+        {{ model().appointment_date_firstFormatted }}
+      </app-slide-over-row>
+    }
+    @if (model().appointment_number) {
+      <app-slide-over-row label="crm.appointment.detail.appointment_count">
+        {{ model().appointment_number }}
+      </app-slide-over-row>
+    }
+    <app-slide-over-row label="common.label.branch">{{ model().branchLabel || '—' }}</app-slide-over-row>
+
+    @if ((model().appointmentListDate?.length ?? 0) > 0) {
+      <div class="flex flex-col gap-1 pt-1 border-t border-surface">
+        <span class="text-xs text-muted-color">
+          {{ 'crm.appointment.detail.date_change_history' | translate }}
+        </span>
+        @for (change of model().appointmentListDate; track change.old) {
+          <div class="text-xs flex items-center gap-2">
+            <span class="line-through text-muted-color">{{ change.oldFormatted }}</span>
+            <i class="pi pi-arrow-right text-[0.6rem] text-muted-color"></i>
+            <span class="font-medium">{{ change.newFormatted }}</span>
+          </div>
+        }
+      </div>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Dịch vụ ────────────────────────────────────────────────── -->
+  <app-slide-over-section label="common.label.service">
+    <app-slide-over-row label="common.label.service_group_of_interest">
+      {{ model().serviceTypeLabel || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.appointment_service">
+      {{ model().serviceInfo?.name || '—' }}
+    </app-slide-over-row>
+    @if (model().orderServiceUsed) {
+      <app-slide-over-row label="common.label.treatment_service">
+        {{ treatmentServiceLabel() || '—' }}
+      </app-slide-over-row>
+    }
+    @if (model().appointmentIsAcceptedInfo; as accepted) {
+      <app-slide-over-row label="crm.appointment.detail.service_accepted">
+        <p-tag
+          [severity]="model().is_accepted === APPOINTMENT_IS_ACCEPTED_SELECT.APPOINTMENT_IS_ACCEPTED ? 'success' : 'danger'"
+          [value]="accepted.name"
+        />
+      </app-slide-over-row>
+      <app-slide-over-row label="common.label.accepted_service_group">
+        {{ model().serviceTypeAcceptedLabel || '—' }}
+      </app-slide-over-row>
+    }
+    @if (model().appointmentReason?.name || model().appointmentReasonInfo?.name) {
+      <app-slide-over-row label="common.label.reason">
+        <span class="text-red-600">
+          {{ model().appointmentReason?.name || model().appointmentReasonInfo?.name }}
+        </span>
+      </app-slide-over-row>
+    }
+  </app-slide-over-section>
+
+  <!-- ── Nhân sự phụ trách ──────────────────────────────────────── -->
+  <app-slide-over-section label="crm.appointment.detail.section_staff">
+    <app-slide-over-row label="crm.appointment.detail.consultant">
+      {{ model().revenue?.fullname || '—' }}
+    </app-slide-over-row>
+    <app-slide-over-row label="crm.appointment.detail.converter">
+      {{ model().convertInfo?.fullname || '—' }}
+    </app-slide-over-row>
+  </app-slide-over-section>
+
+  <!-- ── Nguồn & chiến dịch ─────────────────────────────────────── -->
+  <app-slide-over-section label="crm.appointment.detail.section_source">
+    <app-slide-over-row label="common.label.source">{{ model().sourceLabel || '—' }}</app-slide-over-row>
+  </app-slide-over-section>
+
+  <!-- ── Nội dung / ghi chú ─────────────────────────────────────── -->
+  @if (model().content || model().contentPrivate) {
+    <app-slide-over-section label="common.label.appointment_note">
+      @if (model().content) {
+        <div
+          class="lightgallery-container prose prose-sm max-w-none text-sm"
+          appWhitespaceControl
+          pswpLightbox
+          [innerHTML]="model().content | sanitizeQuill | safeHtml"
+        ></div>
+      }
+      @if (model().contentPrivate) {
+        <div class="rounded-lg bg-yellow-50 dark:bg-yellow-950/30 px-3 py-2">
+          <div class="text-xs text-muted-color mb-1">{{ 'common.label.internal_note' | translate }}</div>
+          <div
+            class="prose prose-sm max-w-none text-sm"
+            appWhitespaceControl
+            [innerHTML]="model().contentPrivate | sanitizeQuill | safeHtml"
+          ></div>
+        </div>
+      }
+    </app-slide-over-section>
+  }
+
+  <!-- ── Lịch sử thao tác + thêm ghi chú ────────────────────────── -->
+  <app-slide-over-section label="crm.appointment.detail.action_history">
+    <span sectionActions class="text-xs text-muted-color">{{ timeline().length }}</span>
+
+    @if (timeline().length > 0) {
+      <!--
+        Stepper dọc theo mẫu PrimeBlocks: ô icon bo góc + đường nối dọc + tiêu đề/phụ đề.
+        `noteTimeline` do BE append bằng JSON_ARRAY_APPEND ⇒ phần tử CUỐI là mới nhất → đó mới là
+        mốc được nhấn primary (mẫu gốc nhấn theo cờ `active`).
+        Đường nối dùng `left-[1.125rem]` (= tâm ô 2.25rem) chứ không phải `left-4.5` như mẫu: repo
+        đang Tailwind v3, không có nấc spacing 4.5 — viết `left-4.5` thì class không được sinh ra và
+        đường kẻ biến mất, build vẫn xanh.
+      -->
+      <div class="flex flex-col">
+        @for (event of timeline(); track event.timestamp + '-' + $index; let index = $index) {
+          @let eventStyle = getEventStyle(event.action);
+          @let isLatest = index === timeline().length - 1;
+          <div class="flex gap-3 items-start relative">
+            <div class="flex flex-col items-center z-10">
+              <div
+                class="flex items-center justify-center w-9 h-9 shrink-0 rounded-lg border"
+                [class]="
+                  isLatest
+                    ? 'bg-primary/10 border-primary/30'
+                    : 'bg-surface-50 dark:bg-surface-800 border-surface'
+                "
+              >
+                <i [class]="eventStyle.icon + ' text-base ' + eventStyle.color"></i>
+              </div>
+            </div>
+
+            @if (!isLatest) {
+              <div class="absolute left-[1.125rem] top-9 bottom-0 w-px bg-surface-200 dark:bg-surface-700"></div>
+            }
+
+            <div class="flex flex-col gap-1 flex-1 min-w-0 leading-tight" [class.pb-4]="!isLatest">
+              <span class="text-sm font-medium" [class]="isLatest ? 'text-primary' : 'text-color'">
+                {{ event.action }}
+              </span>
+
+              @if (event.note) {
+                <div
+                  class="lightgallery-container prose prose-sm max-w-none text-xs leading-relaxed text-muted-color"
+                  appWhitespaceControl
+                  pswpLightbox
+                  [innerHTML]="event.note | sanitizeQuill | safeHtml"
+                ></div>
+              }
+
+              <!-- Người thực hiện + thời điểm là thông tin ký tên: đặt cuối khối, canh phải, để mắt
+                   đọc hành động → nội dung → ai/lúc nào, không bị chen ngang giữa tiêu đề. -->
+              <div class="flex items-center justify-end gap-1.5 text-[0.7rem] text-muted-color">
+                @if (event.user_id) {
+                  <span class="truncate">{{ userHelper.getLabel(event.user_id) }}</span>
+                  <span aria-hidden="true">·</span>
+                }
+                <span class="shrink-0">{{ event.timestamp * 1000 | date: 'HH:mm dd/MM' }}</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col items-center gap-2 py-6 text-center text-muted-color">
+        <i class="pi pi-history text-xl"></i>
+        <span class="text-sm">{{ 'crm.appointment.detail.no_action_history' | translate }}</span>
+      </div>
+    }
+
+    <div class="flex gap-2 items-end pt-1">
+      <textarea
+        pTextarea
+        rows="2"
+        [autoResize]="true"
+        [ngModel]="noteText()"
+        (ngModelChange)="noteText.set($event)"
+        [placeholder]="'crm.appointment.detail.note_placeholder' | translate"
+        class="flex-1 resize-none text-sm w-full"
+        (keydown.control.enter)="submitNote()"
+      ></textarea>
+      <button
+        type="button"
+        pButton
+        severity="secondary"
+        class="shrink-0"
+        [loading]="savingNote()"
+        [disabled]="!noteText().trim()"
+        (click)="submitNote()"
+      >
+        <i class="pi pi-send"></i>
+      </button>
+    </div>
+  </app-slide-over-section>
+
+  <!-- ── Thông tin hệ thống ─────────────────────────────────────── -->
+  <app-slide-over-section label="crm.order_plan.detail_panel.section_system">
+    <app-slide-over-row label="common.label.user_created">
+      {{ model().createdByInfo?.fullname || '—' }}
+      @if (model().created_atFormatted) {
+        <span class="text-muted-color font-normal"> · {{ model().created_atFormatted }}</span>
+      }
+    </app-slide-over-row>
+    <app-slide-over-row label="common.label.user_updated">
+      {{ model().updatedByInfo?.fullname || '—' }}
+      @if (model().updated_at; as updatedAt) {
+        <span class="text-muted-color font-normal">
+          · {{ updatedAt | date: 'dd/MM/yyyy HH:mm' }}
+        </span>
+      }
+    </app-slide-over-row>
+  </app-slide-over-section>
+</app-slide-over>

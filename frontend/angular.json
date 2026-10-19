@@ -1,0 +1,216 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ultima-ng": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "baseHref": "/",
+            "outputPath": {
+              "base": "dist",
+              "browser": ""
+            },
+            "index": "src/index.html",
+            "tsConfig": "tsconfig.app.json",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
+            "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "qrcode",
+              "quill",
+              "quill-delta",
+              "lodash",
+              "@assets/libs/canvasjs/canvasjs.min.js",
+              "xlsx",
+              "xlsx-js-style"
+            ],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/custom-ngsw-worker.js"
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/photoswipe/dist/photoswipe.css"
+            ],
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/styles"
+              ]
+            },
+            "preserveSymlinks": false,
+            "optimization": true,
+            "browser": "src/main.ts"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "150kb",
+                  "maximumError": "150kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": true
+              },
+              "namedChunks": false,
+              "extractLicenses": true
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "namedChunks": true
+            },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
+            "docker": {
+              "optimization": false,
+              "extractLicenses": false,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ]
+            },
+            "cluvix": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.cluvix.ts"
+                }
+              ]
+            },
+            "test": {
+              "optimization": false,
+              "extractLicenses": false,
+              "namedChunks": true,
+              "polyfills": [
+                "src/polyfills.ts",
+                "zone.js"
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "port": 4211
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "ultima-ng:build:production"
+            },
+            "development": {
+              "buildTarget": "ultima-ng:build:development"
+            },
+            "local": {
+              "buildTarget": "ultima-ng:build:local"
+            },
+            "docker": {
+              "buildTarget": "ultima-ng:build:docker",
+              "proxyConfig": "proxy.docker.conf.json"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "ultima-ng:build:test",
+            "tsConfig": "tsconfig.spec.json",
+            "runnerConfig": true
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "analytics": "a226201c-7751-471a-b98b-f34414588426",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
+    }
+  }
+}

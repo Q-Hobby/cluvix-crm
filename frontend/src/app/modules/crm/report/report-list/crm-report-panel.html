@@ -1,0 +1,29 @@
+<div class="mb-4 rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+  <div class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#7B3F9E]/12 to-[#7B3F9E]/5 border-b border-[#7B3F9E]/15">
+    <i [class]="icon + ' text-[#7B3F9E] text-sm'"></i>
+    <span class="font-semibold text-sm text-gray-800 uppercase tracking-wide">{{ title }}</span>
+  </div>
+  <ul class="py-1 bg-white">
+    @for (item of items; track item.link) {
+      <li>
+        <a
+          [routerLink]="item.link"
+          routerLinkActive="bg-[#7B3F9E]/8 font-semibold"
+          class="flex items-start gap-2 px-3 py-2 rounded hover:bg-gray-50 transition-colors"
+        >
+          <i [class]="item.icon + ' text-sm mt-0.5 ' + (item.iconClass || 'text-gray-400')"></i>
+          <span class="flex flex-col flex-1 min-w-0">
+            <span [class]="'leading-tight ' + (item.iconClass || 'text-gray-700')">
+              {{ (item.labelKey || item.label) | translate }}
+            </span>
+            @if (item.descriptionKey || item.description) {
+              <span class="text-xs font-normal text-gray-400 leading-snug mt-0.5">
+                {{ (item.descriptionKey || item.description) | translate }}
+              </span>
+            }
+          </span>
+        </a>
+      </li>
+    }
+  </ul>
+</div>

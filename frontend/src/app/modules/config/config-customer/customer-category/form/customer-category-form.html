@@ -1,0 +1,52 @@
+<form novalidate>
+  <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+    <div class="col-span-12">
+      <p-floatlabel variant="on">
+        <input
+          [autofocus]="true"
+          [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+          [formField]="rootField.name!"
+          autocomplete="off"
+          class="ng-dirty"
+          id="name"
+          pInputText
+          type="text"
+        />
+        <label for="name">{{ 'common.label.customer_group' | translate }}</label>
+      </p-floatlabel>
+    </div>
+    <div class="col-span-12 lg:col-span-6">
+      <p-inputgroup>
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            [class.ng-invalid]="isFieldInvalid(rootField.time_nhaclich!)"
+            [formField]="rootField.time_nhaclich!"
+            autocomplete="off"
+            class="ng-dirty"
+            id="time_nhaclich"
+            inputId="time_nhaclich"
+          ></p-inputnumber>
+          <label for="time_nhaclich">{{ 'common.label.reminder' | translate }}</label>
+        </p-floatlabel>
+        <button
+          pButton
+          (click)="changeReminderType(rootField.type_nhaclich!().value())"
+          severity="danger"
+          type="button"
+        >
+          <span>{{
+            rootField.type_nhaclich!().value() === modelService.REMINDER_TYPE_GIO
+              ? ('common.label.hour' | translate)
+              : ('common.label.day' | translate)
+          }}</span>
+        </button>
+      </p-inputgroup>
+    </div>
+    <div class="col-span-12 inline-flex items-center gap-2">
+      <p-toggleswitch [trueValue]="1" [falseValue]="0" [formField]="rootField.status!" id="status"></p-toggleswitch>
+      <label for="status" class="min-w-32">{{ (rootField.status!().value() === 1 ? 'common.label.visible' : 'common.label.hidden') | translate }}</label>
+    </div>
+  </p-fluid>
+  <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                     (saveForm)="onSubmit()"/>
+</form>

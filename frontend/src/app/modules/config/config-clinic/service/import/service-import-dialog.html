@@ -1,0 +1,85 @@
+@if (importResult()) {
+  <div class="flex flex-col gap-4 p-6">
+    <div class="flex items-center gap-3">
+      <i class="pi pi-check-circle text-3xl text-green-500"></i>
+      <span class="text-lg font-semibold text-gray-800">{{ 'sale.lead.import_done_title' | translate }}</span>
+    </div>
+    <div class="grid grid-cols-3 gap-3">
+      <div class="flex flex-col items-center gap-1 p-4 bg-green-50 border border-green-200 rounded-xl">
+        <span class="text-2xl font-bold text-green-600">{{ importResult()!.created }}</span>
+        <span class="text-xs text-green-700">{{ 'sale.lead.import_created' | translate }}</span>
+      </div>
+      <div class="flex flex-col items-center gap-1 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <span class="text-2xl font-bold text-blue-600">{{ importResult()!.updated }}</span>
+        <span class="text-xs text-blue-700">{{ 'common.label.updated' | translate }}</span>
+      </div>
+      <div class="flex flex-col items-center gap-1 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+        <span class="text-2xl font-bold text-gray-500">{{ importResult()!.skipped }}</span>
+        <span class="text-xs text-gray-500">{{ 'sale.lead.import_skipped' | translate }}</span>
+      </div>
+    </div>
+  </div>
+  <app-dialog-footer
+    [showSave]="false"
+    [cancelLabel]="'common.label.close'"
+    (cancelForm)="cancel()"
+  />
+} @else {
+  <div class="flex flex-col gap-5 p-4 pb-2">
+    <div class="flex items-center gap-2">
+      <p-badge value="1" severity="info"/>
+      <span class="font-semibold text-gray-800">{{ 'common.label.download_template' | translate }}</span>
+    </div>
+    <div class="flex flex-col items-center gap-2">
+      <button type="button"
+        pButton
+        (click)="downloadTemplate()"
+        severity="help"
+        [outlined]="true"
+      ><i class="pi pi-download"></i><span>{{ 'common.label.download_template' | translate }}</span></button>
+      <small class="text-center text-muted-color">{{ 'config.service.import_template_hint' | translate }}</small>
+    </div>
+    <p-divider/>
+    <div class="flex items-center gap-2">
+      <p-badge value="2" severity="info"/>
+      <span class="font-semibold text-gray-800">{{ 'config.service.import_step2_title' | translate }}</span>
+    </div>
+    <input
+      #fileInput
+      type="file"
+      accept=".xlsx,.xls,.csv"
+      class="hidden"
+      (change)="onFileChange($event)"
+    />
+    <div class="p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <i class="pi pi-file-excel shrink-0 text-xl"
+           [class]="selectedFile() ? 'text-green-600' : 'text-[#7B3F9E]'"
+        ></i>
+        @if (selectedFile()) {
+          <span class="text-sm font-medium text-gray-800 truncate">{{ selectedFile()!.name }}</span>
+          <i
+            class="pi pi-times shrink-0 text-gray-400 cursor-pointer hover:text-red-500 transition-colors"
+            (click)="selectedFile.set(null); fileInput.value = ''"
+          ></i>
+        } @else {
+          <span class="text-sm text-gray-400">{{ 'sale.lead.import_no_file' | translate }}</span>
+        }
+      </div>
+      <button type="button"
+        pButton
+        class="shrink-0"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        (click)="fileInput.click()"
+      ><i class="pi pi-upload"></i><span>{{ (selectedFile() ? 'sale.lead.import_change_file' : 'common.label.choose_file') | translate }}</span></button>
+    </div>
+  </div>
+  <app-dialog-footer
+    [isSubmitting]="isSubmitting() || !selectedFile()"
+    [saveLabel]="'common.action.import'"
+    (cancelForm)="cancel()"
+    (saveForm)="submit()"
+  />
+}

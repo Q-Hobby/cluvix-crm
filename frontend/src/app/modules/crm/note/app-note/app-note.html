@@ -1,0 +1,130 @@
+<div
+  (scroll)="onContainerScroll($event)"
+  [style]="{
+    maxHeight: 'calc(100vh - ' + (tableDetail() + 40) + 'px)',
+    minHeight: 'calc(100vh - ' + (tableDetail() + 40) + 'px)'
+  }"
+  class="card note overflow-auto"
+>
+  <ng-container>
+    <app-note-form
+      (saved)="noteSaved($event)"
+      *hasPerm="permission.permissionCreateNote"
+      [customer_id]="customer_id"
+      class="h-full"
+    >
+      <ng-content></ng-content>
+    </app-note-form>
+  </ng-container>
+
+  <div class="p-fluid note__list mt-2">
+    @if (loading() && !listNotes.length) {
+      @for (_ of skeletons; track $index) {
+        <div class="box p-shadow-custom custom-card-detail mb-3">
+          <div class="flex flex-column pl-2">
+            <p-skeleton class="mb-3" width="25rem"></p-skeleton>
+            <p-skeleton class="mb-0" width="7rem"></p-skeleton>
+          </div>
+          <div class="flex justify-end pl-4">
+            <p-skeleton width="15rem"></p-skeleton>
+          </div>
+        </div>
+      }
+    }
+
+    @for (model of listNotes; track model.id; let i = $index) {
+      <!-- header dán ở trên nếu cần -->
+      @if (i === 0 && model.pinned) {
+        <div class="sticky top-0 z-10 bg-white/80 backdrop-blur px-2 py-1 border-b
+                text-[0.8462rem] font-medium uppercase text-amber-700">
+          {{ 'crm.note_app.pinned_header' | translate }}
+        </div>
+      }
+
+      <div
+        class="border-l-4 border-b rounded-tl-md rounded-bl-md px-4 pt-2 pb-1 mb-2 ring-1"
+        [ngClass]="model.pinned
+          ? 'bg-amber-50 border-amber-500 ring-amber-200'
+          : 'bg-white border-gray-300 ring-black/5'">
+
+        <!-- Badge GHIM -->
+        @if (model.pinned) {
+          <div class="mb-1 -mt-1 flex items-center gap-2 text-xs font-semibold uppercase text-amber-700">
+            <i class="pi pi-thumbtack -rotate-12"></i>
+            {{ 'crm.note_app.pinned_badge' | translate }}
+            <span class="text-amber-600/80 normal-case font-normal">
+              • {{ ($any(model.pinned_at)) | customDate:true }}
+            </span>
+          </div>
+        }
+
+        <div
+          [innerHTML]="model.note || '-' | sanitizeQuill | safeHtml"
+          appWhitespaceControl
+          class="lightgallery-container prose max-w-full break-words"
+          pswpLightbox>
+        </div>
+
+        <div class="flex justify-end items-center text-sm text-gray-500 mt-2 gap-3">
+          @if (model.created_by) {
+            <b class="flex items-center gap-1">
+              <i class="pi pi-user text-teal-600"></i> {{ model.createdByInfo?.fullname }}
+            </b>
+          }
+          <span class="flex items-center gap-1">
+            <i class="pi pi-calendar text-purple-600"></i> {{ ($any(model.created_at)) | customDate: true }}
+          </span>
+
+          <!-- Nút Ghim/Bỏ ghim — BE gác POST /crm/note/:id/pin-note bằng updateNote. -->
+          <span class="p-text-primary" *hasPerm="permission.permissionUpdateNote">
+            <i
+              (click)="onTogglePin($event, model)"
+              [ngClass]="[
+                'cursor-pointer',
+                model.__pinLoading ? 'pi pi-spin pi-spinner text-gray-400' :
+                (model.pinned ? 'pi pi-times text-amber-700' : 'pi pi-thumbtack text-amber-700')
+              ]"
+              [pTooltip]="(model.pinned ? 'common.action.unpin' : 'common.action.pin') | translate"
+              tooltipPosition="top"
+              aria-label="Toggle pin"
+            ></i>
+          </span>
+
+          @if (checkDeleteNote(model.created_at!, model.created_by!)) {
+            <span class="p-text-primary">
+              <i
+                (click)="deleteNote($event, model)"
+                class="pi pi-trash text-red-500 cursor-pointer"
+                [pTooltip]="'crm.note_app.delete_tooltip' | translate"
+                tooltipPosition="top"
+              ></i>
+            </span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Loader cuối danh sách khi đang tải thêm -->
+    @if (loadingMore()) {
+      <div class="py-3 flex justify-center">
+        <i class="pi pi-spin pi-spinner text-gray-400 text-xl"></i>
+      </div>
+    }
+
+    <!-- Nút Tải thêm (fallback) -->
+    @if (!loading() && !loadingMore() && hasMore()) {
+      <div class="py-3 flex justify-center">
+        <button pButton type="button" class="p-button-sm" (click)="loadMore()">
+          {{ 'crm.note_app.load_more' | translate }}
+        </button>
+      </div>
+    }
+
+    <!-- Hết dữ liệu -->
+    @if (!loading() && !loadingMore() && !hasMore() && listNotes.length) {
+      <div class="py-3 text-center text-sm text-gray-500">
+        {{ 'common.page.loaded_all' | translate }}
+      </div>
+    }
+  </div>
+</div>

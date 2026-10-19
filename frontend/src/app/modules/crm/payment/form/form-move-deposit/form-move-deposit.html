@@ -1,0 +1,89 @@
+<form novalidate>
+    <p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid pt-2">
+      <div class="col-span-12">
+        @if (isEditMode()) {
+          <input
+            [readonly]="true"
+            [disabled]="true"
+            [value]="model().serviceInfo?.name"
+            id="serviceName"
+            pInputText
+          />
+        } @else {
+          <ng-container [ngTemplateOutlet]="createPayment"></ng-container>
+        }
+        <ng-template #createPayment>
+          <p-floatlabel variant="on">
+            <p-select
+              appendTo="body"
+              #formServiceUsed
+              [class.ng-invalid]="isFieldInvalid(rootField.serviceUsed_id!)"
+              [options]="serviceUsed()"
+              class="ng-dirty"
+              emptyFilterMessage="{{ 'common.message.no_data' | translate }}"
+              [filter]="serviceUsed().length>=5"
+              filterBy="label"
+              [formField]="$any(rootField.serviceUsed_id!)"
+              id="serviceUsed_id"
+              inputId="serviceUsed_id"
+              optionLabel="label"
+              optionValue="value"
+              dataKey="value"
+              resetFilterOnHide="true"
+            ></p-select>
+            <label for="serviceUsed_id">{{ 'common.label.service' | translate }}</label>
+          </p-floatlabel>
+        </ng-template>
+      </div>
+      <div class="col-span-12 lg:col-span-4">
+        <p-inputgroup>
+          <p-floatlabel variant="on">
+            <p-inputnumber
+              [class.ng-invalid]="isFieldInvalid(rootField.amount!)"
+              [max]="max"
+              [min]="0"
+              class="ng-dirty w-full"
+              [formField]="$any(rootField.amount!)"
+              id="amount"
+              inputId="amount"
+            ></p-inputnumber>
+            <label for="amount">{{ 'crm.payment.form.amount_input' | translate }}</label>
+          </p-floatlabel>
+          <button pButton (click)="maxDeposit()" class="max_deposit" type="button"><span>{{ 'crm.payment.form.max' | translate }}</span></button>
+        </p-inputgroup>
+        @if (amountMaxHint(); as lim) {
+          <small class="block mt-1 text-red-600">{{ 'crm.payment.form.max' | translate }}: {{ lim }}</small>
+        }
+      </div>
+      <div class="col-span-12 lg:col-span-4">
+        @if (canEditBranch()) {
+          <p-floatlabel variant="on">
+            <app-branch-form-control
+              [class.ng-invalid]="isFieldInvalid(rootField.branch_id!)"
+              [activeOnly]="true"
+              class="ng-dirty"
+              [formField]="$any(rootField.branch_id!)"/>
+            <label for="branch_id">{{ 'common.label.branch' | translate }}</label>
+          </p-floatlabel>
+        }
+      </div>
+      <div class="col-span-12 lg:col-span-4">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            [class.ng-invalid]="isFieldInvalid(rootField.payment_of_date!)"
+            [maxDate]="maxDate"
+            [showTime]="true"
+            appendTo="body"
+            class="ng-dirty"
+            dateFormat="dd/mm/yy"
+            [formField]="$any(rootField.payment_of_date!)"
+            id="payment_of_date"
+            showIcon="true"
+          ></p-datepicker>
+          <label for="payment_of_date">{{ 'common.label.payment_date' | translate }}</label>
+        </p-floatlabel>
+      </div>
+    </p-fluid>
+    <app-dialog-footer [isSubmitting]="isSubmitting()" (cancelForm)="closeForm($event)"
+                       (saveForm)="checkBeforeSubmit()"/>
+  </form>

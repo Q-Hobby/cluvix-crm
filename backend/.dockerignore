@@ -1,0 +1,15 @@
+# Build context của image dev — loại thứ nặng/riêng từng máy/bí mật.
+tmp/
+storage/uploads/
+storage/private/
+storage/export/
+certs/
+*.pem
+.env
+.env.*
+!.env.example
+.air.toml
+.run/
+.git
+.idea
+migrations_backup/

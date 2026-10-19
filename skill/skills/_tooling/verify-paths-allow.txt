@@ -1,0 +1,19 @@
+# Allowlist cho verify-paths.sh — đường dẫn KHÔNG tồn tại nhưng doc nhắc tới là ĐÚNG.
+#
+# Chỉ dùng cho 3 loại: (a) file cố ý không commit, (b) thứ đã bị gỡ mà doc đang mô tả
+# chính việc nó bị gỡ, (c) file bị squash/gộp mà doc ghi lại lịch sử.
+# KHÔNG dùng để làm im lặng path sai thật — mỗi dòng BẮT BUỘC có lý do.
+#
+# <path> | <lý do>
+
+backend/scripts/parse_icd_tt06.py | Script one-shot, cố ý KHÔNG commit (quyết định user 2026-07-05) — chính doc ghi rõ điều này
+backend/scripts/generate_icd_cloud.py | nt — doc ghi "CHỈ TỒN TẠI LOCAL, KHÔNG commit"
+internal/modules/public/quiz | Module đã gỡ; doc đang mô tả chính việc route no-auth cũ đã dời sang PartnerAuth
+backend/migrations/20260721081320_create_emr_vital_type_measurement.up.sql | Đã squash vào baseline 2026-08-14; doc ghi rõ điều này để truy vết nguồn gốc bảng
+backend/migrations/20260721081413_emr_cls_template.up.sql | nt
+backend/migrations/20260721091035_emr_cls_structured_option.up.sql | nt
+internal/modules/client | Module đã bỏ khỏi CRM standalone; doc nhắc để ghi rõ nó đã bỏ (check-up-psychiatry.md, handling-auth-and-workspace/SKILL.md — mục đánh dấu "đã bỏ"/lịch sử)
+internal/modules/client/customer-b | nt (check-up-psychiatry.md đánh dấu đã bỏ)
+internal/modules/client/customer-b/handler | nt
+internal/modules/client/customer-b/route.go | nt
+internal/modules/public | Module đã bỏ; check-up-psychiatry.md ghi lịch sử việc dời quiz no-auth sang PartnerAuth rồi bỏ

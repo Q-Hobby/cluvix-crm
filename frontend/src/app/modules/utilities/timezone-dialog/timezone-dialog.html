@@ -1,0 +1,24 @@
+<p-dialog
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [draggable]="false"
+  [modal]="true"
+  [resizable]="false"
+  [style]="{ width: '50rem' }"
+  [visible]="(timezoneCheckService.dialogVisible$ | async) ?? false"
+  [header]="'layout.timezone_dialog.header' | translate"
+>
+  <div class="grid grid-cols-12">
+    <div class="col-span-12">
+      <p class="text-2xl line-height-3">
+        {{ 'layout.timezone_dialog.body' | translate }}
+      </p>
+    </div>
+  </div>
+  <div class="p-dialog-footer">
+    <hr/>
+    <button type="button" (click)="close()" pButton>
+      <i class="pi pi-times"></i>
+      <span>{{ 'layout.timezone_dialog.acknowledge' | translate }}</span>
+    </button>
+  </div>
+</p-dialog>

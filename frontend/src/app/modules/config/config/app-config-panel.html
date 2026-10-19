@@ -1,0 +1,24 @@
+<p-panel [toggleable]="true" class="mb-4 shadow-sm rounded-xl border border-surface">
+  <ng-template #header>
+    <div class="flex items-center gap-2 text-color">
+      <i [class]="group().icon + ' text-primary-500 text-sm'"></i>
+      <span class="font-semibold text-base">{{ (group().titleKey || group().title) | translate }}</span>
+    </div>
+  </ng-template>
+
+  <ul class="space-y-1">
+    @for (item of visibleItems(); track item) {
+      <li>
+        <a
+          [routerLink]="item.link"
+          [queryParams]="item.queryParams"
+          (click)="visit.emit(item)"
+          class="flex items-center px-2 py-1.5 rounded-md text-muted-color hover:bg-emphasis hover:text-primary-600 transition"
+        >
+          <i [class]="item.icon + ' mr-2 text-sm ' + (item.iconClass || '')"></i>
+          {{ (item.labelKey || item.label) | translate }}
+        </a>
+      </li>
+    }
+  </ul>
+</p-panel>

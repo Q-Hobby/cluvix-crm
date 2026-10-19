@@ -1,0 +1,3440 @@
+[
+ {
+  "method": "GET",
+  "path": "/api/crm/indexeddb/sync",
+  "module": "config",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "IndexedDB config-table sync; registered on authed root, no per-perm gate — all authenticated users"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/search-global",
+  "module": "crm",
+  "perm": "searchCustomerGlobal",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "dedicated global search perm"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/load-by-keyword",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/get-number-customer-by-phone",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/get-number-customer-by-old-code",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/get-customer-by-code",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/:id",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer",
+  "module": "crm",
+  "perm": "createCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/create-customer-switch",
+  "module": "crm",
+  "perm": "createCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "creates a switched/linked customer record"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/customer/:id",
+  "module": "crm",
+  "perm": "updateCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/customer/:id",
+  "module": "crm",
+  "perm": "deleteCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/add-tag",
+  "module": "crm",
+  "perm": "updateCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "tag mutation on customer"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/remove-tag",
+  "module": "crm",
+  "perm": "updateCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "tag mutation on customer"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/update-appointment-not-booked-reasons",
+  "module": "crm",
+  "perm": "updateCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/create-avatar",
+  "module": "crm",
+  "perm": "updateCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "avatar update on customer"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/:id/attachments",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "no dedicated Attachment perm; customer files"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/customer/:id/attachments",
+  "module": "crm",
+  "perm": "extCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "upload file to customer; no dedicated Attachment perm"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/attachment",
+  "module": "crm",
+  "perm": "extCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "generic attachment upload (ref_type/ref_id); no dedicated Attachment perm"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/attachment/:id",
+  "module": "crm",
+  "perm": "extCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "delete attachment; no dedicated Attachment perm"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/attachment/:id/download",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "download private customer attachment (stream); handler also enforces branch + telesale customer scope"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/attachment/:id/signed-url",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "issue short-lived signed URL to view/play/download a private customer attachment directly (video/audio Range); same checks as download: handler also enforces branch + telesale customer scope"
+ },
+ {
+  "method": "GET",
+  "path": "/api/files/signed/:token",
+  "module": "crm",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "PUBLIC on purpose (registered on /api, outside JWTAuth/PermissionEnforcer): authenticated by HMAC signature in the token (STORAGE_SIGNING_KEY), short expiry ≤15m, issued only by POST /api/crm/attachment/:id/signed-url after JWT + viewCustomer + scope checks; local storage driver only (s3/r2 ⇒ 404)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-schedule",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-schedule-byhour",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-schedule-byhour-list",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-schedule-byhour-grouped",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "S-9 2026-10-18: route thật chưa có entry (NOMAP) — cùng quyền xem lịch hẹn"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-overview",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/get-appointment-chart-status",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/appointment-date-in-day",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/:id",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/appointment",
+  "module": "crm",
+  "perm": "createAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/appointment/customer-checkin",
+  "module": "crm",
+  "perm": "updateAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "checkin by query id; status update"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/appointment/:id/update-appointment",
+  "module": "crm",
+  "perm": "updateAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/appointment/:id/customer-checkin",
+  "module": "crm",
+  "perm": "updateAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "checkin status update"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/appointment/:id/add-note",
+  "module": "crm",
+  "perm": "updateAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "add note to appointment"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/appointment/:id/update-appointment-cancel",
+  "module": "crm",
+  "perm": "extAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "cancel action"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/appointment/:id/update-confirm-appointment",
+  "module": "crm",
+  "perm": "extAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "confirm/approve action"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/appointment/:id",
+  "module": "crm",
+  "perm": "deleteAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-plan",
+  "module": "crm",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Quản lý đơn hàng — danh sách + export (?_export=1) dùng chung viewPlanOrder (catalog CRM không có extPlanOrder)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/order-plan",
+  "module": "crm",
+  "perm": "createPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "order_plan -> PlanOrder; handler has manual hasPermission"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/order-plan/:id",
+  "module": "crm",
+  "perm": "updatePlanOrder,createPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/order-plan/service-used/:id/change-service",
+  "module": "crm",
+  "perm": "updatePlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "order-service-change story-02: doi dich vu tren OSU da co payment, dung lai quyen updatePlanOrder theo quyet dinh user 2026-07-20 (khong tao quyen rieng, tranh vo ma tran phan quyen 5-cot)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-plan/:id",
+  "module": "crm",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "FE alias"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-plan/:id/detail",
+  "module": "crm",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Chi tiết đơn cho SlideOver — cùng quyền xem đơn"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/order-plan/create-order",
+  "module": "crm",
+  "perm": "createPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "FE alias -> CreateOrderPlan"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/order-plan/:id/update-order",
+  "module": "crm",
+  "perm": "updatePlanOrder,createPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "FE alias"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-plan/:id/print-order-plan",
+  "module": "crm",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "301 redirect to /api/print/order-plan/:id"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/order-plan/:id",
+  "module": "crm",
+  "perm": "deletePlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "FE alias"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/get-order-plan/:id",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "payment handler has manual hasPermission"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/:id",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/:id/detail",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Chi tiết phiếu thu cho SlideOver — cùng quyền xem phiếu thu"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-payment-order",
+  "module": "crm",
+  "perm": "createPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu thanh toán (payment_for 4,5); _export=1 cần thêm extPayment (guard trong handler)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/list-receipts",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu thu/chi; _export=1 cần extPayment (guard trong handler)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/list-deposit",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu đặt cọc còn dư; _export=1 cần extPayment (guard trong handler)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/list-consignment",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu ký gửi còn dư; _export=1 cần extPayment (guard trong handler)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/list-refund-deposit",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu hoàn cọc; _export=1 cần extPayment (guard trong handler)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/list-refund-order-plan",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Danh sách phiếu hoàn dịch vụ; _export=1 cần extPayment (guard trong handler)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment",
+  "module": "crm",
+  "perm": "createPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "create payment clinic"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/payment/:id",
+  "module": "crm",
+  "perm": "updatePayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "update payment clinic"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-payment-customer",
+  "module": "crm",
+  "perm": "createPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-deposit-customer",
+  "module": "crm",
+  "perm": "extDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "deposit create -> Deposit perm family"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-refund-deposit-customer",
+  "module": "crm",
+  "perm": "extRefundDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-refund-kg-customer",
+  "module": "crm",
+  "perm": "extPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "consignment (ky gui) refund; no dedicated key"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/create-refund-order-plan",
+  "module": "crm",
+  "perm": "extRefundService",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "refund of ordered services"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/payment/:id/move-deposit-to-payment",
+  "module": "crm",
+  "perm": "extDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "deposit action"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/payment/:id/move-deposit-to-payment",
+  "module": "crm",
+  "perm": "extDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "duplicate registration (PUT alias)"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/payment/:id/update-payment-customer",
+  "module": "crm",
+  "perm": "updatePayment,createPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/payment/:id/update-deposit-customer",
+  "module": "crm",
+  "perm": "updatePayment,createPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "deposit update; handler verifyCanEditPaymentCustomer gates updatePayment OR createPayment+creator/same-day (P1.4)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/payment/:id/delete-payment-customer",
+  "module": "crm",
+  "perm": "deletePayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/payment/:id/delete-deposit-customer",
+  "module": "crm",
+  "perm": "extDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "no deleteDeposit; ext key"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/payment/:id/delete-refund-customer",
+  "module": "crm",
+  "perm": "extRefundDeposit",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/payment/:id/delete-refund-consignment",
+  "module": "crm",
+  "perm": "extPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "consignment refund delete; no dedicated key"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/payment/:id/delete-refund-order-plan",
+  "module": "crm",
+  "perm": "extRefundService",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used",
+  "module": "crm",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "order_service_used list"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/installment-of-customer",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/service-used-with-appointment",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/service-useds",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/service-used-of-customer",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/:id",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/:id/get-service-used-of-customer",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/order-service-used/:id/lock-service-used",
+  "module": "crm",
+  "perm": "lockServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "dedicated lock perm"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/appointment/get-by-customer",
+  "module": "crm",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "customer_detail aggregator"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/payment/get-payment-detail-for-customer",
+  "module": "crm",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "customer_detail aggregator"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/list-service-used-customer",
+  "module": "crm",
+  "perm": "viewServiceUsed",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "customer_detail aggregator"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/customer/:id/timeline-customer",
+  "module": "crm",
+  "perm": "viewCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "customer_detail aggregator"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/reminder",
+  "module": "crm",
+  "perm": "viewReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/reminder/reminder-of-customer",
+  "module": "crm",
+  "perm": "viewReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/reminder/:id",
+  "module": "crm",
+  "perm": "viewReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/reminder",
+  "module": "crm",
+  "perm": "createReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/reminder/:id",
+  "module": "crm",
+  "perm": "updateReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/reminder/:id",
+  "module": "crm",
+  "perm": "deleteReminder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/note/get-all-note",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "note handler has manual hasPermission"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/note/list-advise",
+  "module": "crm",
+  "perm": "viewNote",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/note/:id",
+  "module": "crm",
+  "perm": "viewNote",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/note",
+  "module": "crm",
+  "perm": "createNote",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/note/:id/pin-note",
+  "module": "crm",
+  "perm": "updateNote",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "pin action"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/note/:id",
+  "module": "crm",
+  "perm": "deleteNote,createNote",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/exchange-rate/currency",
+  "module": "crm",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "currency lookup; no catalog key; likely no perm gate needed | P3 whitelist (lookup/self-service, no gate)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/crm/tinymce/upload-image",
+  "module": "crm",
+  "perm": "createImage",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "tinymce image upload -> createImage"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/appointment-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/branch-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/source-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/group-source-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/province-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/country-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/category-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/interested-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/service-type-statistics",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue/by-date",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Doanh thu theo ngày thu tiền (port ERP accountant/report/payment-by-date)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue/by-date/export",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Export doanh thu theo ngày"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue/by-method",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Hình thức thanh toán (port ERP accountant/report/payment-by-method)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue/branch-receipts",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Phiếu thu theo chi nhánh, _export=1 xuất Excel (port ERP accountant/payment-branch/list)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/revenue/refund-deposit-service",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Giảm trừ doanh số (hoàn DV + hoàn cọc), _export=1 xuất Excel (port ERP accountant/payment/list-refund-deposit-service)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/debt/customer",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Công nợ theo khách hàng (list + _export=1)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/debt/order-plan",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Công nợ theo đơn hàng (list + _export=1)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/debt/installment",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Công nợ trả góp (list + _export=1)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/debt/service",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Công nợ theo dịch vụ (list + _export=1)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/staff/revenue-telesale",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Chi tiết doanh số tư vấn viên (order_revenue_telesale); _export=1 xuất Excel"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/staff/revenue-telesale/summary",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Tổng hợp doanh số theo tư vấn viên; _export=1 xuất Excel"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/staff/commission-telesale",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Chi tiết hoa hồng tư vấn viên (order_commission_telesale); _export=1 xuất Excel"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/staff/commission-telesale/summary",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Tổng hợp hoa hồng theo tư vấn viên; _export=1 xuất Excel"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/telesales-online",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/effective-advise",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/branch-appointment",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/appointment-consultation",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/order-service-used/report-service-used",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "standalone report endpoint outside /report group"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/report/compare-appointment",
+  "module": "crm",
+  "perm": "manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "inline dashboard method wired under /report"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/payment-in-month",
+  "module": "crm",
+  "perm": "viewPayment,manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "CRM dashboard; R-5: widget doanh thu — cần quyền xem tiền (viewPayment hoặc manageCrmReport), không còn mở cho viewAppointment/viewCustomer/viewPlanOrder"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/payment-today",
+  "module": "crm",
+  "perm": "viewPayment,manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "R-5: widget doanh thu — cần quyền xem tiền (viewPayment hoặc manageCrmReport), không còn mở cho viewAppointment/viewCustomer/viewPlanOrder"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/quick-starts",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/additional-stats",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/compare-appointment",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/appointment-accepted-stats",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/overview-appointment",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/report-statistics",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/status-customer-overview",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/report-customer-by-region",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/payment-branch-overview",
+  "module": "crm",
+  "perm": "viewPayment,manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "R-5: widget doanh thu — cần quyền xem tiền (viewPayment hoặc manageCrmReport), không còn mở cho viewAppointment/viewCustomer/viewPlanOrder"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/overview-service-type-accepted",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/overview-chart-source",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/overview-service-type-interest",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/service-used-statistics",
+  "module": "crm",
+  "perm": "viewPayment,manageCrmReport",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "R-5: widget doanh thu — cần quyền xem tiền (viewPayment hoặc manageCrmReport), không còn mở cho viewAppointment/viewCustomer/viewPlanOrder"
+ },
+ {
+  "method": "GET",
+  "path": "/api/crm/crm-dashboard/layout",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Bố cục dashboard CỦA CHÍNH user (session) — cùng quyền các khối dashboard không phải tiền"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/crm-dashboard/layout",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Bố cục dashboard CỦA CHÍNH user (session) — cùng quyền các khối dashboard không phải tiền"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/crm-dashboard/layout",
+  "module": "crm",
+  "perm": "viewAppointment,viewCustomer,viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Bố cục dashboard CỦA CHÍNH user (session) — cùng quyền các khối dashboard không phải tiền"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/crm/crm-dashboard/layout/brand-default",
+  "module": "crm",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Mặc định bố cục dashboard của thương hiệu — handler kiểm thêm manageConfig (HasAnyPermStrict)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/crm/crm-dashboard/layout/brand-default",
+  "module": "crm",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "Mặc định bố cục dashboard của thương hiệu — handler kiểm thêm manageConfig (HasAnyPermStrict)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-is-accepted",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-is-accepted/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/appointment-is-accepted",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/appointment-is-accepted/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/appointment-is-accepted/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-not-booked-reasons",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-not-booked-reasons/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/appointment-not-booked-reasons",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/appointment-not-booked-reasons/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/appointment-not-booked-reasons/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-reason",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-reason/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/appointment-reason",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/appointment-reason/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/appointment-reason/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/appointment-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/appointment-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/appointment-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/appointment-type/type-revenue-change",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/appointment-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/bank-account",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/bank-account/random",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/bank-account/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/bank-account",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/bank-account/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/bank-account/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/branch",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/branch/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/branch",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/branch/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/branch/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/branch/status-open-appointment",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/branch/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/business-profile",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): FE nạp cho MỌI user lúc đăng nhập (auth.state: tên/logo/timezone/tiền tệ thương hiệu)"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/business-profile",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/card-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/card-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/card-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/card-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/card-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/config-code",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/config-code/customer-code-option",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/config-code/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/config-code",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/config-code/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/config-code/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/control-field-in-table/:id/get-field-customer",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/control-field-in-table/:id/update-field-customer",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/control-field-in-table/:id/re-build",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-category",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-category/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/customer-category",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/customer-category/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/customer-category/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-rank-services",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-rank-services/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/customer-rank-services",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/customer-rank-services/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/customer-rank-services/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-ranks",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/customer-ranks/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/customer-ranks",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/customer-ranks/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/customer-ranks/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/ethnicity",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/ethnicity/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/ethnicity",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/ethnicity/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/ethnicity/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-country",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/group-country",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/group-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/group-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-local",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-local/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/group-local",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/group-local/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/group-local/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-source",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/group-source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/group-source",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/group-source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/group-source/check-online",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/group-source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/hr-department",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem | enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/hr-department/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem | enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/hr-department",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/hr-department/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/hr-department/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/job",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem | enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/job/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem | enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/job",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/job/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/job/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "HR setup config; no ConfigHr coarse key, mapped to ConfigSystem"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-country",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/location-country",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/location-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/location-country/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-province",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-province/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/location-province",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/location-province/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/location-province/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-ward",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-ward/get-by-province",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/location-ward/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/location-ward",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/location-ward/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/location-ward/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/note-template",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/note-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/note-template",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/note-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/note-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/options/get-options",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/options/get-option/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/options/update-option/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/payment-method",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/payment-method/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/payment-method",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/payment-method/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/payment-method/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/print-template",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/print-template/default",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): mẫu in mặc định — mọi màn in của nhân viên đều đọc"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/print-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/print-template",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/print-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/print-template/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service/load-service-by-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service/load-by-keyword",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service/load-list-service-by-keyword",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service/load-service",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/service/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service/import-service-from-excel",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/service/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/service-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service-type",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service-type/import-from-excel",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/service-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/service-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/service-type/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/setting",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/setting/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/setting",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/setting/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/setting/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/source",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/source/overview-chart-source",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/source",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/source/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/unit",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/unit/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "enforce=false (S-9 2026-10-18): danh mục chung (dropdown/IndexedDB/form nghiệp vụ của mọi nhân viên đọc), không chứa dữ liệu khách"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/unit",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/config/unit/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/unit/import-from-excel",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/config/unit/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/user-profile/get-user-profile",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "user self-profile config; coarse ConfigSystem | enforce=false (S-9 2026-10-18): hồ sơ CHÍNH MÌNH (self-service, handler chỉ trả hồ sơ của uid đăng nhập)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/user-profile/get-overview-user",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "user self-profile config; coarse ConfigSystem | enforce=false (S-9 2026-10-18): hồ sơ CHÍNH MÌNH (self-service, handler chỉ trả hồ sơ của uid đăng nhập)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/user-profile/:id",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": false,
+  "note": "user self-profile config; coarse ConfigSystem | enforce=false (S-9 2026-10-18): hồ sơ CHÍNH MÌNH (self-service, handler chỉ trả hồ sơ của uid đăng nhập)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/user-profile/switch-profile",
+  "module": "config",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "self-service: đổi CHI NHÁNH active của CHÍNH user (story-58/41: không còn chọn/đổi company) — ownership enforce trong SwitchProfile. Mọi user đã login đều được, KHÔNG gate perm admin (trước là extConfigSystem = lockout staff đa-cty khi enforce)."
+ },
+ {
+  "method": "GET",
+  "path": "/api/config/onboarding/status",
+  "module": "config",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "thiết lập ban đầu DB SaaS trắng — miễn gate company_active_required. Quyền kiểm TRONG handler: can_bootstrap = super-user (helpers.IsSuperUser) VÀ bảng company rỗng toàn bảng. Read-only, non-super nhận false (không 403)."
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/onboarding/bootstrap",
+  "module": "config",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "thiết lập ban đầu DB SaaS trắng — miễn gate company_active_required. Quyền kiểm TRONG handler: super-user (helpers.IsSuperUser) + company rỗng kiểm lại sau named lock trong tx; không super ⇒ 403. KHÔNG dùng kind role vì permission middleware đang audit-mode."
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/user-profile/update-user-profile",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "user self-profile config; coarse ConfigSystem"
+ },
+ {
+  "method": "POST",
+  "path": "/api/config/user-profile/create-avatar-user",
+  "module": "config",
+  "perm": "manageConfig",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "user self-profile config; coarse ConfigSystem"
+ },
+ {
+  "method": "GET",
+  "path": "/api/hr/user",
+  "module": "hr",
+  "perm": "viewUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/hr/user/get-all-users",
+  "module": "hr",
+  "perm": "viewUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "lookup all users"
+ },
+ {
+  "method": "GET",
+  "path": "/api/hr/user/:id",
+  "module": "hr",
+  "perm": "viewUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/hr/user",
+  "module": "hr",
+  "perm": "createUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/hr/user/:id",
+  "module": "hr",
+  "perm": "updateUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/hr/user/change-password",
+  "module": "hr",
+  "perm": "updateUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "change own/user password; no dedicated perm"
+ },
+ {
+  "method": "POST",
+  "path": "/api/hr/user/update-password",
+  "module": "hr",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "user TỰ đổi mật khẩu của CHÍNH MÌNH (nhóm authed/JWT): handler chỉ dùng uid từ phiên, không nhận id từ body, bắt kiểm mật khẩu cũ ⇒ không cần perm; phải mở cho nhân viên thường vì gate must_change_password (S-4/D-1) chỉ cho đi qua route này. Đặt mật khẩu cho người khác = change-password/reset-password (updateUser)."
+ },
+ {
+  "method": "PUT",
+  "path": "/api/hr/user/reset-password",
+  "module": "hr",
+  "perm": "updateUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "reset password"
+ },
+ {
+  "method": "POST",
+  "path": "/api/hr/user/import-users",
+  "module": "hr",
+  "perm": "extUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "import from excel"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/hr/user/:id",
+  "module": "hr",
+  "perm": "deleteUser",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/login",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "public login"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/login/2fa",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "public step-2 after requires_2fa"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/refresh-token",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "public refresh via cookie"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/logout",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "public logout, consumes refresh cookie"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/logout-all",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service, no perm gate (own sessions)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/clear-cache",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "S-11 2026-10-18: chỉ super-user (handler cũng tự gác IsSuperUser); xoá cache app, giữ key rate-limit/2FA"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/me",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service (current user)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/permission",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service (own permission list)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/devices",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service (own devices)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/devices/:id/revoke",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service, revoke own device"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/audit-log",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "handler gates IsSuperUser"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/2fa/status",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service (own 2FA status)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/2fa/setup",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service, setup own 2FA (no super gate)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/2fa/verify-setup",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service, verify own 2FA"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/2fa/disable",
+  "module": "auth",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "authed self-service, disable own 2FA"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/2fa/reset/:userId",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "admin reset another user's 2FA; handler gates IsSuperUser"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/child-role-for-dropdown",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "role dropdown"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/list-permission",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "list permissions by role (role editor)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/rbac/update-permission-with-role",
+  "module": "auth",
+  "perm": "updateRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "assign permissions to role"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/role",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "list roles"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/role/get-name",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "role detail"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/rbac/role/create-name",
+  "module": "auth",
+  "perm": "createRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "PUT",
+  "path": "/api/auth/rbac/role/update-name",
+  "module": "auth",
+  "perm": "updateRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/rbac/role/update-permission-with-role",
+  "module": "auth",
+  "perm": "updateRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "assign permissions to role (dup path under /role)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/auth/rbac/role/delete-name",
+  "module": "auth",
+  "perm": "deleteRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/permission",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "list permission catalog (consumed by role editor); no viewPermission key in catalog"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/permissions",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "alias of ListPermission"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/roles",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "alias of ListRole"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/rbac/permission/get-name",
+  "module": "auth",
+  "perm": "viewRole",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "permission detail; no viewPermission key"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/rbac/permission/create-name",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "manages permission catalog itself; no catalog key, super-admin only | P3 role:super (admin/meta)"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/auth/rbac/permission/update-name",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "manages permission catalog; no catalog key | P3 role:super (admin/meta)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/auth/rbac/permission/delete-name",
+  "module": "auth",
+  "perm": "role:super",
+  "kind": "role",
+  "enforce_phase1": true,
+  "note": "manages permission catalog; no catalog key | P3 role:super (admin/meta)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/history/history-export",
+  "module": "history",
+  "perm": "viewHistory",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "list export history"
+ },
+ {
+  "method": "GET",
+  "path": "/api/history/log",
+  "module": "history",
+  "perm": "viewHistory",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "list activity log"
+ },
+ {
+  "method": "POST",
+  "path": "/api/import/customer/from-excel",
+  "module": "import",
+  "perm": "extCustomer",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "import customers from excel"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/order-plan/:id",
+  "module": "print",
+  "perm": "viewPlanOrder",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print order-plan -> PlanOrder"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/payment/:id",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print payment receipt"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/multi-payment",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print multiple payments"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/deposit/:id",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print deposit"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/refund-consignment/:id",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print refund consignment; closest view key"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/refund-deposit/:id",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "same handler as refund-consignment"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/refund-service/:id",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": ""
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/reception-payment",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print reception payment; closest view key"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/appointment-byhour-list",
+  "module": "print",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print appointment list by hour"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/payment-in-day",
+  "module": "print",
+  "perm": "viewPayment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "print daily payments"
+ },
+ {
+  "method": "GET",
+  "path": "/api/print/appointment-byhour-list-export",
+  "module": "print",
+  "perm": "viewAppointment",
+  "kind": "perm",
+  "enforce_phase1": true,
+  "note": "excel export download (GET) wired in router.go"
+ },
+ {
+  "method": "GET",
+  "path": "/api/download/export/:name",
+  "module": "export",
+  "perm": "",
+  "kind": "public",
+  "enforce_phase1": false,
+  "note": "tải file export (S-2/O-6): nhóm authed (JWT); handler chỉ phục vụ file trong storage/export/<userID>/ của chính user đăng nhập, tên regex chặt ⇒ không cần perm riêng (quyền đã kiểm ở lúc tạo export)"
+ }
+]

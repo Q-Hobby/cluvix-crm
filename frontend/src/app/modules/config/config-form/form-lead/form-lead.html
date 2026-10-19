@@ -1,0 +1,117 @@
+<div class="card mb-0">
+  <div class="grid">
+    <div class="col-12 p-0 mb-0">
+      <form (ngSubmit)="onSave()" [formGroup]="form">
+        <ng-container [formArrayName]="'fields'">
+          <p-table
+            [filterDelay]="300"
+            [paginator]="false"
+            [rowHover]="true"
+            [scrollHeight]="'flex'"
+            [scrollable]="true"
+            [showLoader]="false"
+            [style]="{
+              width: '100%',
+              minHeight: 'calc(100vh - ' + plusMega + 'px)',
+              maxHeight: 'calc(100vh - ' + plusMega + 'px)',
+            }"
+            [value]="fieldsCtr.controls"
+            selectionMode="single"
+          >
+            <ng-template #caption>
+              <div class="flex items-center gap-2 justify-between">
+                <div class="p-toolbar-group-start">
+                  <b>{{ 'config.form_lead.title' | translate }}</b>
+                </div>
+                <div class="p-toolbar-group-end">
+                <div class="flex items-center justify-end">
+                  <button
+                    pButton
+                    (click)="reBuild($event)"
+                    *hasPerm="permission.permissionManageConfig"
+                    class="mr-2"
+                    severity="danger"
+                    type="button"
+                  ><span>{{ 'config.form_customer.reset' | translate }}</span></button>
+                  <button
+                    *hasPerm="permission.permissionManageConfig"
+                    class="mr-2"
+                    pButton
+                    severity="success"
+                    type="submit"
+                  >
+                    <i class="pi pi-check"></i>
+                    <span>{{ 'common.action.save' | translate }}</span>
+                  </button>
+                </div>
+                </div>
+              </div>
+            </ng-template>
+            <ng-template #header>
+              <tr>
+                <th class="w-[30px] min-w-[30px]">
+                  <div class="flex items-center justify-center w-full">#</div>
+                </th>
+                <th class="min-w-[120px]">{{ 'config.form_customer.field_name' | translate }}</th>
+                <th class="min-w-[120px]">
+                  {{ 'common.action.create' | translate }}
+                  <i
+                    class="pi pi-question-circle"
+                    [pTooltip]="'config.form_customer.tooltip_create' | translate"
+                  ></i>
+                </th>
+                <th class="min-w-[120px]">
+                  {{ 'common.action.update' | translate }}
+                  <i
+                    class="pi pi-question-circle"
+                    [pTooltip]="'config.form_customer.tooltip_update' | translate"
+                  ></i>
+                </th>
+                <th class="min-w-[120px]">
+                  {{ 'config.form_customer.col_no_update' | translate }}
+                  <i
+                    class="pi pi-question-circle"
+                    [pTooltip]="'config.form_customer.tooltip_no_update' | translate"
+                    tooltipPosition="left"
+                  ></i>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-fieldCtr let-index="rowIndex">
+              <tr [formGroupName]="index" class="vertical-align-top">
+                <td>
+                  <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+                </td>
+                <td>
+                  <span class="font-semibold text-primary">{{ fieldCtr.value['field_label'] }}</span>
+                </td>
+                <td>
+                  <p-checkbox
+                    [binary]="true"
+                    formControlName="create"
+                    inputId="required"
+                  ></p-checkbox>
+                </td>
+                <td>
+                  <p-checkbox
+                    [binary]="true"
+                    formControlName="update"
+                    inputId="required"
+                  ></p-checkbox>
+                </td>
+                <td>
+                  <p-checkbox
+                    (onChange)="onCheckboxChange($event, index)"
+                    [binary]="true"
+                    formControlName="edit"
+                    inputId="required"
+                  ></p-checkbox>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-container>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+Cluvix CRM
+Copyright (C) 2026 Cluvix Solutions
+
+This program is free software: you can redistribute it and/or modify it under the terms of
+the GNU Affero General Public License as published by the Free Software Foundation, version 3
+of the License only (SPDX-License-Identifier: AGPL-3.0-only).
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Affero General Public License for more details. You should have received a copy
+of the GNU Affero General Public License along with this program (see the LICENSE file in
+this repository). If not, see <https://www.gnu.org/licenses/>.
+
+Dual licensing: Cluvix CRM is licensed under the GNU AGPL-3.0-only, or, alternatively, under
+a commercial license from Cluvix Solutions. See COMMERCIAL-LICENSE.md for when a commercial
+license may be appropriate and how to request one.
+
+The names "Cluvix" and "Cluvix CRM" and the Cluvix logos are trademarks of Cluvix Solutions
+and are not licensed under the GNU AGPL. See TRADEMARK.md.
+
+--------------------------------------------------------------------------------
+
+Additional permission under GNU AGPL version 3 section 7
+
+If you modify this Program, or any covered work, by linking or combining it with
+
+  (a) the PrimeNG, PrimeUI and related libraries published by PrimeTek Informatics
+      (including the npm packages "primeng", "@primeuix/*" and "@primeicons/*"), or a
+      modified version of those libraries, distributed under the PrimeUI License; or
+
+  (b) a layout package derived from the "Ultima" PrimeNG application template published
+      by PrimeTek Informatics (the private layout package described in README.md), or a
+      modified version of such a package, licensed under the terms of the Ultima license,
+
+(each such library or package, together with its license terms, a "Non-AGPL Component"),
+containing parts covered by the terms of the PrimeUI License or the Ultima license, the
+licensors of this Program grant you additional permission to convey the resulting work.
+
+Corresponding Source for a non-source form of such a combination shall include the source
+code for the parts of this Program used as well as that of the covered work, but is NOT
+required to include the source code of any Non-AGPL Component, which remains governed solely
+by its own license terms. This additional permission does not relicense any Non-AGPL
+Component under the GNU AGPL, does not grant any right to use a Non-AGPL Component that you
+do not otherwise hold, and does not change the license of any other part of this Program,
+which remains licensed under the GNU AGPL-3.0-only.
+
+You may remove this additional permission from your copy, or from any part of it, as
+permitted by section 7 of the GNU AGPL. If you do, the resulting work may no longer be
+conveyable in combination with the Non-AGPL Components listed above.
+
+--------------------------------------------------------------------------------
+
+Third-party notice — Ultima template and PrimeUI license key
+
+This project's frontend layout is built on top of "Ultima", a commercial PrimeNG
+application template published by PrimeTek Informatics, and references a "PrimeUI" license
+key (community or commercial tier) issued by PrimeTek Informatics.
+
+Both the Ultima template source files and any PrimeUI license key are separate,
+independently-licensed third-party products. They are:
+
+  * NOT covered by the GNU AGPL-3.0 that applies to this repository (see the additional
+    permission above), and
+  * NOT included in this repository.
+
+See README.md for instructions on how to obtain your own copy of each.
+
+PrimeUI license key: any PrimeUI license key that Cluvix Solutions serves from its own CDN
+is owned by Cluvix Solutions and is NOT licensed or sublicensed to any third party, neither by
+the GNU AGPL nor by this NOTICE. This repository contains no such URL (the frontend field
+primeuiLicenseCdnUrl, read as PRIMEUI_LICENSE_CDN_URL in
+frontend/src/app/define/primeng.define.ts, is empty). If you deploy this software yourself, you
+must obtain and use your own PrimeUI license key, either as the build-time primeuiLicense or by
+setting primeuiLicenseCdnUrl to a location you control.
+
+--------------------------------------------------------------------------------
+
+Third-party notice — PrimeNG
+
+The frontend depends on the npm packages "primeng", "@primeuix/*" and "@primeicons/*"
+by PrimeTek Informatics, which are distributed under the PrimeUI License (not an
+open-source license). They are installed from npm, not redistributed in this repository,
+and are NOT covered by the GNU AGPL-3.0 that applies to this repository (see the additional
+permission above). Using them requires a PrimeUI license (Community or Commercial) that
+applies to you.
+
+--------------------------------------------------------------------------------
+
+Third-party notice — other dependencies
+
+All other Go and npm runtime dependencies are distributed under their own licenses, mostly
+permissive (MIT, BSD, ISC, Apache-2.0, BlueOak-1.0.0, 0BSD) or MPL-2.0
+(github.com/go-sql-driver/mysql). See each dependency's own license file. For binary
+releases of the backend, a THIRD_PARTY_NOTICES.txt file listing every bundled Go module and
+its license text is generated with `make third-party-notices` (backend/Makefile). The
+frontend production build emits 3rdpartylicenses.txt (Angular `extractLicenses`).
+
+--------------------------------------------------------------------------------
+
+Third-party notice — BMAD-METHOD
+
+Parts of the AI-assisted development workflow documentation in skill/bmad/ and
+skill/commands/ (personas, adversarial review and story state-machine conventions) are
+adapted from BMAD-METHOD (https://github.com/bmad-code-org/BMAD-METHOD), which is
+licensed under the MIT License reproduced below:
+
+MIT License
+
+Copyright (c) 2025 BMad Code, LLC
+
+This project incorporates contributions from the open source community.
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for contributor attribution.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+TRADEMARK NOTICE:
+BMad™, BMad Method™, and BMad Core™ are trademarks of BMad Code, LLC, covering all
+casings and variations (including BMAD, bmad, BMadMethod, BMAD-METHOD, etc.). The use of
+these trademarks in this software does not grant any rights to use the trademarks
+for any other purpose. See https://github.com/bmad-code-org/BMAD-METHOD/blob/main/TRADEMARK.md
+for detailed guidelines. (This TRADEMARK.md refers to BMad Code, LLC's file, not to this
+repository's TRADEMARK.md.)
+

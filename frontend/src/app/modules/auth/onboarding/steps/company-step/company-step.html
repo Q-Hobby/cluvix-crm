@@ -1,0 +1,251 @@
+<p-fluid class="grid grid-cols-12 gap-6 flex-wrap p-fluid">
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [autofocus]="true"
+        [class.ng-invalid]="isFieldInvalid(rootField.name!)"
+        class="ng-dirty"
+        [formField]="rootField.name!"
+        id="company-step-name"
+        pInputText
+        type="text"
+      />
+      <label for="company-step-name" [class.text-red-500]="isFieldInvalid(rootField.name!)">{{ 'config.company.company_name' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.name!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [class.ng-invalid]="isFieldInvalid(rootField.code!)"
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.code!"
+        id="company-step-code"
+        pInputText
+        type="text"
+      />
+      <label for="company-step-code" [class.text-red-500]="isFieldInvalid(rootField.code!)">{{ 'config.company.company_code' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.code!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <p-select
+        appendTo="body"
+        [class.ng-invalid]="isFieldInvalid(rootField.business_type_id!)"
+        [filter]="true"
+        [options]="BUSINESS_TYPE_OPTIONS"
+        [resetFilterOnHide]="true"
+        [showClear]="true"
+        class="ng-dirty"
+        filterBy="label"
+        [emptyFilterMessage]="'common.label.no_results' | translate"
+        [formField]="rootField.business_type_id!"
+        id="company-step-business-type"
+        inputId="company-step-business-type"
+        optionLabel="label"
+        optionValue="value"
+      ></p-select>
+      <label for="company-step-business-type" [class.text-red-500]="isFieldInvalid(rootField.business_type_id!)">{{ 'config.company.business_type' | translate }} *</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.business_type_id!)) {
+      <small class="text-red-500">{{ 'common.validation.required' | translate }}</small>
+    }
+  </div>
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <p-select
+        appendTo="body"
+        [filter]="true"
+        [options]="TIMEZONE_OPTIONS"
+        [resetFilterOnHide]="true"
+        [showClear]="false"
+        class="ng-dirty"
+        filterBy="label"
+        [emptyFilterMessage]="'common.label.no_results' | translate"
+        [formField]="$any(rootField.timezone!)"
+        id="company-step-timezone"
+        inputId="company-step-timezone"
+        optionLabel="label"
+        optionValue="value"
+      ></p-select>
+      <label for="company-step-timezone">{{ 'common.label.timezone' | translate }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="col-span-12 md:col-span-4 lg:col-span-4">
+    <p-floatlabel variant="on">
+      <p-select
+        appendTo="body"
+        [filter]="true"
+        [options]="CURRENCY_OPTIONS"
+        [resetFilterOnHide]="true"
+        [showClear]="false"
+        (onChange)="onCurrencyChange($event.value)"
+        class="ng-dirty"
+        filterBy="label"
+        [emptyFilterMessage]="'common.label.no_results' | translate"
+        [formField]="$any(rootField.currency!)"
+        id="company-step-currency"
+        inputId="company-step-currency"
+        optionLabel="label"
+        optionValue="value"
+      ></p-select>
+      <label for="company-step-currency">{{ 'common.label.currency' | translate }}</label>
+    </p-floatlabel>
+  </div>
+  <div class="col-span-12 md:col-span-4 lg:col-span-4">
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        [formField]="rootField.currency_symbol!"
+        id="company-step-currency-symbol"
+        type="text"
+        class="ng-dirty"
+      />
+      <label for="company-step-currency-symbol">{{ 'config.company.currency_symbol' | translate }}</label>
+    </p-floatlabel>
+  </div>
+  <div class="col-span-12 md:col-span-4 lg:col-span-4">
+    <p-floatlabel variant="on">
+      <input
+        pInputText
+        [formField]="rootField.currency_locale!"
+        id="company-step-currency-locale"
+        type="text"
+        class="ng-dirty"
+      />
+      <label for="company-step-currency-locale">{{ 'common.label.locale' | translate }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [class.ng-invalid]="isFieldInvalid(rootField.hotline!)"
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.hotline!"
+        id="company-step-hotline"
+        pInputText
+        type="text"
+      />
+      <label for="company-step-hotline">{{ 'config.company.hotline' | translate }}</label>
+    </p-floatlabel>
+  </div>
+  <div class="col-span-12 md:col-span-6 lg:col-span-6">
+    <p-floatlabel variant="on">
+      <input
+        [class.ng-invalid]="isFieldInvalid(rootField.email!)"
+        [pKeyFilter]="blockSpace"
+        class="ng-dirty"
+        [formField]="rootField.email!"
+        id="company-step-email"
+        pInputText
+        type="text"
+      />
+      <label for="company-step-email">{{ 'common.label.email' | translate }}</label>
+    </p-floatlabel>
+    @if (isFieldInvalid(rootField.email!)) {
+      <small class="text-red-500">{{ 'common.validation.email' | translate }}</small>
+    }
+  </div>
+
+  <div class="col-span-12">
+    <p-floatlabel variant="on">
+      <textarea
+        class="w-full"
+        [rows]="2"
+        pTextarea
+        [formField]="$any(rootField.address!)"
+        id="company-step-address"
+      ></textarea>
+      <label for="company-step-address">{{ 'common.label.address' | translate }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="col-span-12">
+    <label class="block mb-2 font-medium">{{ 'config.company.logo_label' | translate }}</label>
+    <p-fileupload
+      (onSelect)="onLogoSelect($event)"
+      (onRemove)="onLogoRemove()"
+      (onClear)="onLogoClear()"
+      [customUpload]="true"
+      [maxFileSize]="CONFIG_FILE_SELECT.CONFIG_FILE_MAX_SIZE"
+      [multiple]="false"
+      [showUploadButton]="false"
+      [showCancelButton]="false"
+      accept="image/*"
+      name="logoFile"
+    >
+      <ng-template #content let-files let-removeFileCallback="removeFileCallback">
+        <!--
+          AC4 — sau khi shell huỷ/tạo lại instance này (quay lại bước 1 rồi tiến tiếp), `files` nội
+          bộ của `p-fileupload` LUÔN rỗng (state riêng của component PrimeNG, không phải state của
+          `OnboardingCompanyStep`) dù `logoFile`/`logoPreviewUrl()` đã được effect() phục hồi —
+          PHẢI hiện theo `logoPreviewUrl()` khi `files` rỗng, KHÔNG chỉ theo `files` như
+          `CompanyForm` (form đó có nhánh tương đương `srcLogoUpload` cho ảnh đã lưu ở server; ở
+          đây "đã lưu" nghĩa là "còn trong draft trong bộ nhớ").
+        -->
+        @if ((files?.length ?? 0) > 0 || logoPreviewUrl()) {
+          <div class="flex items-center justify-between p-4 border border-surface rounded-lg min-h-32">
+            <div class="flex items-center gap-3">
+              <div class="relative w-20 h-20">
+                <img
+                  [src]="files?.length ? files[0].objectURL : logoPreviewUrl()"
+                  [alt]="files?.length ? files[0].name : (logoFile?.name ?? '')"
+                  class="w-20 h-20 object-cover rounded transition-opacity duration-200"
+                />
+              </div>
+              <div class="min-w-32">
+                <div class="font-medium">{{ files?.length ? files[0].name : logoFile?.name }}</div>
+                <div class="text-sm text-muted-color">
+                  {{ formatSize(files?.length ? files[0].size : (logoFile?.size ?? 0)) }}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              pButton
+              (click)="files?.length ? removeFileCallback(0) : onLogoRemove()"
+              [rounded]="true"
+              [text]="true"
+              [attr.aria-label]="'common.action.remove' | translate"
+              severity="danger"
+              [iconOnly]="true"
+            >
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+        }
+      </ng-template>
+      <ng-template #empty>
+        @if (!logoPreviewUrl()) {
+          <div class="flex flex-col items-center justify-center min-h-32">
+            <i class="pi pi-cloud-upload text-6xl text-muted-color mb-4"></i>
+            <p class="text-color mb-1">{{ 'config.company.drag_drop_logo' | translate }}</p>
+            <p class="text-sm text-muted-color">
+              {{ CONFIG_FILE_SELECT.CONFIG_FILE_ALLOW_EXT.join(', ').toUpperCase() }}
+              {{ 'common.label.max_size_prefix' | translate }}
+              {{ (CONFIG_FILE_SELECT.CONFIG_FILE_MAX_SIZE / 1024 / 1024).toFixed(0) }} MB
+            </p>
+          </div>
+        }
+      </ng-template>
+    </p-fileupload>
+    <div class="grid transition-[grid-template-rows] duration-200 ease-out"
+         [style.grid-template-rows]="logoError() ? '1fr' : '0fr'">
+      <div class="overflow-hidden">
+        <small class="text-red-500 mt-2 block">
+          <i class="pi pi-exclamation-circle mr-1"></i>
+          {{ logoError() }}
+        </small>
+      </div>
+    </div>
+  </div>
+</p-fluid>

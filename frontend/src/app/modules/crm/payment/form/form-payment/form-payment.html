@@ -1,0 +1,207 @@
+<form novalidate>
+    <div class="grid grid-cols-12 gap-8 pt-4">
+
+      <!-- LEFT SIDE: SERVICE LIST -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm h-full flex flex-col gap-4">
+
+          @if (isEditMode()) {
+            <!-- SERVICE NAME (READONLY) -->
+            <p-floatlabel variant="on">
+              <textarea
+                id="service"
+                pTextarea
+                class="w-full p-readonly service-textarea"
+                [disabled]="true"
+                [autoResize]="true"
+                rows="3"
+                [value]="model().serviceInfo?.name">
+              </textarea>
+              <label>{{ 'common.label.service' | translate }}</label>
+            </p-floatlabel>
+          } @else {
+
+            <!-- SERVICE LISTBOX -->
+            <div class="max-h-[350px]">
+              @if (loadingServiceList()) {
+                <div class="border border-surface rounded-md h-full flex flex-col">
+                  <div class="p-3 border-b border-surface">
+                    <div class="flex items-center gap-2 mb-2">
+                      <p-skeleton width="1rem" height="1rem"/>
+                      <p-skeleton width="7rem" height="1rem"/>
+                    </div>
+                    <p-skeleton height="2.5rem"/>
+                  </div>
+                  <div class="p-2 flex-1 overflow-hidden">
+                    @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+                      <div class="flex items-center gap-3 p-2">
+                        <p-skeleton width="1rem" height="1rem"/>
+                        <p-skeleton width="100%" height="1rem"/>
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <p-listbox #serviceUsed
+                           [options]="serviceUsedData()"
+                           [checkbox]="true"
+                           [multiple]="true"
+                           [filter]="true"
+                           [virtualScroll]="false"
+                           [striped]="true"
+                           optionLabel="label"
+                           optionValue="value"
+                           class="w-full rounded-lg shadow-inner ng-dirty payment-listbox"
+                           scrollHeight="290px"
+                           [emptyMessage]="'crm.payment.form.no_service' | translate"
+                           [formField]="$any(rootField.serviceUsed_idArr!)"
+                           (onChange)="changeService(serviceUsed.value)"
+                           (onSelectAllChange)="onSelectAllChange($event)"
+                           [metaKeySelection]="false"
+                />
+              }
+            </div>
+
+            <!-- ALLOCATION PREVIEW — thanh toán 1 phần cho nhiều dịch vụ (waterfall theo ngày lên đơn cũ→mới).
+                 LUÔN mount + transition grid-template-rows 0fr↔1fr (không @if trần) — tránh content layout
+                 shift khi preview đổi số dòng lúc user đang gõ Amount ở cột bên cạnh (B.19). -->
+            <div class="grid transition-[grid-template-rows] duration-200 ease-out"
+                 [style.grid-template-rows]="allocationPreview().length > 0 ? '1fr' : '0fr'">
+              <div class="overflow-hidden">
+                <div class="border border-surface rounded-md p-3 flex flex-col gap-2 bg-surface-50">
+                  <span class="text-sm font-medium text-color-secondary flex items-center gap-1.5">
+                    <i class="pi pi-info-circle text-sm" aria-hidden="true"></i>
+                    {{ 'crm.payment.form.allocation_preview_title' | translate }}
+                  </span>
+                  @for (item of allocationPreview(); track item.id) {
+                    <div class="flex items-center justify-between gap-2 text-sm">
+                      <span class="min-w-0 truncate">{{ item.label }}</span>
+                      <span class="font-medium shrink-0" [class.text-primary]="item.pay < item.due">
+                        {{ item.pay | currencyFormat }}
+                        @if (item.pay < item.due) {
+                          <span class="text-color-secondary font-normal">/ {{ item.due | currencyFormat }}</span>
+                        }
+                      </span>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="grid grid-cols-12 gap-6">
+
+          <!-- AMOUNT -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-inputgroup>
+              <p-floatlabel variant="on">
+                <p-inputnumber
+                  [formField]="$any(rootField.amount!)"
+                  id="amount"
+                  [min]="0"
+                  [max]="maxAmount"
+                  [disabled]="soTien"
+                  [title]="maxAmount | numberFormat"
+                  class="w-full ng-dirty"
+                  [class.ng-invalid]="isFieldInvalid(rootField.amount!)"
+                ></p-inputnumber>
+                <label>{{ 'common.label.amount' | translate }} @if (!soTien) {
+                  <span>({{ 'crm.payment.form.amount_max' | translate: { max: (maxAmount | currencyFormat) } }})</span>
+                }</label>
+              </p-floatlabel>
+
+              @if (!soTien) {
+                <button pButton (click)="maxPayment()" type="button"><span>{{ 'crm.payment.form.max' | translate }}</span></button>
+              }
+            </p-inputgroup>
+          </div>
+
+          <!-- DATE -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-floatlabel variant="on">
+              <p-datepicker
+                [formField]="$any(rootField.payment_time!)"
+                id="payment_time"
+                [minDate]="minPaymentTime"
+                [maxDate]="maxPaymentTime"
+                [showTime]="true"
+                appendTo="body"
+                dateFormat="dd/mm/yy"
+                class="w-full ng-dirty"
+                [class.ng-invalid]="isFieldInvalid(rootField.payment_time!)"
+              ></p-datepicker>
+              <label for="payment_time">{{ 'common.label.collection_date' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- BRANCH -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-floatlabel variant="on">
+              <app-branch-form-control
+                [formField]="$any(rootField.branch_id!)"
+                [activeOnly]="true"
+                class="w-full ng-dirty"
+                [class.ng-invalid]="isFieldInvalid(rootField.branch_id!)"
+              ></app-branch-form-control>
+              <label>{{ 'common.label.branch' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- PAYMENT METHOD -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-floatlabel variant="on">
+              <app-payment-method-autocomplete-form-control
+                [formField]="$any(rootField.method!)"
+                class="w-full ng-dirty"
+                [class.ng-invalid]="isFieldInvalid(rootField.method!)"
+              ></app-payment-method-autocomplete-form-control>
+              <label>{{ 'common.label.payment_method' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- PAYMENT TYPE -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-floatlabel variant="on">
+              <app-payment-type-autocomplete-form-control
+                [formField]="$any(rootField.card_type_id!)"
+                [paymentMethodId]="rootField.method!().value()"
+                class="w-full ng-dirty"
+                [class.ng-invalid]="isFieldInvalid(rootField.card_type_id!)"
+              ></app-payment-type-autocomplete-form-control>
+              <!-- Label cũ trùng hệt ô "Hình thức thanh toán" bên cạnh → không phân biệt được ô nào bắt buộc. -->
+              <label>{{ 'common.label.card_type' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- INVOICE -->
+          <div class="col-span-12 lg:col-span-6">
+            <p-floatlabel variant="on">
+              <input pInputText [formField]="$any(rootField.bank_code!)" class="w-full"/>
+              <label>{{ 'common.label.invoice' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+          <!-- NOTE -->
+          <div class="col-span-12">
+            <p-floatlabel variant="on">
+              <textarea pTextarea rows="4" class="w-full" [formField]="$any(rootField.note!)"></textarea>
+              <label>{{ 'common.label.content' | translate }}</label>
+            </p-floatlabel>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <app-dialog-footer
+      [isSubmitting]="isSubmitting()"
+      (cancelForm)="closeForm($event)"
+      (saveForm)="checkBeforeSubmit()"
+    />
+  </form>

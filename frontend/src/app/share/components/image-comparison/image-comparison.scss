@@ -1,0 +1,138 @@
+$sliderSize: 40px;
+
+.comparison {
+  &__wrapper {
+    background: #dedede;
+    position: relative;
+    line-height: 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  &__stage {
+    display: inline-block;
+    position: relative;
+  }
+
+  &__slider {
+    background: transparent;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    width: $sliderSize;
+    height: $sliderSize;
+    margin: -#{calc($sliderSize/2)} 0 0 -#{calc($sliderSize/2)};
+    opacity: 0.7;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    cursor: ew-resize;
+
+    &:before,
+    &:after {
+      content: ' ';
+      display: block;
+      width: 2px;
+      background: #fff;
+      height: 9999px;
+      position: absolute;
+      left: 50%;
+      margin-left: -1px;
+    }
+
+    &:before {
+      bottom: 50%;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgb(12 12 12);
+    }
+
+    &:after {
+      top: 50%;
+      margin-top: 20px;
+      box-shadow: 0 0 5px rgb(12 12 12);
+    }
+
+    &-left-arrow,
+    &-right-arrow {
+      width: 0;
+      height: 0;
+      border: 6px inset transparent;
+      position: absolute;
+      top: 50%;
+      margin-top: -6px;
+    }
+
+    &-left-arrow {
+      border-right: 6px solid #fff;
+      left: 50%;
+      margin-left: -18px;
+    }
+
+    &-right-arrow {
+      border-left: 6px solid #fff;
+      right: 50%;
+      margin-right: -18px;
+    }
+  }
+
+  &__container {
+    height: auto;
+    max-width: 100%;
+    overflow: hidden;
+    width: auto;
+
+    &.fixed-image img {
+      height: auto;
+      max-width: 100%;
+    }
+
+    &.slide-image {
+      //border-right: 2px solid rgba(black, .5);
+      //height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+
+      img {
+        height: 100%;
+        width: auto;
+      }
+    }
+
+    img {
+      transition: all 0.4s ease-in-out;
+
+      &.h-0 {
+        height: 0;
+      }
+    }
+
+    .label-position {
+      position: absolute;
+      top: 0;
+      margin: 1rem;
+      font-size: 1em;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      background: #121212;
+      color: #fff;
+      pointer-events: none;
+      border-radius: 0.2rem;
+      padding: 15px 10px;
+
+      &.label-before {
+        left: 0;
+      }
+
+      &.label-after {
+        right: 0;
+      }
+    }
+  }
+
+  &__image {
+    display: block;
+    vertical-align: middle;
+  }
+}

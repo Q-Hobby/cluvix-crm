@@ -1,0 +1,26 @@
+<p-dialog
+  [(visible)]="versionCheckService.dialogVisible"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [draggable]="false"
+  [modal]="true"
+  [resizable]="false"
+  [style]="{ width: '50rem' }"
+  [header]="'layout.update_dialog.header' | translate"
+>
+  <div class="flex flex-wrap border-top-1 border border-gray-300 pt-2">
+    <p class="text-2xl line-height-3 m-0 p-2 w-full">
+      {{ 'layout.update_dialog.body' | translate }}
+    </p>
+  </div>
+  <div class="p-dialog-footer">
+    <hr/>
+    <button type="button" (click)="versionCheckService.dialogVisible = false" pButton>
+      <i class="pi pi-times"></i>
+      <span>{{ 'common.action.cancel' | translate }}</span>
+    </button>
+    <button type="button" (click)="update()" pButton>
+      <i class="pi pi-check"></i>
+      <span>{{ 'common.action.update' | translate }}</span>
+    </button>
+  </div>
+</p-dialog>

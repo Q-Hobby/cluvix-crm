@@ -1,0 +1,171 @@
+<p-table
+  #dt
+  (onEditComplete)="onCellEditComplete($event)"
+  (onEditInit)="onCellEditInit($event)"
+  (onLazyLoad)="loadRecords($event)"
+  (selectionChange)="onSelectionChange($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [selection]="selectedRecords()"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+  editMode="cell"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div
+      class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+      <div class="flex items-center gap-2">
+        <div class="w-1 h-8 bg-blue-500 rounded-full"></div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-800 m-0">{{ 'common.label.system_configuration' | translate }}</h3>
+          <p class="text-xs text-gray-500 m-0 mt-0.5">{{ 'config.setting.subtitle' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="w-[60px] min-w-[60px] bg-gray-50">
+        <div class="flex items-center justify-center w-full font-semibold text-gray-700">#</div>
+      </th>
+      <th class="min-w-[220px] w-[220px] bg-gray-50">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-cog text-blue-600"></i>
+          <span class="font-semibold text-gray-700">{{ 'common.label.configuration' | translate }}</span>
+        </div>
+      </th>
+      <th class="min-w-[170px] w-[170px] bg-gray-50">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-key text-indigo-600"></i>
+          <span class="font-semibold text-gray-700">{{ 'config.setting.key_col' | translate }}</span>
+        </div>
+      </th>
+      <th class="min-w-[400px] bg-gray-50">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-file-edit text-green-600"></i>
+          <span class="font-semibold text-gray-700">{{ 'common.label.value' | translate }}</span>
+          <span
+            class="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-50 border border-yellow-200 rounded-full text-[0.7692rem] text-yellow-700">
+                <i class="pi pi-info-circle"></i>
+                {{ 'config.setting.click_to_edit' | translate }}
+              </span>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr [class.tr-disabled]="!model.status" class="vertical-align-top hover:bg-blue-50/50 transition-colors">
+      <td class="border-b border-gray-100">
+        <div class="flex items-center justify-center w-full">
+              <span
+                class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center text-sm">
+                {{ index + 1 }}
+              </span>
+        </div>
+      </td>
+      <td [appCopyText]="model.name" class="border-b border-gray-100">
+        <div class="flex items-center gap-2 group cursor-pointer">
+          <div
+            class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-cog text-white text-xs"></i>
+          </div>
+          <span class="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">{{ model.name }}</span>
+        </div>
+      </td>
+      <td class="border-b border-gray-100">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 rounded-lg">
+          <i class="pi pi-key text-indigo-600 text-xs"></i>
+          <code class="font-mono font-semibold text-gray-800 text-sm">{{ model.key }}</code>
+        </div>
+      </td>
+      <td
+        [pEditableColumnDisabled]="checkUpdatePermission()"
+        [pEditableColumnRowIndex]="index"
+        [pEditableColumn]="model"
+        class="max-w-[400px] border-b border-gray-100"
+        pEditableColumnField="value">
+        <p-celleditor>
+          <ng-template #input>
+            <div class="relative">
+                                  <textarea
+                                    [(ngModel)]="model.value"
+                                    [rows]="3"
+                                    class="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                    [placeholder]="'config.setting.placeholder_value' | translate"
+                                  ></textarea>
+              <div class="absolute top-2 right-2 bg-blue-100 px-2 py-1 rounded text-xs text-blue-700">
+                <i class="pi pi-pencil mr-1"></i>
+                {{ 'config.setting.editing' | translate }}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #output>
+            <div class="group relative p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+              <div class="break-all text-gray-700">
+                {{ model.value }}
+              </div>
+              <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span class="text-xs text-blue-600 font-medium flex items-center gap-1">
+                                          <i class="pi pi-pencil"></i>
+                                          {{ 'config.setting.edit_inline' | translate }}
+                                        </span>
+              </div>
+            </div>
+          </ng-template>
+        </p-celleditor>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[60px]">
+        @for (_ of colsIt(); track $index) {
+          <td class="border-b border-gray-100">
+            <p-skeleton height="2rem"></p-skeleton>
+          </td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="4" class="text-center py-12">
+        <div class="flex flex-col items-center justify-center">
+          <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <i class="pi pi-inbox text-4xl text-gray-400"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-700 mb-1">{{ 'config.setting.no_data_title' | translate }}</h3>
+          <p class="text-gray-500 text-sm">{{ 'config.setting.no_data_desc' | translate }}</p>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

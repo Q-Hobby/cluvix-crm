@@ -1,0 +1,211 @@
+<p-table
+  #dt
+  (onLazyLoad)="loadRecords($event)"
+  [columns]="cols()"
+  [filterDelay]="0"
+  [filters]="initialFilters()"
+  [first]="first()"
+  [lazy]="true"
+  [lazyLoadOnInit]="false"
+  [loading]="showSkeleton()"
+  [paginator]="true"
+  [rowHover]="true"
+  [rowsPerPageOptions]="isDesktop() ? perPageOptionsTable : []"
+  [rows]="perPage()"
+  [scrollHeight]="'flex'"
+  [scrollable]="true"
+  [showCurrentPageReport]="true"
+  [showLoader]="false"
+  [stripedRows]="true"
+  [style]="{ width: '100%' }"
+  appFillHeight="page"
+  [totalRecords]="paginationInfo()?.totalCount ?? 0"
+  [value]="models()"
+  [currentPageReportTemplate]="isDesktop() ? ('common.page.current_report' | translate) : ''"
+  dataKey="id"
+>
+  <ng-template #caption>
+    <!-- Chiều cao cố định 2px: bản thân thanh báo tải lại không được làm layout nhảy -->
+    <div class="h-[2px] mb-1">
+      @if (refreshing()) {
+        <p-progressbar [showValue]="false" [style]="{ height: '2px' }" mode="indeterminate"></p-progressbar>
+      }
+    </div>
+    <div class="flex items-center gap-2 justify-between">
+      <div class="p-toolbar-group-start">
+        <button pButton
+          [disabled]="true"
+          pTooltip="Tính năng đang phát triển"
+          tooltipPosition="bottom"
+          type="button"
+        ><i class="pi pi-plus"></i><span>{{ isDesktop() ? ('common.action.create' | translate) : '' }}</span></button>
+      </div>
+      <div class="p-toolbar-group-end">
+        @if (rfFilterModel) {
+          <form [formGroup]="rfFilterModel" novalidate>
+            <div class="flex items-center gap-2 w-full">
+              @if (isDesktop()) {
+                <div class="flex-grow">
+                  <p-floatlabel variant="on">
+                    <p-iconfield>
+                      <p-inputicon class="pi pi-search"/>
+                      <input
+                        autocomplete="off"
+                        formControlName="_keyword"
+                        id="search_keyword"
+                        pInputText
+                        type="text"
+                      />
+                    </p-iconfield>
+                    <label for="search_keyword">{{ 'common.label.keyword' | translate }}</label>
+                  </p-floatlabel>
+                </div>
+              }
+              <button pButton
+                (click)="colsTpl.toggle($event)"
+                [pTooltip]="'common.action.view_more' | translate"
+                [attr.aria-label]="'common.action.view_more' | translate"
+                tooltipPosition="top"
+                type="button"
+                [iconOnly]="true"
+              ><i class="pi pi-th-large"></i></button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="w-[30px] min-w-[30px]">
+        <div class="flex items-center justify-center w-full">#</div>
+      </th>
+      @if (isColVisible('id')()) {
+        <th class="w-[60px] min-w-[60px]">ID</th>
+      }
+      @if (isColVisible('name')()) {
+        <th class="min-w-[220px]">{{ 'common.label.name' | translate }}</th>
+      }
+      @if (isColVisible('template_type')()) {
+        <th class="min-w-[160px]">{{ 'config.nav.medical_form.template_type' | translate }}</th>
+      }
+      @if (isColVisible('branch_id')()) {
+        <th class="min-w-[140px]">{{ 'common.label.branch' | translate }}</th>
+      }
+      @if (isColVisible('is_default')()) {
+        <th class="min-w-[100px]">{{ 'common.label.default' | translate }}</th>
+      }
+      @if (isColVisible('is_active')()) {
+        <th class="min-w-[100px]">{{ 'common.label.status' | translate }}</th>
+      }
+      @if (isColVisible('created_at')()) {
+        <th class="min-w-[140px]">{{ 'common.label.created_at' | translate }}</th>
+      }
+      <th class="w-[100px] min-w-[100px]">#</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-index="rowIndex" let-model>
+    <tr>
+      <td>
+        <div class="flex items-center justify-center w-full">{{ index + 1 }}</div>
+      </td>
+      @if (isColVisible('id')()) {
+        <td>{{ model.id }}</td>
+      }
+      @if (isColVisible('name')()) {
+        <td>
+          <span class="font-semibold text-[#7B3F9E]">{{ model.name || '—' }}</span>
+          @if (model.description) {
+            <p class="text-xs text-gray-400 mt-0.5">{{ model.description }}</p>
+          }
+        </td>
+      }
+      @if (isColVisible('template_type')()) {
+        <td>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-700">
+            {{ model.templateTypeLabel || model.template_type || '—' }}
+          </span>
+        </td>
+      }
+      @if (isColVisible('branch_id')()) {
+        <td>{{ model.branchLabel || (model.branch_id === 0 ? ('common.label.all_branches' | translate) : '—') }}</td>
+      }
+      @if (isColVisible('is_default')()) {
+        <td>
+          @if (model.is_default) {
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
+              <i class="pi pi-check-circle"></i> {{ 'common.label.yes' | translate }}
+            </span>
+          } @else {
+            <span class="text-gray-400 text-xs">—</span>
+          }
+        </td>
+      }
+      @if (isColVisible('is_active')()) {
+        <td>
+          @if (model.is_active === 1) {
+            <p-tag severity="success" [value]="'common.label.active' | translate" [rounded]="true"/>
+          } @else {
+            <p-tag severity="secondary" [value]="'common.label.inactive' | translate" [rounded]="true"/>
+          }
+        </td>
+      }
+      @if (isColVisible('created_at')()) {
+        <td>{{ model.created_atFormatted || '—' }}</td>
+      }
+      <td>
+        <div class="flex justify-center gap-1">
+          <button pButton
+            [disabled]="true"
+            [attr.aria-label]="'common.action.edit' | translate"
+            pTooltip="Tính năng đang phát triển"
+            severity="success"
+            size="small"
+            tooltipPosition="top"
+            type="button"
+            [iconOnly]="true"
+          ><i class="pi pi-pencil"></i></button>
+          <button pButton
+            (click)="deleteRecord($event, model.id)"
+            [attr.aria-label]="'common.action.delete' | translate"
+            [pTooltip]="'common.action.delete' | translate"
+            severity="danger"
+            size="small"
+            tooltipPosition="top"
+            type="button"
+            [iconOnly]="true"
+          ><i class="pi pi-trash"></i></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #loadingbody>
+    @for (_ of rowsIt(); track $index) {
+      <tr class="h-[46px]">
+        @for (_ of colsIt(); track $index) {
+          <td><p-skeleton/></td>
+        }
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="30">
+        <app-empty-message/>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-popover #colsTpl>
+  <app-column-toggle
+    (changeToggle)="selectedColumns.set($event); saveSelectedColumns()"
+    [columns]="displayCols"
+    [selectedCols]="selectedColumns"
+  />
+</p-popover>
+

@@ -1,0 +1,2183 @@
+{
+  "define": {
+    "commission_type": {
+      "amount": "Số tiền"
+    },
+    "discount_type": {
+      "vnd": "VND"
+    },
+    "payment_for": {
+      "order": "Thanh toán dịch vụ",
+      "consignment_refund": "Hoàn ký gửi"
+    },
+    "reminder": {
+      "planed": "Lên kế hoạch",
+      "done": "Đã thực hiện",
+      "type": {
+        "chat_fb": "Chat FB",
+        "task": "Công việc",
+        "meeting": "Gặp mặt"
+      }
+    },
+    "payment": {
+      "type_deposit": {
+        "promotion": "Cọc khuyến mại",
+        "consignment": "Cọc ký gửi"
+      }
+    },
+    "user_status": {
+      "pending": "Chờ duyệt"
+    },
+    "order_plan_type": {
+      "new": "Đơn hàng mới",
+      "old": "Đơn hàng cũ"
+    },
+    "payment_status": {
+      "refunded": "Hoàn trả dịch vụ"
+    },
+    "unit_category": {
+      "service": "Đơn vị dịch vụ"
+    },
+    "customer_status": {
+      "stop_care": "Dừng chăm sóc",
+      "old_system": "Phần mềm cũ",
+      "appointment": "Đặt hẹn",
+      "cancel_appointment": "Huỷ hẹn",
+      "complaint_resolved": "Hoàn thành khiếu nại",
+      "collaborator": "Cộng tác viên",
+      "zalo": "Khách Zalo"
+    },
+    "customer_type": {
+      "old": "Khách hàng cũ"
+    },
+    "customer_connect": {
+      "disconnected": "Chưa kết nối"
+    },
+    "customer_rank": {
+      "diamond": "Kim Cương",
+      "titan": "Titan"
+    },
+    "appointment": {
+      "confirm_status": {
+        "not": "Chưa xác nhận",
+        "ok": "Xác nhận đến",
+        "not_ok": "Xác nhận không đến"
+      },
+      "status": {
+        "not_checkin": "Chưa đến",
+        "checked_out": "Ra về",
+        "advise": "Đang tư vấn"
+      },
+      "schedule_time": {
+        "half_hour": "30 phút",
+        "one_hour": "1 giờ",
+        "one_and_half_hour": "1 giờ 30 phút",
+        "two_hour": "2 giờ",
+        "three_hour": "3 giờ"
+      },
+      "book_type": {
+        "advance": "Đặt trước"
+      }
+    },
+    "note": {
+      "template_type": {
+        "check_up": "Tư vấn"
+      }
+    },
+    "service": {
+      "category": {
+        "product": "Sản phẩm",
+        "treatment": "Gói dịch vụ",
+        "fee": "Phí tư vấn"
+      },
+      "for": {
+        "adult": "Người lớn",
+        "child": "Trẻ em"
+      }
+    },
+    "permission": {
+      "action": {
+        "list": "Danh sách",
+        "extend": "Mở rộng",
+        "manage": "Quản lý"
+      },
+      "module": {
+        "order_plan": "Đơn hàng - Dịch vụ",
+        "customer_image": "Quản lý hình ảnh khách hàng",
+        "lock_service_used": "Khoá dịch vụ đã dùng",
+        "search_customer_global": "Tìm kiếm khách hàng Global",
+        "reminder": "Nhắc nhở",
+        "crm_report": "Báo cáo CRM",
+        "refund_service": "Hoàn dịch vụ",
+        "service_used": "Dịch vụ đã dùng"
+      }
+    },
+    "tag_severity": {
+      "secondary": "Phụ",
+      "danger": "Nguy hiểm",
+      "contrast": "Tương phản"
+    }
+  },
+  "config": {
+    "business_profile": {
+      "title": "Hồ sơ doanh nghiệp",
+      "update_success": "Cập nhật hồ sơ doanh nghiệp thành công"
+    },
+    "service_form": {
+      "installment": {
+        "p3": "3 kỳ",
+        "p6": "6 kỳ",
+        "p9": "9 kỳ",
+        "p12": "12 kỳ",
+        "p15": "15 kỳ",
+        "p18": "18 kỳ",
+        "p24": "24 kỳ"
+      }
+    },
+    "note_template": {
+      "name": "Tên mẫu template",
+      "content": "Nội dung mẫu"
+    },
+    "card_type": {
+      "extra_description": "Mô tả thêm"
+    },
+    "nav": {
+      "system": {
+        "task_options": "Lựa chọn tác vụ",
+        "constants": "Hằng số",
+        "setting": "Setting"
+      },
+      "appointment": {
+        "consultation_status": "Trạng thái tư vấn hẹn",
+        "rejection_reason": "Lí do hẹn không đồng ý"
+      },
+      "account": {
+        "payment_method": "Phương thức thanh toán",
+        "payment_form": "Hình thức thanh toán",
+        "bank_account": "Tài khoản ngân hàng"
+      },
+      "custom_form": {
+        "customer": "Form Customer",
+        "lead": "Form Lead"
+      },
+      "marketing": {
+        "note_template": "Mẫu ghi chú",
+        "customer_job": "Nghề nghiệp",
+        "customer_ethnicity": "Dân tộc"
+      },
+      "customer": {
+        "rank_services": "Giảm giá theo hạng"
+      },
+      "medical_form": {
+        "template_type": "Loại phiếu"
+      },
+      "panel": {
+        "system": "Hệ thống",
+        "customize_form": "Customize Form",
+        "location": "Location",
+        "medical_form": "Phiếu mẫu"
+      }
+    },
+    "options": {
+      "business_type": {
+        "beauty_center": "Trung tâm thẩm mỹ",
+        "hospital_private": "Bệnh viện tư nhân",
+        "medical_center": "Trung tâm dịch vụ",
+        "private": "Tư nhân",
+        "public": "Công lập",
+        "spa": "Spa",
+        "clinic_special": "Cơ sở chuyên biệt"
+      },
+      "locale_language": {
+        "vi": "Tiếng việt",
+        "en": "English"
+      },
+      "ward_type": {
+        "ward": "Phường",
+        "commune": "Xã"
+      },
+      "tooth_type": {
+        "permanent": "Cố định",
+        "milk": "Tạm thời"
+      },
+      "tax_type": {
+        "none": "KCT"
+      },
+      "province_type": {
+        "city": "Thành Phố",
+        "province": "Tỉnh"
+      },
+      "kpi_category": {
+        "month": "Mục tiêu tháng",
+        "person": "Mục tiêu cá nhân",
+        "group": "Mục tiêu nhóm",
+        "other": "Mục tiêu khác",
+        "year": "Mục tiêu năm"
+      },
+      "currency": {
+        "vnd": "Việt nam đồng",
+        "usd": "Dollar mỹ",
+        "eur": "Euro",
+        "gbp": "Bảng anh",
+        "rub": "Ruble nga",
+        "cad": "Dollar canada",
+        "aud": "Dollar úc",
+        "cny": "Nhân dân tệ",
+        "jpy": "Yên nhật",
+        "sgd": "Dollar Sing",
+        "btc": "Bitcoin",
+        "eth": "Ethereum",
+        "xau": "Cây vàng"
+      }
+    },
+    "group_source": {
+      "other_source": "Nguồn khác"
+    },
+    "config_clinic": {
+      "service": {
+        "required_fields_tooltip": "Có trường bắt buộc chưa điền",
+        "service_name": "Dịch vụ/Sản phẩm/Gói dịch vụ",
+        "num_treatment_unlimited": "Giá trị -1: Không giới hạn",
+        "min_price": "Giá thấp nhất",
+        "max_price": "Giá cao nhất",
+        "telesale_commission_tooltip": "Áp dụng cho tư vấn viên phụ trách đơn hàng — tính tiền khi khách thanh toán, chia đều nếu có nhiều người phụ trách. Đổi rate ở đây không ảnh hưởng đơn đã lên trước đó. Xem chi tiết tại báo cáo Kế toán > Hoa hồng tư vấn viên.",
+        "note_min_max": "- Thiết lập khoảng \"Giá thấp nhất\" và \"Giá cao nhất\" khác nhau thì khi tạo đơn hàng, giá dịch vụ sẽ được chọn trong giới hạn này.",
+        "note_num_treatment": "- Tiến trình sử dụng thường có 1 buổi, nhưng với danh mục bạn chọn là Gói dịch vụ thì số buổi thường sẽ nhiều hơn 1",
+        "customer_old": "Khách cũ",
+        "customer_new": "Khách mới",
+        "vnd_or_percent_tooltip": "VND/ %",
+        "commission_consulting_section": "Hoa hồng tư vấn (chốt lúc lên đơn)",
+        "select_periods": "Chọn kỳ hạn",
+        "allowed_periods": "Các kỳ hạn cho phép",
+        "min_deposit_percent": "Thanh toán tối thiểu (%)",
+        "interest_rate": "Lãi suất (%/năm)",
+        "period_interval_days": "Khoảng cách giữa các kỳ",
+        "days_suffix": " ngày",
+        "installment_note_title": "Ghi chú về trả góp",
+        "installment_note_periods": "- Các kỳ hạn cho phép: Chọn các kỳ hạn mà khách hàng có thể trả góp (ví dụ: 3 kỳ, 6 kỳ, 12 kỳ). Khi tạo đơn hàng, nhân viên sẽ chọn 1 trong các kỳ này.",
+        "installment_note_min_deposit": "- Thanh toán tối thiểu: Tỷ lệ % khách hàng phải trả trước khi bắt đầu trả góp. Ví dụ: 30% nghĩa là với dịch vụ 30 triệu, khách phải thanh toán tối thiểu 9 triệu.",
+        "installment_note_interest": "- Lãi suất: Lãi suất trả góp tính theo %/năm. Để 0% nếu không tính lãi. Ví dụ: 5% nghĩa là khách hàng sẽ trả thêm 5% giá trị còn lại mỗi năm.",
+        "installment_warning": "⚠️ Lưu ý: Chỉ bật trả góp cho các dịch vụ/gói dịch vụ có giá trị cao (từ 10 triệu trở lên) và cần có hợp đồng ràng buộc với khách hàng.",
+        "time_reminder_tooltip": "Là khoảng thời gian có thể chăm sóc lại để xem khách hàng có làm thêm dịch vụ khác không",
+        "in_days": "* Tính bằng ngày",
+        "note_time_reminder": "- \"Tái khai thác\": Số ngày tối thiểu kể từ lần cuối khách hàng mua hoặc sử dụng dịch vụ, sau đó có thể tư vấn hoặc bán lại dịch vụ/sản phẩm/gói dịch vụ này cho khách hàng.",
+        "service_code_old": "Mã cũ",
+        "after_n_days": "Sau {{days}} ngày",
+        "clone_dialog": "Tạo mới dịch vụ",
+        "is_installment_yes": "Cho trả góp",
+        "is_installment_no": "Không trả góp"
+      },
+      "service_type": {}
+    },
+    "bank_account": {
+      "bank_code": "Mã ngân hàng",
+      "account_name": "Tên chủ tài khoản"
+    },
+    "form_customer": {
+      "title": "Form khách hàng",
+      "field_name": "Tên Field",
+      "col_no_update": "Không được cập nhật",
+      "tooltip_create": "Nếu bạn đánh dấu vào field nào bên dưới thì khi tạo mới khách hàng, bắt buộc phải nhập các field đấy",
+      "tooltip_update": "Nếu bạn đánh dấu vào field nào bên dưới thì khi cập nhật khách hàng, bắt buộc phải nhập các field đấy",
+      "tooltip_no_update": "Nếu bạn đánh dấu vào field nào bên dưới thì khi cập nhật khách hàng, không được phép cập nhật các field đấy",
+      "reset": "Làm lại",
+      "confirm_reset": "Bạn có muốn làm lại?"
+    },
+    "form_lead": {
+      "title": "Form khách hàng Lead"
+    },
+    "appointment_is_accepted": {
+      "is_accepted": "Tính là đồng ý",
+      "is_accepted_desc": "Trạng thái này được tính vào tỉ lệ chốt và doanh số nhân viên",
+      "not_accepted": "Không tính là đồng ý"
+    },
+    "appointment_reason": {
+      "care_reminder": "Nhắc lịch chăm sóc khách hàng",
+      "reminder_days": "Tính theo ngày",
+      "rejection_reason": "Lí do không đồng ý",
+      "reminder_tooltip": "Là thời gian gợi ý nhắc lại chăm khách hàng, căn thời gian càng chính xác thì tỷ lệ chốt đơn khách hàng cang cao"
+    },
+    "appointment_type": {
+      "appointment_type": "Loại hẹn",
+      "is_consulting_no": "Không phải hẹn tư vấn",
+      "online_type": "Loại hẹn online"
+    },
+    "customer_ranks": {
+      "rank_name": "Tên hạng thành viên",
+      "min_points": "Điểm tối thiểu",
+      "max_points": "Điểm tối đa",
+      "example_title": "Ví dụ phân hạng thành viên:",
+      "example_col_priority": "Mức ưu tiên",
+      "tier_bronze": "Đồng"
+    },
+    "customer_rank_services": {
+      "search_available": "Tìm kiếm dịch vụ chưa chọn...",
+      "search_selected": "Tìm kiếm dịch vụ đã chọn...",
+      "select_at_least_one": "Vui lòng chọn ít nhất một dịch vụ"
+    },
+    "location": {
+      "group_country": {
+        "name": "Khu vực quốc tế"
+      },
+      "group_local": {
+        "name": "Khu vực trong nước"
+      },
+      "location_country": {
+        "code": "Mã quốc gia",
+        "common_name": "Tên gọi chung",
+        "formal_name": "Tên chính thức",
+        "capital": "Thủ đô",
+        "telephone_code": "Mã điện thoại",
+        "currency_code": "Mã tiền tệ"
+      },
+      "location_province": {
+        "code_province": "Mã tỉnh thành"
+      },
+      "location_ward": {
+        "name": "Phường/xã",
+        "name_field": "Tên phường/xã",
+        "code_ward": "Mã phường/xã",
+        "type": "Loại phường/xã"
+      }
+    },
+    "branch": {
+      "branch_code": "Mã chi nhánh",
+      "branch_name": "Tên chi nhánh",
+      "accept_customer": "Nhận khách",
+      "reject_customer": "Không nhận khách",
+      "appointment_tooltip": "Trạng thái xem chi nhánh có nhận khách đặt hẹn hay không",
+      "tooltip_update": "Cập nhật chi nhánh",
+      "tooltip_delete": "Xóa chi nhánh",
+      "update_success": "Cập nhật chi nhánh thành công",
+      "create_success": "Tạo mới chi nhánh thành công"
+    },
+    "company": {
+      "company_name": "Tên thương hiệu",
+      "company_code": "Mã thương hiệu",
+      "hotline": "Số hotline",
+      "tax_code": "Mã số thuế",
+      "business_type": "Loại hình Thương hiệu",
+      "access_control_title": "Kiểm soát truy cập",
+      "appearance_title": "Giao diện thương hiệu",
+      "currency_symbol": "Ký hiệu",
+      "logo_label": "Logo thương hiệu",
+      "current_logo": "Logo hiện tại",
+      "drag_drop_logo": "Kéo thả logo vào đây",
+      "weekly_rest_days": "Ngày nghỉ hàng tuần",
+      "weekly_rest_days_hint": "Chọn các ngày nghỉ cố định trong tuần (áp dụng tính công/lịch làm việc)."
+    },
+    "config_code": {
+      "table_name": "Tên bảng",
+      "infix": "Trung tố",
+      "col_config": "Cấu hình",
+      "tooltip_update": "Cập nhật mã định danh",
+      "include_branch_code": "Ghép mã chi nhánh",
+      "monthly_reset": "Reset serial theo tháng",
+      "serial_length": "Độ dài số serial",
+      "customer_option_notice": "Mã khách hàng đang sinh theo kiểu {{option}} (biến CUSTOMER_CODE_OPTION trên máy chủ), không theo cấu hình ở bảng này. Dòng \"customer\" chỉ còn dùng làm bộ đếm và trung tố."
+    },
+    "unit": {
+      "unit_name": "Đơn vị tính"
+    },
+    "setting": {
+      "subtitle": "Click vào ô giá trị để chỉnh sửa",
+      "click_to_edit": "Click để sửa",
+      "editing": "Đang chỉnh sửa",
+      "edit_inline": "Chỉnh sửa",
+      "placeholder_value": "Nhập giá trị...",
+      "no_data_title": "Chưa có dữ liệu",
+      "no_data_desc": "Danh sách cấu hình sẽ hiển thị tại đây",
+      "key_col": "Khoá"
+    },
+    "option_crm": {
+      "payment_update_title": "Cập nhật thanh toán trong ngày",
+      "payment_update_tooltip": "Cho phép nhân sự có quyền tạo mới thanh toán nhưng không có quyền cập nhật thì sẽ có quyền cập nhật thanh toán trong ngày tạo thanh toán đó",
+      "order_update_title": "Cập nhật đơn hàng trong ngày",
+      "order_update_tooltip": "Cho phép nhân sự có quyền tạo mới đơn hàng nhưng không có quyền cập nhật thì sẽ có quyền cập nhật đơn hàng trong ngày tạo đơn hàng đó",
+      "note_delete_title": "Xóa ghi chú trong ngày",
+      "note_delete_tooltip": "Cho phép nhân sự có quyền tạo mới ghi chú nhưng không có quyền xóa thì sẽ có quyền xóa ghi chú trong ngày tạo ghi chú đó",
+      "lead_telesale_title": "Danh sách Lead của telesale",
+      "lead_telesale_tooltip": "Cho phép telesale nhìn thấy khách hàng của telesale khác hay không",
+      "cross_update_title": "Sale cập nhật chéo khách hàng",
+      "cross_update_tooltip": "Vẫn cho phép tìm kiếm nhưng không cho phép sửa thông tin khách hàng của sale khác",
+      "hide_phone_title": "Ẩn số điện thoại",
+      "hide_phone_tooltip": "Cho phép ẩn số điện thoại, chỉ để lại 4 số cuối dạng xxxxxx1234",
+      "select_date_title": "Cho phép chọn ngày trước đó",
+      "select_date_tooltip": "Thay vì chọn là ngày hôm nay, họ có thể chọn những ngày trước đó khi nhập liệu",
+      "allow_previous_day_title": "Cho phép chọn ngày hôm qua",
+      "allow_previous_day_tooltip": "Cho phép nhập đơn/thanh toán với ngày hôm qua — dành cho trường hợp nhập liệu trễ qua đêm",
+      "cross_branch_treatment_title": "Sử dụng dịch vụ đã mua ở chi nhánh khác",
+      "cross_branch_treatment_tooltip": "Cho phép khách hàng sử dụng dịch vụ đã mua tại chi nhánh khác với chi nhánh mua ban đầu",
+      "cross_search_title": "Tìm kiếm & xem chéo dữ liệu giữa các cơ sở",
+      "cross_search_tooltip": "Cho phép tìm kiếm và xem dữ liệu khách hàng giữa các chi nhánh khác nhau",
+      "export_phone_title": "Hiển thị số điện thoại khi export",
+      "export_phone_tooltip": "Cho phép hiển thị đầy đủ số điện thoại khách hàng khi export dữ liệu, hoặc chỉ quản lý mới được xem",
+      "opt_all_branch_company": "Tất cả chi nhánh trong công ty",
+      "opt_allow_change": "Cho phép",
+      "opt_any_branch_treatment": "Sử dụng dịch vụ ở chi nhánh bất kỳ",
+      "opt_deny": "Không cho phép",
+      "opt_export_phone_all": "Hiển thị đầy đủ",
+      "opt_export_phone_manager_only": "Chỉ quản lý",
+      "opt_lead_all": "Xem tất cả",
+      "opt_lead_own_only": "Chỉ xem của mình",
+      "opt_own_branch_only": "Chỉ chi nhánh của mình",
+      "opt_pay_by_package_total": "Theo tổng gói",
+      "opt_pay_per_session_default": "Theo từng buổi (mặc định)",
+      "opt_require_payment_check_default": "Kiểm tra thanh toán (mặc định)",
+      "opt_same_branch_only_default": "Chỉ cùng chi nhánh (mặc định)",
+      "opt_show_last4_phone": "Ẩn, chỉ hiện 4 số cuối",
+      "opt_skip_payment_check": "Bỏ qua kiểm tra thanh toán",
+      "payment_by_total_title": "Tính tiền sử dụng theo tổng gói",
+      "payment_by_total_tooltip": "Tính số tiền mỗi buổi sử dụng theo tổng giá trị gói dịch vụ thay vì theo từng buổi riêng lẻ",
+      "skip_payment_title": "Bỏ qua kiểm tra thanh toán khi sử dụng dịch vụ",
+      "skip_payment_tooltip": "Cho phép sử dụng dịch vụ ngay cả khi khách hàng chưa thanh toán đủ"
+    },
+    "customer_category": {
+      "reminder_tooltip": "Là thời gian gợi ý nhắc lại chăm khách hàng, căn thời gian càng chính xác thì tỷ lệ chốt đơn khách hàng cang cao"
+    },
+    "ethnicity": {
+      "name": "Tên dân tộc",
+      "code": "Mã dân tộc"
+    },
+    "job": {
+      "name": "Tên nghề nghiệp"
+    },
+    "source": {},
+    "accoutant_bank_account": {
+      "dialog_create": "Thêm mới tài khoản ngân hàng",
+      "dialog_update": "Cập nhật tài khoản ngân hàng",
+      "dialog_create_2": "Tạo mới tài khoản ngân hàng"
+    },
+    "system_unit": {
+      "dialog_create": "Thêm nhanh đơn vị tính"
+    },
+    "service": {
+      "import_dialog_title": "Import dịch vụ",
+      "import_step2_title": "Chọn file để import",
+      "import_template_hint": "File mẫu có đúng bộ cột như file Export. Riêng khoa, nhóm dịch vụ, đơn vị, thương hiệu, thuế suất phải tự điền id hoặc đúng tên — bấm Export ở danh sách dịch vụ để xem id doanh nghiệp bạn đang dùng."
+    },
+    "security_audit": {
+      "title": "Nhật ký bảo mật",
+      "date_range": "Khoảng ngày",
+      "allowed_ips": "IP được phép truy cập (nhân viên)",
+      "allowed_ips_hint": "Mỗi dòng 1 IP hoặc dải CIDR (vd 203.0.113.0/24). Để trống = không giới hạn. CẢNH BÁO: nhập sai có thể khóa truy cập của nhân viên (super-user không bị chặn).",
+      "allowed_ips_user": "IP được phép (riêng user này)",
+      "allowed_ips_user_hint": "Ghi đè danh sách của thương hiệu. Để trống = dùng của thương hiệu.",
+      "device": "Thiết bị",
+      "user_col": "Người dùng",
+      "user_id_label": "User ID"
+    },
+    "search": {
+      "placeholder": "Tìm nhanh cấu hình… (vd: nguồn, sản phẩm, lịch hẹn)",
+      "keyboard_hint": "↑↓ di chuyển · Enter mở · Esc xoá",
+      "recent": "Truy cập gần đây"
+    }
+  },
+  "accountant": {
+    "cash_flow_category": {
+      "income": "Thu",
+      "expense": "Chi"
+    },
+    "report_revenue_common": {
+      "payment": "Thực thu",
+      "expected": "Dự kiến thu"
+    }
+  },
+  "layout": {
+    "topbar": {
+      "portrait_event": "Sự kiện"
+    },
+    "log_menu": {
+      "export": "Lịch sử export",
+      "customer": "Lịch sử khách hàng",
+      "appointment": "Lịch sử lịch hẹn",
+      "order_service_used": "Lịch sử đơn hàng",
+      "login": "Lịch sử đăng nhập",
+      "user": "Lịch sử người dùng"
+    },
+    "hr_menu": {
+      "staff_root": "Quản lý nhân sự"
+    },
+    "app_menu": {
+      "appointment_list": "Danh sách lịch hẹn",
+      "appointment_by_day": "Phân bố theo ngày",
+      "appointment_by_hour": "Phân bố theo giờ",
+      "reminder_management": "Quản lý lời nhắc",
+      "admin_group": "Quản trị",
+      "order_management": "Quản lý đơn hàng"
+    },
+    "app_menuprofile": {
+      "profile_tooltip": "Profile"
+    },
+    "app_topbar": {
+      "search_customer_tooltip": "Tìm kiếm khách hàng",
+      "add_customer_tooltip": "Thêm khách hàng (⌘Ctrl+C / Alt+C)",
+      "account_menu_tooltip": "Tài khoản của tôi",
+      "switch_branch_tooltip": "Chuyển chi nhánh",
+      "today_reminder_dialog_header": "Lời nhắc chưa hoàn thành",
+      "switch_dialog_header": "Chuyển đổi",
+      "docs_label": "Hướng dẫn",
+      "docs_tooltip": "Mở hướng dẫn cho màn hình này (tab mới)",
+      "install_label": "Cài ứng dụng",
+      "install_tooltip": "Cài Cluvix lên máy tính, mở nhanh như một ứng dụng",
+      "install_safari_title": "Cài Cluvix vào Dock",
+      "install_safari_step1": "Trên thanh menu Safari, chọn File (Tệp)",
+      "install_safari_step2": "Chọn Add to Dock (Thêm vào Dock) rồi bấm Add (Thêm)",
+      "install_chrome_title": "Cài Cluvix từ trình duyệt",
+      "install_chrome_step1": "Bấm biểu tượng Cài đặt (màn hình có mũi tên) ở cuối thanh địa chỉ",
+      "install_chrome_step2": "Hoặc mở menu ⋮ → Truyền, lưu và chia sẻ → Cài đặt trang dưới dạng ứng dụng"
+    },
+    "update_dialog": {
+      "header": "Cập nhật phiên bản mới",
+      "body": "Đã có phiên bản mới, nhấn cập nhật để sử dụng."
+    },
+    "timezone_dialog": {
+      "header": "Cảnh báo múi giờ / thời gian hệ thống",
+      "body": "Vui lòng cài đặt lại timezone trên máy tính theo UTC+7 để sử dụng hệ thống.",
+      "acknowledge": "Đã hiểu"
+    }
+  },
+  "sale": {
+    "lead": {
+      "import_no_file": "Chưa có file nào được chọn",
+      "import_done_title": "Import hoàn tất",
+      "import_created": "Tạo mới",
+      "import_skipped": "Bỏ qua"
+    }
+  },
+  "displaycols": {
+    "reception": {
+      "gender_age": "Giới tính · Tuổi"
+    },
+    "contact": {
+      "total_debt": "Công nợ",
+      "total_deposit": "Đặt cọc"
+    }
+  },
+  "emr": {
+    "reception_list": {
+      "label_history": "Tiền sử"
+    }
+  },
+  "hr": {
+    "user_list": {
+      "nickname": "Bí danh",
+      "code": "Mã chấm công"
+    },
+    "user_form": {
+      "section_profile": "Hồ sơ",
+      "section_profile_desc": "Thông tin đăng ký nhân viên",
+      "section_account": "Thông tin tài khoản",
+      "section_personal": "Thông tin cá nhân",
+      "section_organization": "Thông tin tổ chức",
+      "tooltip_generate": "Tạo mã",
+      "fullname": "Họ tên nhân viên",
+      "nickname": "Bí danh nhân viên",
+      "code": "Mã nhân viên"
+    },
+    "user_list_page": {
+      "branch_tooltip": "Một nhân viên có thể có nhiều chi nhánh",
+      "tooltip_reset_password": "Khởi tạo lại mật khẩu",
+      "import_dialog_title": "Import nhân sự",
+      "import_dialog_hint": "Lưu lại mật khẩu bên dưới. Sau khi đóng dialog bạn sẽ không xem lại được.",
+      "import_step2_title": "Chọn file để import",
+      "import_template_hint": "File mẫu có đúng bộ cột như file Export, nên có thể export ra, sửa rồi import lại.",
+      "col_account": "Tài khoản",
+      "reset_password_dialog_title": "Đặt lại mật khẩu",
+      "reset_password_hint": "Nhập mật khẩu mới hoặc nhấn nút tạo ngẫu nhiên.",
+      "reset_password_success": "Đặt lại mật khẩu thành công",
+      "update_personal_success": "Đã cập nhật thông tin người dùng"
+    },
+    "role_page": {
+      "create_role_header": "Tạo vai trò",
+      "tooltip_add_role": "Thêm vai trò",
+      "no_roles": "Chưa có vai trò nào",
+      "tooltip_reload": "Tải lại",
+      "empty_state": "Chọn vai trò để chỉnh sửa quyền",
+      "loading_permissions": "Đang tải quyền...",
+      "confirm_delete_header": "Xác nhận xóa",
+      "confirm_delete_msg": "Bạn có muốn xóa vai trò này?",
+      "update_perm_success": "Cập nhật quyền thành công!",
+      "tooltip_select_all_check": "Chọn/Bỏ tất cả quyền",
+      "tooltip_select_group_check": "Chọn/Bỏ tất cả nhóm",
+      "tooltip_select_row_check": "Chọn tất cả chức năng này",
+      "feature_count": "{{count}} chức năng",
+      "app_module": {
+        "cxCrm": "cxCrm — Vận hành KH & Lịch hẹn"
+      }
+    },
+    "role_form": {
+      "name_hint": "Chỉ bao gồm các ký tự từ a đến z",
+      "description": "Tên nhóm quyền"
+    },
+    "user_profile_form": {
+      "no_name": "Chưa có tên",
+      "no_department": "Chưa có",
+      "about": "Giới thiệu ngắn",
+      "section_avatar": "Hình đại diện",
+      "no_value_found": "Không tìm thấy giá trị",
+      "section_social": "Mạng xã hội & Công cụ",
+      "update_success": "Cập nhật hồ sơ thành công",
+      "err_max_size": "Kích thước file không được vượt quá 2MB",
+      "err_invalid_ext": "Chỉ chấp nhận định dạng: {{exts}}"
+    },
+    "change_password": {
+      "old_password": "Mật khẩu cũ ",
+      "confirm_password": "Xác nhận mật khẩu",
+      "success_msg": "Mật khẩu đã được thay đổi. Bạn sẽ được đăng xuất để đảm bảo bảo mật."
+    },
+    "user_devices": {
+      "title": "Thiết bị đăng nhập",
+      "active": "Đang hoạt động",
+      "unknown_device": "Thiết bị không xác định",
+      "confirm_revoke": "Đăng xuất thiết bị này? Phiên đăng nhập của thiết bị sẽ bị chấm dứt.",
+      "revoked": "Đã đăng xuất thiết bị"
+    },
+    "department": {
+      "head_user_id": "Trưởng phòng"
+    }
+  },
+  "dashboard": {
+    "crm": {
+      "filter": {
+        "this_quarter": "Quý này",
+        "custom": "Tuỳ chọn",
+        "compare_hint": "So với kỳ trước",
+        "range_too_long": "Khoảng thời gian tối đa 366 ngày.",
+        "period": "Kỳ báo cáo",
+        "ref_day": "Ngày {{date}}"
+      },
+      "layout": {
+        "customize": "Tuỳ chỉnh",
+        "add_widget": "Thêm khối",
+        "preset_menu": "Mẫu bố cục",
+        "preset_desc": {
+          "overview": "Bố cục chuẩn, cân giữa doanh thu, lịch hẹn, nguồn khách và dịch vụ.",
+          "revenue": "Doanh thu, chi nhánh và dịch vụ lên đầu — cho chủ phòng khám, kế toán.",
+          "front_desk": "Lịch hẹn và trạng thái tư vấn trong ngày lên đầu — cho lễ tân, quản lý ca.",
+          "marketing": "Nguồn khách, nhóm dịch vụ và tiến trình khách hàng lên đầu — cho đội marketing."
+        },
+        "chooser_title": "Chọn bố cục khởi đầu",
+        "chooser_desc": "Mẫu nào cũng có đủ các khối bạn được xem, chỉ khác thứ tự theo vai trò. Đổi lại bất cứ lúc nào ở \"Mẫu bố cục\" hoặc Tuỳ chỉnh.",
+        "chooser_keep": "Giữ bố cục hiện tại",
+        "chooser_use": "Dùng mẫu này",
+        "preset_applied": "Đã áp dụng mẫu bố cục",
+        "preset_confirm_title": "Đổi sang mẫu bố cục này?",
+        "preset_confirm_message": "Bố cục bạn đã tự sắp xếp sẽ được thay bằng mẫu đã chọn. Bạn vẫn chỉnh lại được trong Tuỳ chỉnh.",
+        "preset_confirm_ok": "Đổi bố cục",
+        "preset": {
+          "overview": "Tổng quan đầy đủ",
+          "revenue": "Doanh thu & dịch vụ",
+          "front_desk": "Lễ tân & lịch hẹn",
+          "marketing": "Marketing & tăng trưởng"
+        },
+        "editing_title": "Đang tuỳ chỉnh bố cục",
+        "reset": "Khôi phục mặc định",
+        "reset_confirm_title": "Khôi phục bố cục mặc định?",
+        "reset_confirm_message": "Bố cục riêng của bạn sẽ bị xoá và dashboard hiện theo bố cục mặc định của thương hiệu (hoặc của hệ thống).",
+        "reset_done": "Đã khôi phục bố cục mặc định",
+        "gallery_title": "Kho khối",
+        "search_placeholder": "Tìm khối…",
+        "drag_handle": "Kéo khối {{name}}",
+        "size_half": "Thu nửa chiều rộng",
+        "size_full": "Mở toàn chiều rộng",
+        "move": "Di chuyển",
+        "move_up": "Lên trên",
+        "move_down": "Xuống dưới",
+        "to_main": "Sang cột chính",
+        "to_side": "Sang cột phụ",
+        "to_top": "Lên dải trên cùng",
+        "zone_top": "Dải trên cùng",
+        "zone_main": "Cột chính",
+        "zone_side": "Cột phụ",
+        "empty_title": "Dashboard chưa có khối nào",
+        "empty_desc": "Thêm khối từ Kho khối để theo dõi số liệu bạn cần.",
+        "hint_title": "Tuỳ chỉnh dashboard của bạn",
+        "hint_desc": "Bấm \"Tuỳ chỉnh\" để kéo thả, ẩn hoặc đổi cỡ khối; \"Thêm khối\" để chọn thêm báo cáo.",
+        "save_brand_default": "Lưu làm mặc định thương hiệu",
+        "brand_confirm_title": "Lưu làm mặc định thương hiệu?",
+        "brand_confirm_message": "Nhân viên chưa có bố cục riêng sẽ thấy bố cục này khi mở dashboard. Người đã tự sắp xếp vẫn giữ bố cục của mình.",
+        "saved_brand": "Đã lưu làm mặc định thương hiệu",
+        "delete_brand_default": "Xoá mặc định thương hiệu",
+        "delete_brand_confirm_title": "Xoá bố cục mặc định thương hiệu?",
+        "delete_brand_confirm_message": "Nhân viên chưa có bố cục riêng sẽ quay về bố cục mặc định của hệ thống. Bố cục riêng của từng người giữ nguyên.",
+        "deleted_brand": "Đã xoá bố cục mặc định thương hiệu",
+        "added": "Đã thêm",
+        "no_results": "Không có kết quả",
+        "unsaved_title": "Thay đổi chưa lưu",
+        "unsaved_message": "Bố cục có thay đổi chưa lưu. Bỏ các thay đổi này?",
+        "discard": "Bỏ thay đổi"
+      },
+      "widget": {
+        "other_groups": "Nhóm khác",
+        "period_until_today": "Từ đầu kỳ đến hôm nay",
+        "period_until_day": "Từ đầu kỳ đến {{date}}",
+        "overview_appointment_info": "Lịch hẹn, đã đến, đồng ý, huỷ: tính từ đầu kỳ đến hết ngày tham chiếu. Còn lại trong kỳ: sau ngày tham chiếu tới cuối kỳ.",
+        "new_customers_period": "Khách mới trong kỳ",
+        "new_customers_day": "Khách mới trong ngày",
+        "appointments_created_day": "Lịch hẹn tạo trong ngày",
+        "appointments_due_day": "Lịch hẹn đến trong ngày",
+        "remaining_in_period": "Còn lại trong kỳ",
+        "definition": "Định nghĩa số liệu",
+        "view_report": "Xem báo cáo chi tiết",
+        "empty": "Chưa có dữ liệu trong kỳ",
+        "no_period": "Không áp khoảng ngày",
+        "additional_stats_info": "Nhắc việc trong ngày tham chiếu. Nhắc việc không gắn chi nhánh nên số liệu tính cho cả thương hiệu, không theo bộ lọc chi nhánh."
+      },
+      "widgets": {
+        "payment_in_month": {
+          "title": "Doanh thu theo kỳ",
+          "desc": "Doanh số, doanh thu, thực thu, hoàn tiền và còn phải thu, so với kỳ trước"
+        },
+        "quick_stats": {
+          "title": "Thống kê nhanh",
+          "desc": "Khách mới, lịch hẹn mới, đơn hàng và dịch vụ mới"
+        },
+        "appointment_accepted_stats": {
+          "title": "Trạng thái tư vấn",
+          "desc": "Số lịch hẹn theo từng trạng thái tư vấn trong ngày"
+        },
+        "payment_branch_overview": {
+          "title": "Tổng quan chi nhánh",
+          "desc": "Doanh số, thực thu, cọc, hoàn tiền theo từng chi nhánh"
+        },
+        "service_statistics": {
+          "title": "Thống kê dịch vụ",
+          "desc": "Số lượng và thực thu theo dịch vụ"
+        },
+        "source_overview": {
+          "title": "Nguồn khách hàng",
+          "desc": "Khách mới theo nguồn và nhóm nguồn"
+        },
+        "service_type_accepted": {
+          "title": "Nhóm dịch vụ đồng ý",
+          "desc": "Nhóm dịch vụ khách đồng ý làm"
+        },
+        "service_type_interest": {
+          "title": "Nhóm dịch vụ quan tâm",
+          "desc": "Nhóm dịch vụ khách mới quan tâm"
+        },
+        "payment_today": {
+          "title": "Doanh thu trong ngày",
+          "desc": "Doanh số, doanh thu, thực thu của ngày tham chiếu"
+        },
+        "overview_appointment": {
+          "title": "Lịch hẹn tư vấn",
+          "desc": "Lịch hẹn, đã đến, đồng ý, huỷ và còn lại"
+        },
+        "additional_stats": {
+          "title": "Nhắc việc",
+          "desc": "Nhắc việc trong ngày và số đã hoàn thành"
+        },
+        "appointment_status": {
+          "title": "Trạng thái khách đến",
+          "desc": "Lịch hẹn theo trạng thái tư vấn trong kỳ"
+        },
+        "customer_status_overview": {
+          "title": "Tiến trình khách hàng",
+          "desc": "Khách mới theo giai đoạn ticket → hoàn thành"
+        },
+        "customer_region": {
+          "title": "Khu vực khách hàng",
+          "desc": "Khách đồng ý làm dịch vụ theo tỉnh/thành"
+        }
+      },
+      "additional_stats": {
+        "reminder_title": "Lời nhắc trong ngày",
+        "done": "Đã thực hiện"
+      },
+      "payment_in_month": {
+        "sales_tooltip": "Là số tiền dựa trên đơn hàng phát sinh từ khách hàng",
+        "refund": "Hoàn trả",
+        "refund_tooltip": "Là số tiền thực hoàn cọc hoặc hoàn dịch vụ"
+      },
+      "quick_stats": {
+        "new_orders": "Số lượng đơn hàng mới",
+        "new_services": "Số lượng dịch vụ mới"
+      }
+    }
+  },
+  "accountant_payment": {
+    "label_refund_service_date": "Ngày hoàn dịch vụ"
+  },
+  "crm": {
+    "payment": {
+      "label": {
+        "add_deposit": "Thêm cọc"
+      },
+      "detail": {
+        "subtotal": "Tạm tính"
+      },
+      "tooltip": {
+        "print_custom": "In tuỳ chỉnh",
+        "update_payment": "Cập nhật thanh toán",
+        "delete_deposit": "Xóa cọc",
+        "print_deposit": "In đặt cọc",
+        "delete_refund_deposit": "Xóa hoàn cọc",
+        "print_refund_deposit": "In hoàn cọc",
+        "delete_refund_service": "Xóa hoàn trả dịch vụ",
+        "delete_refund_consignment": "Xóa hoàn ký gửi",
+        "print_refund_consignment": "In hoàn ký gửi",
+        "print_transfer_deposit": "In chuyển cọc",
+        "print_payment": "In thanh toán"
+      },
+      "form": {
+        "amount_max": "Tối đa {{max}}",
+        "allocation_preview_title": "Dự kiến phân bổ (dịch vụ cũ được trả trước)",
+        "amount_total": "Tổng: {{total}}",
+        "amount_input": "Nhập số tiền",
+        "max": "Max",
+        "method_installment": "Hình thức trả góp",
+        "installment_type": "Loại trả góp",
+        "card_type": "Phương thức thanh toán",
+        "note_payment": "Nội dung thanh toán",
+        "no_service": "Không có dịch vụ nào",
+        "no_installment": "Không có kỳ trả góp nào cần thanh toán",
+        "deposit_keep_promotion": "Cọc giữ khuyến mại"
+      },
+      "dialog": {
+        "create_deposit": "Thêm mới cọc",
+        "create_installment": "Thêm mới trả góp"
+      },
+      "message": {
+        "create_payment_success": "Tạo mới thanh toán thành công",
+        "create_deposit_success": "Tạo mới đặt cọc thành công",
+        "refund_consignment_success": "Hoàn ký gửi thành công",
+        "refund_deposit_success": "Tạo mới hoàn cọc thành công",
+        "transfer_deposit_success": "Chuyển cọc thành công",
+        "update_transfer_deposit_success": "Cập nhật chuyển cọc thành công",
+        "installment_success": "Thanh toán trả góp thành công",
+        "load_service_failed": "Không thể tải thông tin dịch vụ",
+        "no_service_to_pay": "Không có dịch vụ cần thanh toán",
+        "select_payment_to_print": "Vui lòng chọn thanh toán bạn muốn in",
+        "service_not_found_for_max": "⛔ Không tìm thấy dịch vụ đã chọn để tính Max",
+        "text_add_deposit": "thêm cọc",
+        "text_refund_consignment": "hoàn ký gửi",
+        "text_refund_deposit": "hoàn cọc"
+      },
+      "detail_panel": {
+        "title": "Chi tiết phiếu thu",
+        "section_payment": "Thông tin thu tiền",
+        "section_target": "Thu cho",
+        "section_allocation": "Phân bổ trên đơn hàng",
+        "allocation_hint": "Mỗi dịch vụ được thu thành một phiếu riêng — đây là toàn bộ phiếu của đơn hàng này.",
+        "this_receipt": "Phiếu đang xem",
+        "no_allocation": "Phiếu không gắn với đơn hàng nào",
+        "bank_code": "Mã hoá đơn ngân hàng",
+        "deposit_after": "Tiền cọc còn lại sau thu",
+        "insurance": "Bảo hiểm chi trả",
+        "patient_amount": "Khách hàng trả",
+        "collected_on_order": "Đã thu trên đơn",
+        "refunded_on_order": "Đã hoàn trên đơn",
+        "collected_hint": "Chỉ cộng phiếu thanh toán và chuyển cọc — cùng công thức với màn chi tiết đơn hàng."
+      }
+    },
+    "customer_note_ai_tabs": {
+      "note": "📝 Ghi chú",
+      "reason_label": "❌ Lý do chưa đặt lịch",
+      "att_file": "📄 Tài liệu",
+      "att_audio": "🎵 Âm thanh",
+      "att_video": "🎬 Video"
+    },
+    "report_service_used": {
+      "average_per_service": "Trung bình 1 dịch vụ"
+    },
+    "reminder": {
+      "code": "Mã lời nhắc",
+      "dialog_create": "Thêm mới lời nhắc",
+      "noti_complete_success": "Hoàn thành lời nhắc",
+      "noti_invalid_time": "Thời gian nhập không hợp lệ"
+    },
+    "payment_of_customer": {
+      "payment_time": "Ngày thu/hoàn tiền"
+    },
+    "report": {
+      "customer_portrait": {
+        "source": "Nguồn khách",
+        "province": "Tỉnh/Thành phố",
+        "interested": "Nhóm dịch vụ quan tâm",
+        "category": "Nhóm khách hàng"
+      },
+      "service": {
+        "note_list": "Danh sách ghi chú"
+      },
+      "service_type_stats": {
+        "title": "Nhóm dịch vụ đồng ý",
+        "name": "Loại dịch vụ"
+      },
+      "appointment": {
+        "daily_statistics": "Thống kê theo ngày",
+        "distribution_chart": "Biểu đồ phân bổ"
+      },
+      "department": {
+        "ratio": "Tỷ lệ",
+        "consulting": "Phòng tư vấn",
+        "telesales_online": "Phòng telesales online",
+        "appointment_effective": "Hiệu quả lịch hẹn",
+        "tooltip_appointment": "Lịch hẹn là thời gian khách hàng hẹn đến",
+        "tooltip_arrived_per_appointment": "Tỷ lệ Khách đến/ Khách hẹn",
+        "tooltip_agreed_per_arrived": "Tỷ lệ Đồng ý/ Khách đến",
+        "h_arrived_per_appointment": "Đến/ Hẹn",
+        "h_agreed_per_arrived_short": "Đồng ý/ Đến",
+        "tooltip_average_per_customer": "Tỷ lệ doanh số thu được trên số khách hàng đồng ý"
+      },
+      "list": {
+        "customer_portrait_title": "Khách hàng - Chân dung",
+        "service_clinic_title": "Dịch vụ - Chi nhánh",
+        "department_effective_title": "Hiệu quả phòng ban"
+      },
+      "service_used": {
+        "tooltip_num_service": "Số lượng khác hàng sử dụng dịch vụ",
+        "header_num_quantity": "Số lượng đơn vị",
+        "tooltip_num_quantity": "Số lượng đơn vị đã sử dụng",
+        "tooltip_average": "Trung bình khách hàng chi tiền cho 1 dịch vụ"
+      },
+      "note_list": {
+        "export_tooltip": "Tải dữ liệu ghi chú với khách hàng"
+      },
+      "appointment_consultation": {
+        "export_tooltip": "Tải dữ liệu lịch hẹn tư vấn"
+      },
+      "customer_stats": {
+        "tooltip_appointment_new": "Lịch mới là lịch tạo ra trong khoảng thời gian đã chọn",
+        "tooltip_appointment": "Lịch hẹn là lịch khách hẹn đến tư vấn trong thời gian đã chọn",
+        "header_new_per_lead": "Lịch mới/ Lead",
+        "header_arrived_per_appointment": "Khách đến/ Lịch hẹn",
+        "h_province": "Tỉnh/ Thành phố"
+      },
+      "appointment_chart": {
+        "month_compare": "Lịch hẹn của tháng này so với tháng trước",
+        "consult_appointment": "Lịch hẹn tư vấn",
+        "h_cancel": "Lịch hủy",
+        "h_no_show": "Không đến",
+        "month_label": "Tháng {{month}}",
+        "title": "Biểu đồ lịch hẹn"
+      },
+      "appointment_stats": {
+        "h_new": "Lịch mới",
+        "h_returning": "Lịch chăm lại",
+        "h_cancel": "Khách hủy",
+        "h_arrived_per_appointment": "Đến/Hẹn",
+        "h_agreed_per_arrived": "Đồng ý/Đến"
+      },
+      "telesales": {
+        "h_comment": "Comment",
+        "h_care_back": "Chăm lại",
+        "tooltip_care_back": "Là hình thức chăm sóc lại khách cũ. Khách cũ là khách được tạo ra từ những ngày trước đó.",
+        "h_new_appointment": "Lịch mới",
+        "tooltip_new_appointment": "Lịch mới được tính trong thời gian tạo ra nó",
+        "h_new_appointment_plus": "Lịch mới+",
+        "tooltip_new_appointment_plus": "Thuộc về lịch mới và được tạo ra từ những lead cũ, đánh giá hiệu quả của việc chăm lại khách hàng. Nó nằm trong lịch mới",
+        "tooltip_deposit_count": "Là số khách hàng đặt cọc giữ chương trình khuyến mại",
+        "h_lead_per_interaction": "Lead/ TT",
+        "tooltip_lead_per_interaction": "Tỷ lệ Lead/ Tương tác",
+        "h_new_per_lead": "Mới/ Lead",
+        "tooltip_new_per_lead": "Là tỷ lệ lịch mới tạo ra trong khoảng thời gian chọn trên số lead tạo ra",
+        "h_new_minus_per_lead": "Mới-/ Lead",
+        "tooltip_new_minus_per_lead": "Là tỷ lệ lịch mới tạo ra trong số lead thu thập được so với chính số lead đấy",
+        "h_new_plus_per_care_back": "Mới+/Chăm lại",
+        "tooltip_new_plus_per_care_back": "Là tỷ lệ lịch mới được tạo ra từ việc chăm sóc khách hàng cũ trên số lượng chăm lại khách hàng",
+        "h_arrived_per_lead": "Đến/ Lead",
+        "tooltip_arrived_per_lead": "Tỷ lệ Khách đến/ Lead",
+        "h_arrived_per_interaction": "Đến/ TT",
+        "tooltip_arrived_per_interaction": "Tỷ lệ Khách đến/ Tương tác",
+        "h_agreed_per_interaction": "Đồng ý/ TT",
+        "tooltip_agreed_per_interaction": "Tỷ lệ Đồng ý/ Tương tác"
+      },
+      "treatment_services": "Báo cáo dịch vụ sử dụng",
+      "appointment_statistics": "Thống kê lịch hẹn",
+      "branch": {
+        "appointment": "Chi nhánh x Lịch hẹn"
+      },
+      "branch_appointment": {
+        "total_appointment": "Tổng số hẹn",
+        "cancelled": "Khách hủy",
+        "agreed_per_appointment": "Đ.ý/Hẹn",
+        "tooltip_agreed_per_appointment": "Tỷ lệ Đồng ý / Khách hẹn"
+      },
+      "desc": {
+        "branch_statistics": "Số lượng khách hàng, lịch hẹn và doanh thu theo từng chi nhánh — so sánh hiệu quả hoạt động giữa các chi nhánh.",
+        "customer_source": "Khách hàng, lịch hẹn, tỉ lệ chuyển đổi và doanh thu theo từng nguồn khách — đánh giá nguồn nào mang lại khách chất lượng nhất.",
+        "province_statistics": "Khách hàng, lịch hẹn và doanh thu theo tỉnh/thành phố khách hàng cư trú — xác định khu vực tiềm năng.",
+        "country_statistics": "Khách hàng, lịch hẹn và doanh thu theo quốc gia khách hàng — phân tích khách quốc tế.",
+        "customer_interested": "Khách hàng, lịch hẹn và doanh thu theo nhóm dịch vụ mà khách quan tâm — nắm nhu cầu dịch vụ theo nhóm khách.",
+        "category_statistics": "Khách hàng, lịch hẹn và doanh thu theo nhóm khách hàng — hỗ trợ phân khúc và chăm sóc khách theo nhóm.",
+        "group_source": "Khách hàng, lịch hẹn và doanh thu gộp theo nhóm nguồn khách (1 nhóm gồm nhiều nguồn con) — góc nhìn tổng hợp hơn báo cáo theo nguồn.",
+        "service_type": "Số lượng và doanh thu dịch vụ đã chốt, gộp theo nhóm loại dịch vụ — biết nhóm dịch vụ nào bán chạy nhất.",
+        "treatment_services": "Chi tiết từng dịch vụ cụ thể đã sử dụng (số khách, số lượt, số tiền, chiết khấu, hoàn tiền) — theo dõi hiệu quả bán từng dịch vụ riêng lẻ.",
+        "note": "Danh sách ghi chú/tương tác đã ghi nhận với khách hàng trong quá trình chăm sóc.",
+        "appointment_statistics": "Số lịch hẹn mới, huỷ, khách đến và khách đồng ý theo từng ngày — theo dõi biến động lịch hẹn hàng ngày.",
+        "appointment_chart_scatter": "Biểu đồ theo ngày trong tháng thể hiện lịch hẹn, khách đến và khách làm (đã chốt dịch vụ) — trực quan hoá xu hướng phễu lịch hẹn.",
+        "appointment_consultation": "Danh sách toàn bộ lịch hẹn tư vấn (kể cả đã hủy) kèm kết quả checkin — nhóm dịch vụ đồng ý hoặc lý do từ chối, ghi chú, người tạo/tư vấn — để đối chiếu kết quả tư vấn từng lịch hẹn.",
+        "department_revenue": "Hiệu quả tư vấn theo từng nhân viên phòng tư vấn: lịch hẹn, khách đến, khách đồng ý, giá trị đơn, đã thanh toán, đặt cọc.",
+        "telesales_online": "Hiệu quả từng nhân viên Telesales online (nguồn khách online): tương tác/comment, lead, lịch hẹn mới, khách đến, khách đồng ý, doanh thu.",
+        "effective_advise": "Tỉ lệ khách đồng ý so với không đồng ý trên tổng số lịch hẹn đã đến — đo hiệu quả chốt tư vấn chung.",
+        "branch_appointment": "Lịch hẹn tổng hợp theo từng chi nhánh: tổng số hẹn, khách đến, hẹn huỷ, khách đồng ý — so sánh vận hành lịch hẹn giữa các chi nhánh."
+      },
+      "revenue": {
+        "payment_type": "Loại phiếu",
+        "amount_in_out": "Tiền thu/chi",
+        "by_date": {
+          "title": "Doanh thu theo ngày thu tiền",
+          "accepted_tooltip": "Số khách đồng ý làm dịch vụ (lịch hẹn đầu tiên trong kỳ)",
+          "print_tooltip": "In báo cáo thu tiền trong ngày"
+        },
+        "by_method": {
+          "title": "Hình thức thanh toán",
+          "sheet_name": "HTTT theo loại phiếu",
+          "unknown_method": "Không xác định",
+          "transfer_not_in_total": "Chuyển cọc là bút toán nội bộ (cọc → dịch vụ), không cộng vào cột Tổng — tiền đã tính lúc nhận cọc"
+        },
+        "branch_receipts": {
+          "title": "Phiếu thu theo chi nhánh"
+        },
+        "refund": {
+          "title": "Giảm trừ doanh số",
+          "code": "Mã phiếu giảm trừ",
+          "amount": "Số tiền giảm trừ",
+          "type": "Loại giảm trừ",
+          "content": "Nội dung giảm trừ",
+          "code_deposit": "Mã phiếu cọc",
+          "content_deposit": "Nội dung phiếu cọc",
+          "date": "Ngày giảm trừ"
+        },
+        "desc": {
+          "by_date": "Doanh số, thực thu, đặt cọc, hoàn tiền theo từng ngày",
+          "by_method": "Tổng tiền theo hình thức thanh toán và loại phiếu",
+          "branch_receipts": "Danh sách phiếu thu/chi theo chi nhánh",
+          "refund": "Phiếu hoàn dịch vụ và hoàn cọc"
+        }
+      },
+      "debt": {
+        "panel": "Công nợ",
+        "customer": {
+          "title": "Công nợ theo khách hàng"
+        },
+        "order_plan": {
+          "title": "Công nợ theo đơn hàng"
+        },
+        "installment": {
+          "title": "Công nợ trả góp"
+        },
+        "service": {
+          "title": "Công nợ theo dịch vụ"
+        },
+        "desc": {
+          "customer": "Khách hàng còn nợ: doanh số, đã thanh toán, công nợ và đặt cọc",
+          "order_plan": "Phải thu đầu kỳ, doanh thu, đã thu và phải thu cuối kỳ của từng đơn hàng",
+          "installment": "Các kỳ trả góp chưa thu xong, kỳ quá hạn lên đầu",
+          "service": "Từng dịch vụ còn nợ: phát sinh, đã thanh toán, công nợ"
+        },
+        "label": {
+          "collected_date": "Ngày thu thập",
+          "order_created_date": "Ngày tạo đơn",
+          "receivable_begin": "Phải thu đầu kỳ",
+          "revenue_in_period": "Doanh thu trong kỳ",
+          "collected_in_period": "Đã thu trong kỳ",
+          "receivable_end": "Phải thu cuối kỳ",
+          "period": "Kỳ",
+          "due_date": "Ngày đến hạn",
+          "paid_amount": "Đã thanh toán",
+          "prepay": "Trả trước",
+          "incurred": "Phát sinh",
+          "customer_deposit": "Cọc còn lại của khách"
+        },
+        "status": {
+          "overdue": "Quá hạn",
+          "partial": "Thanh toán 1 phần",
+          "unpaid": "Chưa thu"
+        }
+      },
+      "staff": {
+        "panel_title": "Nhân viên",
+        "revenue_telesale": "Doanh số tư vấn viên",
+        "revenue_telesale_summary": "Tổng hợp doanh số tư vấn viên",
+        "commission_telesale": "Hoa hồng tư vấn viên",
+        "commission_telesale_summary": "Tổng hợp hoa hồng tư vấn viên",
+        "desc": {
+          "revenue_telesale": "Chi tiết doanh số ghi nhận cho từng tư vấn viên theo từng dịch vụ",
+          "revenue_telesale_summary": "Tổng doanh số và số lượt theo từng tư vấn viên",
+          "commission_telesale": "Chi tiết hoa hồng tư vấn viên theo từng lần thanh toán",
+          "commission_telesale_summary": "Tổng tiền thu và hoa hồng theo từng tư vấn viên"
+        },
+        "amount": "Tiền thu",
+        "revenue": "Doanh số",
+        "commission": "Hoa hồng",
+        "confirm_date": "Ngày ghi nhận",
+        "commission_date": "Ngày tính hoa hồng",
+        "service_code": "Mã dịch vụ",
+        "count": "Số lượt",
+        "count_chart": "Số lượt theo tư vấn viên",
+        "revenue_chart": "Doanh số theo tư vấn viên",
+        "commission_chart": "Hoa hồng theo tư vấn viên",
+        "unit_times": "lượt",
+        "unit_currency": "đ"
+      }
+    },
+    "customer_info": {
+      "old_code": "Mã KH cũ",
+      "other_phone": "Số khác",
+      "birthday": "Sinh nhật",
+      "interest": "Quan tâm",
+      "customer_type": "Loại khách",
+      "category": "Nhóm",
+      "ad": "Quảng cáo",
+      "chat": "Chat",
+      "instagram": "Instagram",
+      "viber": "Viber"
+    },
+    "order_service_used": {
+      "payment_pending": "Chưa thanh toán"
+    },
+    "order_plan": {
+      "form": {
+        "tab_info": "Thông tin đơn hàng",
+        "tab_expand": "Mở rộng",
+        "expires_at": "Hiệu lực",
+        "total_service": "Tổng dịch vụ",
+        "pick_service_placeholder": "Tìm theo tên dịch vụ",
+        "total_payment": "Tổng thanh toán",
+        "edit_price_in_range": "Chỉnh sửa giá trong khoảng",
+        "price_not_editable": "Giá không cho chỉnh sửa",
+        "installment_period": "Kỳ hạn trả góp",
+        "no_installment_services": "Không có dịch vụ nào hỗ trợ trả góp trong đơn hàng này",
+        "installment_only_enabled": "Chỉ các dịch vụ/gói dịch vụ được bật \"Trả góp\" mới hiển thị ở đây",
+        "deposit_min": "Thanh toán (tối thiểu",
+        "remaining_amount": "Số tiền còn lại",
+        "amount_per_period": "Thanh toán mỗi kỳ",
+        "interest_rate": "Lãi suất",
+        "per_year": "%/năm",
+        "total_to_pay": "Thanh toán",
+        "outstanding_balance": "Số tiền còn lại",
+        "tooltip_col_coupon": "(4) = Giảm giá dòng dịch vụ (giá trị lịch sử)",
+        "tooltip_col_subtotal": "(5) = (1)×(2)−(3)−(4)",
+        "tooltip_col_total": "(7) = (5)−(6)"
+      },
+      "order_type": "Đơn hàng mới/cũ",
+      "change_service": {
+        "action": "Đổi dịch vụ",
+        "new_service_label": "Dịch vụ mới",
+        "reason_label": "Lý do đổi (không bắt buộc)",
+        "success": "Đổi dịch vụ thành công",
+        "no_options": "Không có dịch vụ nào khác cùng nhóm dịch vụ để chọn",
+        "changed_from": "Đã đổi từ: {{name}}",
+        "row_removed": "Dòng dịch vụ này đã bị xoá, không áp dụng được thay đổi dịch vụ."
+      },
+      "tooltip": {
+        "delete": "Xóa đơn hàng",
+        "detail": "Chi tiết đơn hàng",
+        "refund": "Hoàn trả dịch vụ",
+        "print": "In đơn hàng",
+        "service_locked": "Dịch vụ đang bị khoá",
+        "service_unlocked": "Dịch vụ không bị khoá"
+      },
+      "dialog_note": "Lưu ý",
+      "dialog_refund": "Hoàn trả dịch vụ",
+      "dialog_create": "Thêm mới đơn hàng",
+      "noti_create_success": "Tạo mới đơn hàng thành công",
+      "noti_delete_success": "Xóa đơn hàng thành công",
+      "detail_panel": {
+        "section_money": "Giá trị đơn & thanh toán",
+        "section_info": "Thông tin đơn",
+        "section_system": "Thông tin hệ thống",
+        "order_total": "Tổng giá trị",
+        "no_service": "Đơn chưa có dịch vụ nào",
+        "open_service": "Xem chi tiết dịch vụ"
+      },
+      "list_all": {
+        "total": "Giá trị đơn hàng",
+        "tooltip_export": "Tải dữ liệu đơn hàng"
+      }
+    },
+    "appointment": {
+      "action": {
+        "book": "Đặt hẹn"
+      },
+      "dialog": {
+        "create": "Thêm mới lịch hẹn"
+      },
+      "tooltip": {
+        "confirm_appointment": "Xác nhận khách đã đến?",
+        "copy_appointment": "Sao chép thông tin lịch hẹn",
+        "export": "Tải dữ liệu lịch hẹn",
+        "view_matrix": "Xem dạng ma trận",
+        "view_detail": "Xem dạng chi tiết",
+        "print_list": "In danh sách",
+        "book_appointment": "Đặt lịch hẹn"
+      },
+      "list": {
+        "no_appointments": "Không có lịch hẹn nào",
+        "appointment_hour": "Giờ hẹn",
+        "time_slot": "Khung giờ",
+        "detail_list": "Danh sách chi tiết",
+        "appointments": "lịch hẹn",
+        "no_appointments_in_slot": "Không tìm thấy lịch hẹn trong khung giờ này"
+      },
+      "page": {
+        "by_day": "Phân bố theo ngày",
+        "by_hour": "Phân bố theo giờ"
+      },
+      "detail": {
+        "action_history": "Lịch sử thao tác",
+        "appointment_info": "Thông tin lịch hẹn",
+        "no_action_history": "Chưa có lịch sử thao tác",
+        "note_placeholder": "Nhập ghi chú về lịch hẹn này... (Ctrl+Enter để lưu)",
+        "checkout_time": "Thời gian về",
+        "appointment_count": "Số lần hẹn",
+        "first_appointment_date": "Ngày hẹn lần đầu",
+        "date_change_history": "Lịch sử đổi ngày hẹn",
+        "section_staff": "Nhân sự phụ trách",
+        "section_source": "Nguồn & chiến dịch",
+        "consultant": "Người tư vấn",
+        "converter": "Người chuyển đổi",
+        "service_accepted": "Đồng ý làm dịch vụ",
+        "cancelled_note": "Lịch hẹn đã hủy"
+      },
+      "duplicate": {
+        "back_msg": "để quay lại màn hình trước.",
+        "click_label": "Click",
+        "create_keep_msg": "để tạo mới lịch ngày <b class=\"p-text-primary\">{{newTime}}{{newBranch}}</b>, Lịch hẹn ngày <b class=\"p-text-primary\">{{oldTime}} , {{oldBranch}}</b> vẫn được <strong class=\"p-text-primary\">giữ lại</strong>.",
+        "creating_msg": "Bạn đang tạo mới một lịch hẹn tại chi nhánh <b class=\"p-text-primary\">{{branch}}</b> vào lúc <b class=\"p-text-primary\">{{time}}</b>",
+        "existing_msg": "Khách hàng đã có lịch hẹn tại chi nhánh <b class=\"p-text-primary\">{{branch}}</b> vào lúc <b class=\"p-text-primary\">{{time}}</b>",
+        "one_per_day": "Một khách hàng chỉ đặt được 1 lịch / 1 ngày tại 1 chi nhánh",
+        "update_to_msg": "để cập nhật lịch hẹn ngày <b class=\"p-text-primary\">{{oldTime}} , {{oldBranch}}</b> thành <b class=\"p-text-primary\">{{newTime}} . {{newBranch}}</b>"
+      },
+      "label": {
+        "customer_type": "Khách mới/cũ?",
+        "checkin": "Checkin",
+        "checkout": "Checkout",
+        "confirm_status": "Trạng thái xác nhận",
+        "content_customer": "Nội dung khách hàng hẹn",
+        "busy": "Đông",
+        "very_busy": "Rất đông"
+      },
+      "checkin": {
+        "error_date_range": "Thời gian check-in phải nhỏ hơn hoặc bằng thời gian check-out",
+        "error_out_of_range": "Thời gian không nằm trong khoảng cho phép",
+        "error_select_status": "Vui lòng chọn trạng thái hẹn",
+        "error_select_service_accepted": "Vui lòng chọn nhóm dịch vụ đồng ý",
+        "error_select_reason": "Vui lòng chọn lý do từ chối",
+        "error_check_info": "Vui lòng kiểm tra lại thông tin"
+      }
+    },
+    "telesales_online": {
+      "lead_per_interaction": "Lead/ Tương tác",
+      "appointment_minus_per_lead": "Lịch mới-/ Lead",
+      "appointment_plus_per_cham_lai": "Lịch mới+/ Chăm lại",
+      "arrived_per_lead": "Đến/ Lead",
+      "arrived_per_interaction": "Đến/ Tương tác",
+      "accepted_per_interaction": "Đồng ý/ Tương tác"
+    },
+    "appointment_list": {
+      "confirm": "Xác nhận lịch",
+      "service_accepted": "Dịch vụ đồng ý"
+    },
+    "customer": {
+      "export_data_tooltip": "Tải dữ liệu khách hàng",
+      "filter_customer_type": "Khách mới/cũ?",
+      "refund_service_short": "Hoàn DV",
+      "id_card_number": "CCCD/Hộ chiếu",
+      "id_card_number_tooltip": "Số CCCD/Hộ chiếu/Định danh cá nhân",
+      "connect": "Kết nối",
+      "schedule_time": "Thời gian dự kiến",
+      "invalid_birthday": "Ngày sinh nhập không hợp lệ",
+      "invalid_collected_date": "Ngày nhận nhập không hợp lệ",
+      "book_type_pre": "Đặt trước",
+      "create_existing_dialog_title": "Tạo mới khách hàng có sẵn",
+      "not_found_title": "Không tìm thấy",
+      "not_found_message": "Khách hàng không tồn tại hoặc không thuộc phạm vi bạn phụ trách",
+      "load_failed": "Không thể tải thông tin khách hàng",
+      "tag_too_long": "Nhãn không được quá 50 ký tự",
+      "tag_max_count": "Tối đa 10 nhãn",
+      "tag_attach_success": "Gắn nhãn thành công",
+      "tag_attach_failed": "Không thể gắn nhãn",
+      "tag_remove_success": "Xoá nhãn thành công",
+      "tag_remove_failed": "Không thể xoá nhãn",
+      "file_too_large": "Vui lòng chọn File không vượt quá 10MB",
+      "no_appointment_reason_added": "Đã thêm lý do chưa đặt lịch",
+      "no_appointment_reason_failed": "Không thể cập nhật lý do",
+      "camera_access_failed": "Không thể truy cập camera",
+      "create_image_failed": "Không thể tạo hình ảnh",
+      "no_value": "Chưa có",
+      "days_ago": "{{days}} ngày trước",
+      "months_ago": "{{months}} tháng trước",
+      "years_ago": "{{years}} năm trước",
+      "create_existing_tooltip": "Tạo mới từ khách hàng đã có",
+      "customer_timeline_tooltip": "Xem lịch sử khách hàng",
+      "no_branch": "Chưa có chi nhánh",
+      "payment_tooltip": "Tổng số tiền đã thu",
+      "progress_tooltip": "Tiến trình khách hàng",
+      "revenue_tooltip": "Tổng doanh thu",
+      "update_customer_tooltip": "Cập nhật thông tin khách hàng",
+      "upload_avatar": "Tải ảnh đại diện",
+      "debt_tooltip": "Là số tiền chưa được thanh toán dựa trên dịch vụ",
+      "deposit_tooltip": "Là tiền khách hàng đang đặt cọc mà chưa thanh toán cho bất cứ dịch vụ nào",
+      "deposit_short": "Tiền cọc",
+      "refund_deposit_tooltip": "Số tiền hoàn cọc",
+      "refund_service_tooltip": "Số tiền hoàn dịch vụ",
+      "last_contact": "Liên hệ lần cuối",
+      "points_unit": "điểm",
+      "add_tag": "Gắn nhãn",
+      "add_tag_placeholder": "Thêm nhãn...",
+      "captured_image_alt": "Ảnh đã chụp",
+      "customer_timeline_title": "Timeline khách hàng",
+      "no_activity": "Chưa có hoạt động nào",
+      "duplicate_save": "Lưu trùng",
+      "phone_duplicate_blocked": "Số điện thoại đã thuộc về khách hàng khác — mỗi số điện thoại chỉ được dùng cho 1 khách hàng.",
+      "switch_appointment_content": "Nội dung lịch hẹn",
+      "create_customer_success": "Tạo mới khách hàng thành công",
+      "invalid_collected_date_warn": "Ngày nhận nhập không hợp lệ",
+      "timeline_tooltip": "Hành trình khách hàng",
+      "detail": "Chi tiết khách hàng",
+      "visit_count": "Số ngày đến",
+      "treatment_count_tooltip": "Tổng số lần khách đã đến sử dụng dịch vụ",
+      "visit_count_tooltip": "Số ngày khách thực sự ghé (unique theo ngày)",
+      "behavior_group": "Hành vi",
+      "tab_contact_extended": "Liên hệ & mở rộng",
+      "extended_info_section": "Thông tin mở rộng",
+      "tab_appointment": "Đặt hẹn"
+    },
+    "reminder_list": {
+      "type_filter": "Loại lời nhắc",
+      "filter_status": "Tình trạng",
+      "confirm_done": "Xác nhận đã hoàn thành?",
+      "actions": "Thao tác"
+    },
+    "reminder_form": {
+      "remind_type_label": "Loại nhắc hẹn"
+    },
+    "reminder_customer": {
+      "tooltip_delete_reminder": "Xóa lời nhắc"
+    },
+    "note_app": {
+      "pinned_header": "Ghi chú đã ghim",
+      "pinned_badge": "Ghim",
+      "delete_tooltip": "Xóa ghi chú",
+      "load_more": "Tải thêm",
+      "confirm_delete": "Bạn muốn xóa ghi chú này?",
+      "pin_failed": "Không thể cập nhật trạng thái ghim"
+    },
+    "note_form": {
+      "add_tooltip": "Thêm ghi chú",
+      "create_success": "Tạo ghi chú thành công",
+      "upload_failed_title": "Upload ảnh thất bại",
+      "upload_failed_msg": "Đã loại {{failed}}/{{total}} ảnh. Vui lòng kiểm tra lại trước khi lưu.",
+      "image_unprocessed_title": "Ảnh chưa được xử lý",
+      "image_unprocessed_msg": "Vui lòng thử lại.",
+      "missing_content_title": "Thiếu nội dung",
+      "missing_content_msg": "Ghi chú trống sau khi xử lý ảnh.",
+      "process_failed": "Xử lý nội dung thất bại. Vui lòng thử lại."
+    },
+    "treatment_service": {
+      "detail": {
+        "title": "Chi tiết dịch vụ sử dụng",
+        "section_progress": "Tiến độ sử dụng",
+        "section_finance": "Giá & thanh toán",
+        "section_timeline": "Mốc thời gian",
+        "discount_reason": "Lý do chiết khấu",
+        "lock_paused": "Tạm ngưng",
+        "lock_discount": "Giảm trừ do khoá dịch vụ"
+      }
+    },
+    "payment_list": {
+      "title": {
+        "payment": "Phiếu thanh toán",
+        "receipts": "Phiếu thu/chi",
+        "deposit": "Phiếu đặt cọc",
+        "consignment": "Phiếu ký gửi",
+        "refund_deposit": "Phiếu hoàn cọc",
+        "refund_service": "Phiếu hoàn dịch vụ"
+      },
+      "export_tooltip": "Xuất Excel danh sách phiếu",
+      "col": {
+        "code_recv": "Mã thu/chi",
+        "transaction_type": "Loại giao dịch",
+        "payment_channel": "Kênh thanh toán",
+        "payment_status": "Trạng thái thanh toán",
+        "original_receipt_code": "Mã phiếu thu gốc",
+        "payment_source": "Nguồn thanh toán",
+        "customer_address": "Địa chỉ khách hàng",
+        "remaining_deposit": "Cọc còn lại",
+        "consignment_amount": "Số tiền ký gửi",
+        "remaining_consignment": "Ký gửi còn lại",
+        "deposit_date": "Ngày thu cọc",
+        "consignment_date": "Ngày ký gửi",
+        "refund_deposit_code": "Mã phiếu hoàn cọc",
+        "refund_deposit_content": "Nội dung hoàn cọc",
+        "deposit_code": "Mã phiếu thu cọc",
+        "deposit_content": "Nội dung thu cọc",
+        "payment_time_recv": "Ngày thu/chi tiền",
+        "appointment_date": "Ngày hẹn lịch"
+      }
+    },
+    "customer_attachment": {
+      "header_video": "Video · Tối đa {{size}} MB/file",
+      "header_audio": "Âm thanh · Tối đa {{size}} MB/file",
+      "header_file": "Tài liệu · Tối đa {{size}} MB/file",
+      "empty_video": "Chưa có video",
+      "empty_audio": "Chưa có file âm thanh",
+      "empty_file": "Chưa có tài liệu đính kèm",
+      "play_video": "Phát video",
+      "listen": "Nghe",
+      "upload_video_title": "Tải lên video",
+      "upload_audio_title": "Tải lên âm thanh",
+      "upload_file_title": "Tải lên tài liệu",
+      "drop_hint": "Kéo thả hoặc",
+      "doc_types": "Ảnh, PDF, Word, Excel, PPT, TXT, ZIP...",
+      "limits": "Tối đa {{size}} MB/file · Tối đa {{count}} file/lần",
+      "valid_count": "{{valid}}/{{max}} file hợp lệ",
+      "limit_reached": "Đã đạt giới hạn tối đa",
+      "uploaded": "Đã tải lên ✓",
+      "max_files_error": "Tối đa {{count}} file/lần",
+      "size_exceeded": "Vượt quá dung lượng tối đa {{size}} MB",
+      "confirm_delete_video": "Xóa video này?",
+      "confirm_delete_audio": "Xóa file âm thanh này?",
+      "confirm_delete_file": "Xóa tài liệu này?",
+      "history_label": "Tệp đính kèm"
+    }
+  },
+  "share": {
+    "date_picker": {
+      "m1": "1 tháng",
+      "m6": "6 tháng",
+      "y1": "1 năm",
+      "y2": "2 năm",
+      "y10": "10 năm"
+    },
+    "services_autocomplete": {
+      "all": "Tất cả dịch vụ",
+      "customer_ordered": "Dịch vụ khách hàng đã đặt",
+      "other": "Dịch vụ khác"
+    }
+  },
+  "common": {
+    "action": {
+      "pin": "Ghim",
+      "unpin": "Bỏ ghim",
+      "create": "Tạo mới",
+      "update": "Cập nhật",
+      "delete": "Xóa",
+      "save": "Lưu",
+      "save_and_new": "Lưu và tiếp tục",
+      "cancel": "Huỷ",
+      "clear": "Xoá",
+      "search": "Tìm kiếm",
+      "filter": "Bộ lọc",
+      "clear_filter": "Xoá bộ lọc",
+      "reload_page": "Tải lại trang",
+      "refresh": "Làm mới",
+      "view_more": "Xem thêm",
+      "copy": "Copy",
+      "import": "Import dữ liệu",
+      "export": "Tải dữ liệu",
+      "add": "Thêm",
+      "confirm": "Xác nhận",
+      "print": "In báo cáo",
+      "export_excel": "Export Excel",
+      "copy_name": "Sao chép tên",
+      "remove": "Xóa khỏi danh sách",
+      "back": "Quay lại",
+      "next": "Tiếp",
+      "skip": "Bỏ qua",
+      "finish": "Hoàn tất",
+      "edit": "Sửa",
+      "upload": "Tải lên",
+      "logout": "Logout",
+      "close": "Đóng",
+      "reload": "Tải lại",
+      "show_password": "Hiện mật khẩu",
+      "hide_password": "Ẩn mật khẩu",
+      "retry": "Thử lại",
+      "download": "Tải xuống",
+      "apply": "Áp dụng",
+      "more_actions": "Thao tác khác"
+    },
+    "label": {
+      "payable": "Cần thanh toán",
+      "receipt_date": "Ngày thu",
+      "id": "ID",
+      "code": "Mã",
+      "name": "Tên",
+      "status": "Trạng thái",
+      "sort_order": "Vị trí",
+      "company": "Thương hiệu",
+      "branch": "Chi nhánh",
+      "keyword": "Từ khoá...",
+      "search_by_keyword": "Nhập từ khoá",
+      "payment_receipt": "Phiếu thanh toán",
+      "deposit_receipt": "Phiếu đặt cọc",
+      "amount_paid": "Đã thanh toán",
+      "signature": "Chữ ký",
+      "other_address": "Địa chỉ khác",
+      "print_thankyou": "<b>{{CompanyName}}</b> chân thành cảm ơn quý khách đã tin tưởng\n và sử dụng dịch vụ của chúng tôi. Quý khách có thể đóng góp ý kiến về chất lượng và thái độ phục vụ\n của đội ngũ nhân viên chúng tôi\n qua hotline: <b>{{Hotline}}</b>\n để chúng tôi ngày càng hoàn thiện dịch vụ một cách chuyên nghiệp nhất.",
+      "actions": "Hành động",
+      "note": "Ghi chú",
+      "created_at": "Ngày tạo",
+      "updated_at": "Ngày cập nhật",
+      "user_updated": "Người cập nhật",
+      "description": "Mô tả",
+      "no": "STT",
+      "visible": "Hiển thị",
+      "hidden": "Ẩn",
+      "yes": "Có",
+      "no_text": "Không",
+      "show": "Hiển thị",
+      "hide": "Ẩn",
+      "active": "Kích hoạt",
+      "inactive": "Vô hiệu hóa",
+      "loading": "Đang tải...",
+      "position": "Vị trí",
+      "color": "Màu",
+      "default": "Mặc định",
+      "display_color": "Màu hiển thị",
+      "parent": "Danh mục cha",
+      "total": "Tổng cộng",
+      "no_results": "Không tìm thấy kết quả",
+      "user_created": "Người tạo",
+      "consultant": "Tư vấn viên",
+      "doctor": "Nhân viên phụ trách",
+      "staff": "Nhân viên",
+      "full_name": "Họ và tên",
+      "phone": "Số điện thoại",
+      "email": "Email",
+      "address": "Địa chỉ",
+      "birthday": "Ngày sinh",
+      "age": "Độ tuổi",
+      "age_from": "Độ tuổi từ",
+      "age_to": "Độ tuổi đến",
+      "gender": "Giới tính",
+      "country": "Quốc gia",
+      "province": "Tỉnh thành",
+      "content": "Nội dung",
+      "type": "Loại",
+      "category": "Danh mục",
+      "unit": "Đơn vị",
+      "quantity": "Số lượng",
+      "amount": "Số tiền",
+      "revenue": "Doanh thu",
+      "service": "Dịch vụ",
+      "progress": "Tiến trình",
+      "start_date": "Từ ngày",
+      "month": "Tháng",
+      "max_size_prefix": "tối đa",
+      "days": "ngày",
+      "rank": "Hạng thành viên",
+      "discount_percent": "% giảm giá",
+      "min_points": "Điểm tối thiểu",
+      "max_points": "Điểm tối đa",
+      "customer_group": "Nhóm khách hàng",
+      "source": "Nguồn khách hàng",
+      "unit_name": "Tên đơn vị",
+      "appointment": "Lịch hẹn",
+      "timezone": "Múi giờ",
+      "currency": "Tiền tệ",
+      "locale": "Định dạng số",
+      "service_group": "Nhóm dịch vụ",
+      "unassigned": "Chưa phân công",
+      "close": "Đóng",
+      "date": "Ngày",
+      "treatment_service_code": "Mã dịch vụ sử dụng",
+      "service_code": "Mã dịch vụ",
+      "other": "Khác",
+      "saved": "Đã lưu",
+      "method": "Hình thức",
+      "reason": "Lý do",
+      "report": "Báo cáo",
+      "patient": "Khách hàng",
+      "all": "Tất cả",
+      "customer_source_group": "Nhóm nguồn khách hàng",
+      "normal": "Bình thường",
+      "source_2": "Nguồn",
+      "treatment_progress": "Tiến trình sử dụng dịch vụ",
+      "add": "(+) Thêm",
+      "selected": "Đã chọn",
+      "customer_code": "Mã khách hàng",
+      "lead": "Lead",
+      "appointment_date": "Ngày hẹn",
+      "qty": "SL",
+      "password": "Mật khẩu",
+      "treatment": "Điều trị",
+      "history": "Lịch sử",
+      "department": "Phòng ban",
+      "member": "Thành viên",
+      "reminder": "Nhắc lịch",
+      "deposit_amount": "Số tiền cọc",
+      "appointment_code": "Mã lịch hẹn",
+      "service_source": "Nguồn dịch vụ",
+      "male": "Nam",
+      "female": "Nữ",
+      "high": "Cao",
+      "consignment": "Ký gửi",
+      "order": "Đơn hàng",
+      "accounting": "Kế toán",
+      "discount": "Chiết khấu",
+      "position_saved_prev_curr": "Đã lưu vị trí: {{prev}} → {{curr}}",
+      "save_error": "Lỗi lưu",
+      "refund_date": "Ngày hoàn tiền",
+      "coupon_discount": "Giảm giá dòng",
+      "payment_type": "Loại thanh toán",
+      "report_list": "Danh sách báo cáo",
+      "coupon": "Coupon",
+      "change_password": "Thay đổi mật khẩu",
+      "avatar": "Avatar",
+      "delete_customer": "Xóa khách hàng",
+      "data": "Dữ liệu",
+      "cancel_appointment": "Hủy lịch hẹn",
+      "username": "Tên đăng nhập",
+      "dashboard": "Bảng điều khiển",
+      "item": "%",
+      "transfer_deposit": "Chuyển cọc",
+      "free": "Miễn phí",
+      "agreed": "Đồng ý",
+      "facebook": "Facebook",
+      "low": "Thấp",
+      "promotion": "Khuyến mại",
+      "reception_examination": "Tiếp nhận - Xử lý",
+      "re_engagement": "Tái khai thác",
+      "not_booked_reason": "Lý do chưa đặt lịch",
+      "installment": "Trả góp",
+      "consultation_status": "Trạng thái tư vấn",
+      "not_selected": "Không chọn",
+      "hour": "Giờ",
+      "refund_amount": "Số tiền hoàn",
+      "receipt_code": "Mã phiếu",
+      "average_customer": "Trung bình/ Khách",
+      "deposit_type": "Loại đặt cọc",
+      "free_service": "Dịch vụ miễn phí",
+      "execution_date": "Ngày thực hiện",
+      "appointment_detail": "Chi tiết lịch hẹn",
+      "yesterday": "Hôm qua",
+      "vital_signs": "Chỉ số sinh tồn",
+      "orders": "Số đơn",
+      "today": "Hôm nay",
+      "house_number": "Số nhà",
+      "symptoms": "Triệu chứng",
+      "appointment_note": "Ghi chú lịch hẹn",
+      "ot": "OT",
+      "new_password": "Mật khẩu mới",
+      "select_date": "Chọn ngày",
+      "appointment_time": "Thời gian hẹn",
+      "service_discount": "Chiết khấu dịch vụ",
+      "card_type": "Loại thẻ",
+      "other_discount": "Giảm khác",
+      "update_reminder": "Cập nhật lời nhắc",
+      "update_appointment": "Cập nhật lịch hẹn",
+      "the_date_the_customer_s_phone_information_was_re": "Là ngày nhận được thông tin số điện thoại của khách hàng",
+      "invoice": "Hóa đơn",
+      "customer_management": "Quản lý khách hàng",
+      "service_list": "Danh sách dịch vụ",
+      "payment_history": "Lịch sử thanh toán",
+      "clinic_income": "Thu tiền chi nhánh",
+      "clinic_expense": "Chi tiền chi nhánh",
+      "temporary_deposit": "Cọc tạm",
+      "ticket": "Ticket",
+      "connected": "Đã kết nối",
+      "no_rank": "Chưa có hạng",
+      "silver": "Bạc",
+      "gold": "Vàng",
+      "planned": "Dự kiến",
+      "general_clinic": "Chuỗi nhiều cơ sở",
+      "feature": "Chức năng",
+      "crm": "CRM",
+      "sale": "Sale",
+      "template_name": "Tên template",
+      "old_service_code": "Mã dịch vụ cũ",
+      "age_group": "Nhóm tuổi",
+      "telesale_commission": "Hoa hồng tư vấn viên",
+      "template_type": "Loại mẫu template",
+      "identifier_code": "Mã định danh",
+      "zalo": "Zalo",
+      "online_source": "Nguồn online",
+      "max_size_mb": "(Tối đa {{size}} MB)",
+      "installment_configuration": "Cấu hình trả góp",
+      "service_name": "Tên dịch vụ",
+      "service_category": "Danh mục dịch vụ",
+      "unlimited": "Không giới hạn",
+      "select_all": "Chọn tất cả",
+      "discount_percent_2": "Phần trăm giảm giá",
+      "rank_2": "Hạng",
+      "detailed_description": "Mô tả chi tiết",
+      "unit_category": "Danh mục đơn vị",
+      "creating": "Đang tạo mới...",
+      "updating": "Đang cập nhật...",
+      "switching": "Đang chuyển...",
+      "deleting": "Đang xóa...",
+      "logging_out": "Đang thoát ra...",
+      "exporting": "Đang export...",
+      "importing": "Đang import...",
+      "staff_list": "Danh sách nhân viên",
+      "customer_info": "Thông tin khách hàng",
+      "reward": "Phần thưởng",
+      "update_profile": "Thay đổi thông tin",
+      "clear_cache": "Xóa bộ nhớ đệm",
+      "software_info": "Thông tin phần mềm",
+      "source_code_agpl": "Mã nguồn (AGPL-3.0)",
+      "update_personal_info": "Thay đổi thông tin cá nhân",
+      "switch_language": "Chuyển đổi ngôn ngữ",
+      "currency_converter": "Chuyển đổi tiền tệ",
+      "re_exploitation_date": "Ngày tái khai thác",
+      "appointment_created_at": "Ngày tạo hẹn",
+      "delete_appointment": "Xóa lịch hẹn",
+      "body_metrics": "Chỉ số cơ thể",
+      "referrer": "Người giới thiệu",
+      "arrived_appointment": "Đến/ Lịch hẹn",
+      "deposit": "Đặt cọc",
+      "valid": "Còn hạn",
+      "remaining": "Còn lại",
+      "current_address": "Địa chỉ hiện tại",
+      "permanent_address": "Địa chỉ thường trú",
+      "permanent_address_per_documents": "Địa chỉ thường trú (theo giấy tờ)",
+      "possible_duplicate_appointment": "Lịch hẹn có thể bị trùng",
+      "check_in_time": "Thời gian check-in",
+      "check_out_time": "Thời gian check-out",
+      "visit": "Lượt khám",
+      "contact_info": "Thông tin liên hệ",
+      "missing_service": "Thiếu dịch vụ",
+      "please_add_at_least_1_service": "Vui lòng thêm ít nhất 1 dịch vụ",
+      "warn": "Cảnh báo",
+      "expires_at": "Hiệu lực đến",
+      "previous_month": "Tháng trước",
+      "in": "Nhập",
+      "update_customer": "Cập nhật khách hàng",
+      "treatment_completion_date": "Ngày hoàn thành sử dụng",
+      "deposit_date": "Ngày đặt cọc",
+      "actual_amount_collected": "Là số tiền thực thu về",
+      "refund_deposit_date": "Ngày hoàn cọc",
+      "update_transfer_deposit": "Cập nhật chuyển cọc",
+      "update_deposit": "Cập nhật cọc",
+      "payment": "Thanh toán",
+      "capture": "Chụp",
+      "retake": "Chụp lại",
+      "customer_count": "Số lượng khách hàng",
+      "service_count": "Số lượng dịch vụ",
+      "promotion_discount": "Giảm khuyến mại",
+      "related_user": "Người liên quan",
+      "agreed_arrived": "Đồng ý/ Khách đến",
+      "relatives": "Người thân",
+      "referral_code": "Mã giới thiệu",
+      "update_order": "Cập nhật đơn hàng",
+      "order_payment": "Thanh toán đơn hàng",
+      "confirm_customer_arrival": "Xác nhận khách đến?",
+      "cannot_load_service_list": "Không thể tải danh sách dịch vụ",
+      "first_appointment_date": "Ngày hẹn đầu",
+      "changed_appointment_date": "Ngày hẹn đã đổi",
+      "appointment_count": "Lần hẹn",
+      "chat_conversation_link": "Link hội thoại chát",
+      "ad_id": "ID quảng cáo",
+      "other_phone": "Số điện thoại khác",
+      "customer_note": "Ghi chú khách hàng",
+      "possible_duplicate_customer": "Có thể trùng khách hàng",
+      "last_visit": "Lần ghé gần nhất",
+      "times": "lần",
+      "mark_as_done": "Đánh dấu hoàn thành",
+      "reminder_content": "Nội dung lời nhắc",
+      "sales": "Doanh số",
+      "total_sales": "Doanh số",
+      "interested_service_group": "Nhóm dịch vụ quan tâm",
+      "service_group_of_interest": "Nhóm dịch vụ quan tâm",
+      "customer": "Khách hàng",
+      "customer_category": "Nhóm khách hàng",
+      "order_code": "Mã đơn hàng",
+      "consulting_doctor": "Nhân viên tư vấn",
+      "customer_arrived": "Khách đến",
+      "check_in": "Khách đến",
+      "appointment_type": "Loại lịch hẹn",
+      "collection_date": "Ngày thu thập",
+      "collected_date": "Ngày thu thập",
+      "order_date": "Ngày lên đơn",
+      "time": "Thời gian",
+      "domestic_area": "Khu vực trong nước",
+      "domestic_region": "Khu vực trong nước",
+      "payment_date": "Ngày thanh toán",
+      "payment_time": "Ngày thanh toán",
+      "actual_revenue": "Thực thu",
+      "average": "Trung bình",
+      "medium": "Trung bình",
+      "payment_method": "Hình thức thanh toán",
+      "drop_image_here": "Kéo thả hình ảnh vào đây",
+      "accepted": "Đồng ý",
+      "convert": "Chuyển đổi",
+      "new_appointment": "Lịch mới",
+      "refund_deposit": "Hoàn cọc",
+      "deposit_refund": "Hoàn cọc",
+      "service_refund": "Hoàn dịch vụ",
+      "refund_service": "Hoàn dịch vụ",
+      "value": "Giá trị",
+      "clinic": "Cơ sở đơn lẻ",
+      "occupation": "Nghề nghiệp",
+      "job": "Nghề nghiệp",
+      "ethnicity": "Dân tộc",
+      "ward_commune": "Phường/Xã",
+      "ward": "Phường/Xã",
+      "member_rank": "Hạng thành viên",
+      "current_image": "Hình ảnh hiện tại",
+      "updated": "Cập nhật",
+      "appointment_content": "Nội dung hẹn",
+      "treatment_service": "Dịch vụ sử dụng",
+      "unit_price": "Đơn giá",
+      "debt": "Công nợ",
+      "international_area": "Khu vực quốc tế",
+      "international_region": "Khu vực quốc tế",
+      "day": "Ngày",
+      "current": "% điều trị",
+      "interaction": "Tương tác",
+      "foreign_region": "Khu vực nước ngoài",
+      "role": "Vai trò",
+      "info": "Thông tin",
+      "information": "Thông tin",
+      "add_new": "Thêm mới",
+      "identifier": "Định danh",
+      "province_city": "Tỉnh/Thành phố",
+      "customer_source": "Nguồn khách",
+      "collection_time": "Ngày thu tiền",
+      "interest": "Khách quan tâm",
+      "nickname": "Tên khác",
+      "total_amount": "Tổng tiền",
+      "subtotal": "Thành tiền",
+      "in_treatment": "Đang sử dụng",
+      "consultation": "Tư vấn",
+      "start_date_2": "Ngày bắt đầu",
+      "result": "Kết quả",
+      "reward_points": "Điểm thưởng",
+      "expected_revenue": "Dự kiến thu",
+      "position_region": "Vị trí/ Vùng",
+      "previous": "% trước đó",
+      "connect": "Kết nối",
+      "visit_date": "Ngày đến",
+      "accepted_service_group": "Nhóm dịch vụ đồng ý",
+      "actor": "Người thực hiện",
+      "do_you_want_to_delete": "Bạn có muốn xóa?",
+      "warning": "Cảnh báo",
+      "partial_payment": "Thanh toán 1 phần",
+      "fully_paid": "Hoàn thành thanh toán",
+      "system_config": "Cấu hình hệ thống",
+      "system_configuration": "Cấu hình hệ thống",
+      "hr": "Nhân sự",
+      "human_resources": "Nhân sự",
+      "detail": "Chi tiết",
+      "file_size_must_not_exceed_2mb": "Kích thước file không được vượt quá 2MB",
+      "allowed_formats": "Chỉ chấp nhận định dạng: ",
+      "online_appointment_type": "Loại hẹn online",
+      "zone": "Khu vực",
+      "configuration": "Cấu hình",
+      "membership_rank_discount": "Giảm hạng thành viên",
+      "member_rank_discount": "Giảm hạng thành viên",
+      "re_care": "Chăm lại",
+      "not_booked": "Chưa đặt lịch",
+      "deposit_customer": "Khách cọc",
+      "new_appointment_lead": "Lịch mới/ Lead",
+      "this_month": "Tháng này",
+      "appointment_service": "Dịch vụ hẹn",
+      "take_photo": "Chụp ảnh",
+      "service_creation_date": "Ngày tạo dịch vụ",
+      "check_in_appointment": "Checkin/ Đặt hẹn",
+      "checkin_appointment": "Checkin/ Đặt hẹn",
+      "old_code": "Mã khách cũ",
+      "reminders": "Lời nhắc",
+      "refund_consignment": "Hoàn ký gửi",
+      "phone_call": "Gọi điện",
+      "disagreed": "Không đồng ý",
+      "walk_in": "Phát sinh",
+      "end": "Kết thúc",
+      "source_group": "Nhóm nguồn",
+      "service_commission": "Hoa hồng dịch vụ",
+      "consulting_appointment": "Loại hẹn tư vấn",
+      "add_new_customer": "Thêm mới khách hàng",
+      "download_template": "Tải file mẫu",
+      "choose_file": "Chọn file",
+      "re_care_appointment": "Lịch chăm lại",
+      "accepted_arrived": "Đồng ý/ Đến",
+      "comment": "Bình luận",
+      "basic_info": "Thông tin cơ bản",
+      "contact": "Liên hệ",
+      "internal_note": "Ghi chú nội bộ",
+      "note_content": "Nội dung ghi chú",
+      "consultation_appointments": "Lịch hẹn tư vấn",
+      "collect_refund_date": "Ngày thu/hoàn tiền",
+      "notice": "Lưu ý",
+      "add_new_order": "Thêm mới đơn hàng",
+      "expected_time": "Thời gian dự kiến",
+      "notification": "Thông báo",
+      "complaint": "Khiếu nại",
+      "new_customer": "Khách hàng mới",
+      "price_info_min_max": "Thông tin giá (Min/ Max)",
+      "service_product": "Dịch vụ/ Sản phẩm",
+      "service_product_group": "Nhóm dịch vụ/ Sản phẩm",
+      "account_number": "Số tài khoản",
+      "permission": "Phân quyền",
+      "total_remaining": "Tổng còn lại",
+      "appointment_status": "Trạng thái lịch hẹn",
+      "service_statistics": "Thống kê dịch vụ",
+      "amount_collected_based_on_order_value": "Là số tiền thu về dựa trên giá trị đơn hàng phát sinh",
+      "amount_not_yet_collected_from_customers_based_on": "Là số tiền chưa thu của khách hàng dựa trên doanh số. Nó bằng doanh số trừ đi doanh thu hiện tại",
+      "choose": "Chọn",
+      "telesale": "Telesale",
+      "all_branches": "Tất cả chi nhánh",
+      "face": "Mặt",
+      "cashier": "Thu ngân",
+      "sign": "Ký",
+      "action": "Thao tác",
+      "price": "Đơn giá",
+      "finance": "Tài chính",
+      "tomorrow": "Ngày mai",
+      "this_year": "Năm nay",
+      "previous_year": "Năm trước",
+      "collected": "Đã thu",
+      "refunded": "Đã hoàn trả",
+      "overpaid": "Thu vượt",
+      "outstanding": "Còn nợ",
+      "theme_light": "Sáng",
+      "theme_dark": "Tối",
+      "care": "Chăm sóc",
+      "last_7_days": "7 ngày qua",
+      "marketing": "Marketing"
+    },
+    "message": {
+      "no_permission": "Bạn không có quyền",
+      "field_required": "Trường này là bắt buộc",
+      "confirm_export": "Bạn có muốn tải dữ liệu?",
+      "export_success": "Export thành công",
+      "copy_success": "Đã copy vào clipboard",
+      "copy_failed": "Không thể copy, vui lòng copy thủ công",
+      "create_success": "Tạo mới thành công",
+      "update_success": "Cập nhật thành công",
+      "no_data": "Không có dữ liệu",
+      "load_error": "Lỗi tải dữ liệu",
+      "confirm_cancel": "Bạn có chắc muốn hủy các thay đổi?",
+      "export_failed": "Export thất bại",
+      "form_invalid": "Form không hợp lệ",
+      "too_many_selected": "Vui lòng không chọn quá nhiều",
+      "data_conflict": "Xung đột dữ liệu",
+      "file_too_large": "Dung lượng quá lớn",
+      "invalid_data": "Dữ liệu không hợp lệ",
+      "retry_later": "Thử lại sau",
+      "unknown_error": "Lỗi không xác định",
+      "offline": "Bạn đang offline. Kiểm tra mạng.",
+      "cors_blocked": "Yêu cầu bị chặn bởi CORS/preflight. Kiểm tra header và đáp ứng OPTIONS.",
+      "ssl_error": "Lỗi SSL",
+      "ssl_error_detail": "Chứng chỉ HTTPS không hợp lệ hoặc expired.",
+      "server_unreachable": "Không thể kết nối máy chủ",
+      "server_unreachable_detail": "URL/API không phản hồi hoặc bị chặn.",
+      "auth_error": "Lỗi xác thực",
+      "auth_invalid": "Thông tin đăng nhập không đúng",
+      "request_invalid": "Yêu cầu không hợp lệ",
+      "offline_detail": "Bạn đang offline. Kiểm tra mạng.",
+      "cors_blocked_detail": "Kiểm tra header và đáp ứng OPTIONS.",
+      "extension_blocked": "Bị chặn bởi extension",
+      "extension_blocked_detail": "Tắt ad-block/privacy cho domain này.",
+      "clear_cache_failed": "Xóa cache thất bại",
+      "file_downloading": "File đang được tải xuống",
+      "export_file_unavailable": "File export không còn tồn tại hoặc đã hết hạn — vui lòng export lại",
+      "attachment_unavailable": "Không tải được tệp đính kèm — tệp có thể đã bị xóa hoặc bạn không có quyền truy cập",
+      "image_too_large_removed": "Một ảnh vượt 10MB đã bị loại khỏi nội dung",
+      "image_upload_failed_title": "Upload ảnh thất bại",
+      "image_upload_failed_msg": "Đã loại {{failed}}/{{total}} ảnh. Vui lòng kiểm tra lại trước khi lưu.",
+      "image_process_failed": "Xử lý ảnh trong nội dung thất bại. Vui lòng thử lại.",
+      "import_confirm": "Xác nhận import dữ liệu?",
+      "import_success": "Import dữ liệu thành công",
+      "switch_language_success": "Chuyển ngôn ngữ thành công",
+      "error": "Có lỗi xảy ra",
+      "save_error": "Lỗi lưu dữ liệu",
+      "saved_position": "Đã lưu vị trí {{prev}} → {{curr}}",
+      "saved_value": "Đã lưu giá trị {{prev}} → {{curr}}",
+      "record_not_found": "Bản ghi không tồn tại hoặc đã bị xoá",
+      "load_failed": "Không tải được dữ liệu",
+      "data_deleted": "Dữ liệu đã bị xóa",
+      "delete_failed": "Xóa thất bại, vui lòng thử lại",
+      "upload_failed": "Tải lên thất bại"
+    },
+    "tooltip": {
+      "import_data": "Import dữ liệu",
+      "export_data": "Tải dữ liệu",
+      "copy_phone": "Sao chép số điện thoại"
+    },
+    "page": {
+      "current_report": "{first}-{last} của {totalRecords}",
+      "loaded_all": "Đã tải hết"
+    },
+    "validation": {
+      "required": "Vui lòng nhập trường này",
+      "email": "Email không hợp lệ",
+      "minlength": "Tối thiểu {{min}} ký tự",
+      "maxlength": "Tối đa {{max}} ký tự",
+      "pattern": "Định dạng không hợp lệ",
+      "invalid": "Giá trị không hợp lệ",
+      "please_check_required_fields": "Vui lòng kiểm tra lại các trường bắt buộc (viền đỏ)"
+    },
+    "status": {
+      "cancelled": "Hủy",
+      "active": "Hoạt động",
+      "error": "Lỗi",
+      "paid": "Đã thanh toán",
+      "arrived": "Khách đến",
+      "unpaid": "Chưa thanh toán",
+      "completed": "Hoàn thành",
+      "success": "Thành công",
+      "locked": "Đã khoá"
+    },
+    "deleted": "Đã xóa",
+    "weekday": {
+      "monday": "Thứ Hai",
+      "tuesday": "Thứ Ba",
+      "wednesday": "Thứ Tư",
+      "thursday": "Thứ Năm",
+      "friday": "Thứ Sáu",
+      "saturday": "Thứ Bảy",
+      "sunday": "Chủ nhật"
+    },
+    "search": {
+      "result_count": "{{count}} kết quả"
+    }
+  },
+  "utilities": {
+    "currency": {
+      "from_unit": "Từ đơn vị",
+      "to_unit": "Sang đơn vị",
+      "original_value": "Giá trị gốc",
+      "converted_value": "Chuyển đổi",
+      "target_unit": "Đơn vị đích",
+      "invalid_amount": "Vui lòng nhập số tiền hợp lệ",
+      "convert_success": "Chuyển đổi thành công"
+    },
+    "command_menu": {
+      "placeholder": "Tìm kiếm chức năng...",
+      "aria_label": "Bảng lệnh nhanh"
+    },
+    "global_search": {
+      "open_new_tab": "Mở trong tab mới",
+      "no_customer_found": "Không tìm thấy khách hàng",
+      "dialog": "Thêm khách hàng",
+      "recent": "Gần đây",
+      "favourite": "Yêu thích"
+    },
+    "popup_other_branch": {
+      "description": "Bạn không cùng chi nhánh khi lưu {{textTitle}} này!!!",
+      "save_note": "Nếu bạn nhấn Lưu, hệ thống sẽ tự động lưu {{textTitle}}"
+    },
+    "switch_branch": {
+      "branch_note": "(*) Chỉ áp dụng filter với danh sách lịch hẹn"
+    },
+    "switch_language": {
+      "placeholder": "Chọn ngôn ngữ",
+      "language_label": "Ngôn ngữ"
+    },
+    "dialog_create": "Thêm mới khách hàng",
+    "export_options_dialog": {
+      "header": "Chọn cột để export",
+      "selected_label": "Export cột đang bật",
+      "selected_desc": "Chỉ xuất file với các cột bạn đang bật trên bảng dữ liệu.",
+      "all_label": "Export toàn bộ cột",
+      "all_desc": "Xuất file với đầy đủ tất cả cột có sẵn, bất kể bạn đang hiển thị cột nào."
+    }
+  },
+  "auth": {
+    "accessdenied": {
+      "title": "Truy cập bị từ chối",
+      "message": "Bạn không có quyền truy cập trang này",
+      "dashboard_label": "Về trang chủ",
+      "back_label": "Quay lại"
+    },
+    "login": {
+      "title": "Đăng nhập",
+      "heading": "Nền tảng quản lý kinh doanh toàn diện",
+      "subtitle": "Đăng nhập để tiếp tục sử dụng hệ thống",
+      "success": "Đăng nhập thành công",
+      "submitting": "Đang đăng nhập...",
+      "verifying": "Đang xác thực...",
+      "syncing": "Đang đồng bộ dữ liệu...",
+      "tagline": "Từ tiếp đón, chăm sóc đến thanh toán — vận hành trên một hệ thống duy nhất",
+      "feature_security_title": "Bảo mật dữ liệu khách hàng",
+      "feature_security_desc": "Mã hóa và tuân thủ chuẩn bảo mật dữ liệu khách hàng",
+      "feature_multibranch_title": "Đa chi nhánh, đa lĩnh vực",
+      "feature_multibranch_desc": "Quản lý tập trung nhiều chi nhánh trên cùng hệ thống",
+      "feature_care_title": "Đồng hành cùng đội ngũ của bạn",
+      "feature_care_desc": "Tối ưu quy trình vận hành, chăm sóc khách hàng",
+      "security_badge": "Dữ liệu của bạn được mã hóa và bảo mật",
+      "rate_limited": "Bạn đã thử quá nhiều lần. Vui lòng thử lại sau {{seconds}} giây"
+    },
+    "notfound": {
+      "heading": "KHÔNG TÌM THẤY",
+      "message": "Trang bạn yêu cầu không tồn tại.",
+      "home_label": "Về trang chủ"
+    },
+    "twofa": {
+      "menu": "Bảo mật 2 lớp",
+      "setup_title": "Xác thực 2 lớp (2FA)",
+      "setup_desc": "Quét mã QR bằng app Google Authenticator / Authy, rồi nhập mã 6 số để xác nhận.",
+      "enter_code": "Nhập mã 6 số từ app xác thực",
+      "code_placeholder": "Mã 6 số",
+      "remember_device": "Tin thiết bị này (không hỏi lại)",
+      "verify": "Xác nhận",
+      "done": "Xong",
+      "manual_hint": "Hoặc nhập tay mã bí mật:",
+      "backup_title": "Mã khôi phục",
+      "backup_warn": "Lưu các mã này nơi an toàn. Mỗi mã dùng 1 lần khi mất thiết bị. Sẽ KHÔNG hiển thị lại.",
+      "enabled_state": "2FA đang được bật",
+      "disable": "Tắt 2FA",
+      "disabled_ok": "Đã tắt 2FA",
+      "invalid_code": "Mã không đúng",
+      "policy_title": "Chính sách 2FA",
+      "require_all": "Bắt buộc toàn công ty",
+      "require_roles": "Bắt buộc theo vai trò",
+      "require_roles_hint": "Bỏ trống nếu đã bật toàn công ty",
+      "trust_days": "Số ngày tin thiết bị",
+      "trust_days_hint": "0 = luôn hỏi 2FA (máy dùng chung)",
+      "rate_limited": "Bạn đã nhập sai mã quá nhiều lần. Vui lòng thử lại sau {{seconds}} giây"
+    },
+    "onboarding": {
+      "step_company_desc": "Tên, mã, hotline, email và địa chỉ thương hiệu của bạn.",
+      "step_branch_desc": "Chi nhánh làm việc đầu tiên."
+    },
+    "force_password": {
+      "title": "Đổi mật khẩu bắt buộc",
+      "desc": "Tài khoản của bạn đang dùng mật khẩu mặc định hoặc mật khẩu do quản trị viên đặt lại. Vui lòng đổi mật khẩu trước khi tiếp tục sử dụng hệ thống. Sau khi đổi, bạn sẽ được đăng xuất và đăng nhập lại bằng mật khẩu mới.",
+      "change": "Đổi mật khẩu",
+      "logout": "Đăng xuất"
+    }
+  },
+  "history": {
+    "log": {
+      "col_changes": "Thay đổi"
+    },
+    "export": {
+      "col_ip": "Địa chỉ IP",
+      "col_browser": "Trình duyệt"
+    },
+    "login_history": {
+      "event_login_success": "Đăng nhập thành công",
+      "event_login_failed": "Đăng nhập thất bại",
+      "event_login_no_fingerprint": "Thiếu fingerprint",
+      "event_new_device": "Thiết bị mới",
+      "event_logout": "Đăng xuất",
+      "event_2fa_challenge": "Yêu cầu 2FA",
+      "event_2fa_failed": "2FA sai"
+    }
+  },
+  "currency": {
+    "same_unit_error": "Đơn vị chuyển đổi không thể giống nhau"
+  },
+  "appointment": {
+    "label": {
+      "consultation_type": "Loại hẹn tư vấn"
+    }
+  },
+  "print": {
+    "cash_flow_report_title": "BÁO CÁO CHI TIẾT THU, CHI, CHUYỂN QUỸ",
+    "appointment_count": "{{count}} lịch hẹn",
+    "date_month": "tháng",
+    "date_year": "năm",
+    "note": "Nội dung",
+    "refund_consignment_title": "PHIẾU HOÀN KÝ GỬI",
+    "refund_deposit_title": "PHIẾU HOÀN CỌC",
+    "refund_service_title": "PHIẾU HOÀN DỊCH VỤ",
+    "revenue_by_day": "Doanh thu theo ngày",
+    "income_expense": "Thu/Chi",
+    "no_appointments_today": "Không có lịch hẹn nào trong ngày này",
+    "appointment_list_by_hour": "DANH SÁCH LỊCH HẸN THEO GIỜ",
+    "appointment_time": "Giờ hẹn",
+    "appointment_type": "Loại hẹn",
+    "appointment_service": "Dịch vụ hẹn",
+    "appointment_content": "Nội dung hẹn",
+    "printed_at": "In lúc:"
+  }
+}

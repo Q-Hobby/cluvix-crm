@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    // `vitest/globals`: một phần spec trong repo dùng `describe`/`it`/`expect` KHÔNG import (kiểu
+    // globals), phần khác import tường minh từ 'vitest'. Thiếu khai này thì nhóm globals đỏ hàng loạt
+    // với TS2593/TS2304 ngay ở bước biên dịch ⇒ `ng test` chết TOÀN BỘ, kể cả spec hoàn toàn lành.
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts"
+  ],
+  "exclude": []
+}

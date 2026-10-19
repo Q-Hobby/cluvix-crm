@@ -1,0 +1,36 @@
+.avatar-image {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center top;
+  border-radius: 100%;
+  margin: 0 auto;
+}
+
+.p-avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+  background-color: #dee2e6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  margin: 0 auto;
+}
+
+:host ::ng-deep .p-fileupload {
+  display: inline-block;
+}
+
+:host ::ng-deep .dialog_resetpw .p-dialog {
+  width: 15%;
+}
+
+@media screen and (max-width: 40em) {
+  :host ::ng-deep.p-menu.p-menu-overlay {
+    top: 22px !important;
+    left: 18px !important;
+  }
+}
