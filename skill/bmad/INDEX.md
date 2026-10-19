@@ -133,8 +133,3 @@ Mỗi feature/task đang chạy qua BMAD có 1 folder `bmad/<feature-slug>/` (g�
 - `personas/sm.md`
 - `personas/dev.md`
 - `personas/qa.md`
-- `personas/content-writer.md` — sinh content ads/marketing copy trực tiếp, dùng qua `/bmad-content-ads` (ngoài vòng đời 6 giai đoạn ở trên — xem mục riêng bên dưới).
-
-## `/bmad-content-ads` — command đơn, ngoài vòng đời 6 giai đoạn
-
-Không đi qua brief→prd→architect→stories→dev→qa. Đọc `personas/content-writer.md`, sinh trực tiếp bộ content ads (headline, primary text, CTA, biến thể A/B) từ input 1 lượt (sản phẩm/dịch vụ, mục tiêu, đối tượng, tone). Output ghi vào `documents/content-ads/<slug>/` ở repo gốc (không phải `bmad/<slug>/` — đây là deliverable nội dung, không phải plan kỹ thuật).

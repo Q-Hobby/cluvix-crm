@@ -1,1 +1,0 @@
-../../skill/commands/bmad-content-ads.md

@@ -22,7 +22,6 @@ Modules: crm, config, emr, med, hr, inventory, loyalty, marketing, zalo, ai, exp
 - **Thương hiệu (user chốt 2026-09-04, làm rõ 2026-09-17)**: **Cluvix Solutions** (`cluvixsolutions.com`) = công ty (outsource, product);
   **CluvixHealth** (`cluvixhealth.com`) = sản phẩm SaaS cho phòng khám chuyên khoa (tên hiển thị "Cung cấp bởi CluvixHealth" giữ).
   Link/email trong code, issue template, footer widget trỏ về `cluvixsolutions.com` — KHÔNG tạo email/domain `cluvixhealth.vn`.
-  Liên hệ/pháp lý đầy đủ cho marketing: `skill/bmad/personas/cluvixhealth-brand-kit.md` (file local, gitignored).
 
 ## Coding Style
 - Trả lời tiếng Việt, code tiếng Anh

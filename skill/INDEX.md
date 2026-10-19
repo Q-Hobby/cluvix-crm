@@ -190,7 +190,6 @@ dòng, 1 file) → im lặng làm, KHÔNG gợi ý. Gợi ý mà chặn việc t
 | "epic xong rồi, nhìn lại xem" | `/bmad-retro` — cấp EPIC, ra phán quyết nghiệm thu |
 | "nhớ cái này đi", "ghi lại bài học" | `/save-skill` |
 | "dọn `skill/`", sau một đợt BMAD lớn | `/skill-optimize` |
-| "viết content quảng cáo FB" | `/bmad-content-ads` |
 
 Không khớp dòng nào → làm thẳng theo Development Protocol, KHÔNG ép vào một command cho có.
 
@@ -200,5 +199,5 @@ Không khớp dòng nào → làm thẳng theo Development Protocol, KHÔNG ép 
 
 > ⚠ **2 vị trí khác bản chất (root repo, cập nhật 2026-08-30 — thay ghi chú "đã dời" 2026-08-17)**: bộ khung BMAD (persona, executor-contract, prompts-playbook, router INDEX) là **tooling bền, tái dùng** → nằm ở **`skill/bmad/`** (git theo dõi, cùng repo `skill/`). Plan/story thật của từng feature đang chạy/đã xong là **artifact transient** → nằm ở **`bmad/` gốc erp-cluvix** (ngang hàng `skill/`), **KHÔNG git theo dõi** (`/bmad` trong `.gitignore`). Xoá nhầm trong `bmad/` gốc là mất vĩnh viễn — không có git cứu. `frontend/bmad/`, `mobile/bmad/` (plan FE/mobile) hiện vẫn giữ nguyên gộp chung như cũ — chưa tách theo mô hình này.
 
-Xem sub-index: `skill/bmad/INDEX.md` — dùng khi làm feature mới/đổi schema/cross-module cần qua Analyst→PM→Architect→SM→Dev→QA; fix nhỏ 1–3 dòng vẫn đi thẳng theo Development Protocol phía trên, không cần qua BMAD. Cần sinh content quảng cáo/marketing copy trực tiếp (không phải feature kỹ thuật) → `/bmad-content-ads`, xem `skill/bmad/personas/content-writer.md`.
+Xem sub-index: `skill/bmad/INDEX.md` — dùng khi làm feature mới/đổi schema/cross-module cần qua Analyst→PM→Architect→SM→Dev→QA; fix nhỏ 1–3 dòng vẫn đi thẳng theo Development Protocol phía trên, không cần qua BMAD.
 

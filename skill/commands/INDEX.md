@@ -28,4 +28,3 @@ Prompt definition cho các slash command của project. Symlink vào `.claude/co
 | `bmad-review.md` | `/bmad-review` | Review sâu adversarial 3 lens qua subagent fresh-context — soi **1 story / 1 diff** trước khi Done |
 | `bmad-run.md` | `/bmad-run` | Chạy **tuần tự** Dev→QA→fix→QA cho mọi story còn dở của 1 epic (`$ARGUMENTS` = feature-slug), rồi `/bmad-retro`. Dừng ở 8 HARD STOP cần người. Không commit, không chạm DB thật, không song song |
 | `bmad-retro.md` | `/bmad-retro` | Retrospective cấp **EPIC** dựa trên bằng chứng (`$ARGUMENTS` = feature-slug) — săn khuyết tật mà story lẻ không thấy, ra phán quyết nghiệm thu |
-| `bmad-content-ads.md` | `/bmad-content-ads` | Persona Content Writer (BMAD) — sinh trực tiếp bộ content ads Facebook (headline/primary text/CTA, biến thể A/B) từ 1 yêu cầu, KHÔNG qua vòng đời 6 giai đoạn. Output: `documents/content-ads/<slug>/ad-copy.md` |

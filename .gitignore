@@ -55,8 +55,6 @@ backend/spike-*
 
 # Ghi chú agent riêng máy (tên DB hệ khác cùng máy...) — KHÔNG public
 /CLAUDE.local.md
-# Brand kit quảng cáo (MST, địa chỉ, case study khách thật — chưa có đồng ý public) — chỉ local
-/skill/bmad/personas/cluvixhealth-brand-kit.md
 
 # Claude Code local config — chỉ theo dõi commands (tooling dùng chung cho mọi máy),
 # KHÔNG theo dõi projects/ (lịch sử phiên riêng máy) hay settings.local.json (permission riêng máy)
