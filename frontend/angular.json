@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ultima-ng": {
+    "cluvix-crm": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -40,6 +40,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/flag-icons/flags/4x3",
+                "output": "assets/flags/4x3"
+              },
               "src/manifest.webmanifest",
               "src/custom-ngsw-worker.js"
             ],
@@ -143,16 +148,16 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "ultima-ng:build:production"
+              "buildTarget": "cluvix-crm:build:production"
             },
             "development": {
-              "buildTarget": "ultima-ng:build:development"
+              "buildTarget": "cluvix-crm:build:development"
             },
             "local": {
-              "buildTarget": "ultima-ng:build:local"
+              "buildTarget": "cluvix-crm:build:local"
             },
             "docker": {
-              "buildTarget": "ultima-ng:build:docker",
+              "buildTarget": "cluvix-crm:build:docker",
               "proxyConfig": "proxy.docker.conf.json"
             }
           },
@@ -164,7 +169,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
-            "buildTarget": "ultima-ng:build:test",
+            "buildTarget": "cluvix-crm:build:test",
             "tsConfig": "tsconfig.spec.json",
             "runnerConfig": true
           }

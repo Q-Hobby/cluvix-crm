@@ -1,0 +1,11 @@
+// Bộ SCSS khung layout (topbar + sidebar + nội dung) của CRM. Viết mới, không phụ thuộc thư viện ngoài.
+// Class/biến CSS ở đây là hợp đồng với app/layout/** (xem bmad/open-layout/architecture.md §4).
+@use 'variables';
+@use 'shell';
+@use 'topbar';
+@use 'topbar_cluvix';
+@use 'menu';
+@use 'breadcrumb';
+@use 'content';
+@use 'responsive';
+@use 'utils';

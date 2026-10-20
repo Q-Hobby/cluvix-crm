@@ -499,7 +499,7 @@ import { CONFIG_LOCALE_LANGUAGE_OPTIONS, STORAGE_KEY_SELECT } from '@/define';
               <div class="login-lang-item">
                 <img
                   [class]="flagClass(item.value)"
-                  src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                  src="/assets/overrides/images/flag-placeholder.svg"
                   [alt]="item.value"
                 />
                 <span>{{ item.label }}</span>
@@ -509,7 +509,7 @@ import { CONFIG_LOCALE_LANGUAGE_OPTIONS, STORAGE_KEY_SELECT } from '@/define';
               <div class="login-lang-item">
                 <img
                   [class]="flagClass(item.value)"
-                  src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                  src="/assets/overrides/images/flag-placeholder.svg"
                   [alt]="item.value"
                 />
                 <span>{{ item.label }}</span>
@@ -725,7 +725,7 @@ export class Login {
     this.storageService.saveStorage(STORAGE_KEY_SELECT.Lang, lang);
   }
 
-  /** Class CSS sprite cờ quốc gia (`flags.css`, dùng chung với module khác — vd sale/opportunity/portrait). */
+  /** Class CSS cờ quốc gia (`overrides/_flags.scss`, dùng chung với module khác — vd sale/opportunity/portrait). */
   flagClass(locale: string): string {
     const country = locale?.split('-')[1]?.toLowerCase() ?? '';
     return `flag flag-${country}`;

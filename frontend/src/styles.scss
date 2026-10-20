@@ -1,12 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
 @use './tailwind.css';
-@use './assets/overrides/flags.css';
+@use './assets/overrides/flags';
 @use 'primeicons/primeicons.css';
 @use './assets/overrides/primefix';
 
 @use './assets/layout/layout.scss';
-@use './assets/demo/demo.scss';
 @use './assets/overrides/custom.scss';
 
 @import 'photoswipe/dist/photoswipe.css';
@@ -39,20 +38,6 @@ body {
     scroll-behavior: auto !important;
   }
 }
-
-/* === Ultima mobile topbar overrides === */
-@media (max-width: 991px) {
-  .layout-topbar .layout-topbar-end {
-    display: flex !important;
-  }
-  .layout-topbar {
-    flex-direction: unset !important;
-  }
-  .layout-topbar .layout-topbar-start {
-    width: auto !important;
-  }
-}
-
 
 /* Hàng "tắt/inactive" trong bảng list — dùng ở ~100 file `[class.tr-disabled]="!model.status"` nhưng
    trước đây KHÔNG có định nghĩa CSS nào (class no-op, hàng tắt trông giống hệt hàng bật). Chỉ dùng

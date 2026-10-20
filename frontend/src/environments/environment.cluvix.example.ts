@@ -1,5 +1,5 @@
 // Mẫu environment cho bản build prod CÓ KEY (Cluvix và self-host đều dùng). Copy thành environment.cluvix.ts
-// (gitignored) rồi điền primeuiLicense = key PrimeUI của bạn (README §2.4). primeuiLicenseCdnUrl: tuỳ chọn.
+// (gitignored) rồi điền primeuiLicense = key PrimeUI của bạn (README §2.3). primeuiLicenseCdnUrl: tuỳ chọn.
 // Build: SW_S3_ORIGIN=https://<your-cdn> npm run build:cluvix
 export const environment = {
   prod: true,

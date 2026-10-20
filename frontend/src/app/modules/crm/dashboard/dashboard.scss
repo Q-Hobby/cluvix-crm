@@ -85,12 +85,7 @@
 
 // Thanh lọc / thanh "Đang tuỳ chỉnh" dính NGAY DƯỚI topbar cố định của layout (topbar z-999 che mất nếu `top: 0`).
 // Thanh "Đang tuỳ chỉnh" ở template chủ dùng rule này; thanh lọc (component con) có rule riêng ở shell/dashboard-filter-bar.scss.
-// Bám đúng `padding-top` của `.layout-content-wrapper` trong assets/layout: 4rem; menu ngang (≥ 992px) 7rem.
+// Bám đúng chiều cao topbar (`--layout-content-top`, khai ở assets/layout/_variables.scss).
 .dash-sticky {
-  top: 4rem;
-}
-@media screen and (min-width: 992px) {
-  :host-context(.layout-horizontal) .dash-sticky {
-    top: 7rem;
-  }
+  top: var(--layout-content-top);
 }

@@ -2077,6 +2077,10 @@
       "dashboard_label": "Về trang chủ",
       "back_label": "Quay lại"
     },
+    "lockscreen": {
+      "title": "Màn hình đã khoá",
+      "message": "Phiên làm việc đã bị khoá. Vui lòng đăng nhập lại để tiếp tục."
+    },
     "login": {
       "title": "Đăng nhập",
       "heading": "Nền tảng quản lý kinh doanh toàn diện",

@@ -34,7 +34,7 @@ export class SwitchLanguage extends BaseSignalForm<UserProfileModel> {
     this.model.set({ locale: userProfile()?.locale ?? '' } as UserProfileModel);
   }
 
-  /** Class CSS sprite cờ quốc gia (`flags.css`) — cùng convention với login.ts + sale/opportunity/portrait. */
+  /** Class CSS cờ quốc gia (`overrides/_flags.scss`) — cùng convention với login.ts + sale/opportunity/portrait. */
   flagClass(locale: string): string {
     const country = locale?.split('-')[1]?.toLowerCase() ?? '';
     return `flag flag-${country}`;

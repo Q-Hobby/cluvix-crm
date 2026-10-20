@@ -1,0 +1,27 @@
+// Biến thể topbar Cluvix (luôn bật qua class `layout-topbar-cluvix` trên container): chữ trắng trên
+// gradient, các nút phải là ô vuông bo góc mờ. Màu/kích thước nút lấy từ biến --tb-btn-* (_variables).
+.layout-topbar-cluvix {
+  .layout-topbar-start .logo-custom {
+    display: block;
+  }
+
+  // Nút icon trực tiếp trong cụm (không qua component có style riêng): cùng ngôn ngữ ô vuông bo góc.
+  .layout-topbar-items > li > a,
+  .layout-topbar-items > li > button {
+    width: var(--tb-btn-size);
+    height: var(--tb-btn-size);
+    border-radius: var(--tb-btn-radius);
+    color: var(--tb-btn-color);
+    background: var(--tb-btn-bg);
+    border: 1px solid var(--tb-btn-border);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-duration),
+      border-color var(--transition-duration);
+
+    &:hover {
+      background: var(--tb-btn-hover-bg);
+      border-color: var(--tb-btn-hover-border);
+    }
+  }
+}

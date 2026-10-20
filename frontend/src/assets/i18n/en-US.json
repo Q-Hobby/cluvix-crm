@@ -2077,6 +2077,10 @@
       "dashboard_label": "Go to Dashboard",
       "back_label": "Go Back"
     },
+    "lockscreen": {
+      "title": "Screen locked",
+      "message": "Your session is locked. Please sign in again to continue."
+    },
     "login": {
       "title": "Login",
       "heading": "The all-in-one business management platform",

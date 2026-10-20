@@ -1,0 +1,8 @@
+// Tiện ích dùng chung của khung layout.
+
+// Body khoá cuộn khi sidebar mobile đang mở.
+@media (max-width: 991px) {
+  body.blocked-scroll {
+    overflow: hidden;
+  }
+}

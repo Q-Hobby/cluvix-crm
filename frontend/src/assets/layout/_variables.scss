@@ -1,0 +1,34 @@
+// Biến CSS của khung layout. Đặt ở :root để component bất kỳ (kể cả overlay nối vào body) đọc được.
+// Màu lấy từ token PrimeNG / brand có sẵn, KHÔNG tạo màu brand mới.
+
+$breakpoint-desktop: 992px; // >= : desktop; < : mobile (khớp LayoutService.isDesktop, ngưỡng 991px)
+
+:root {
+  // Chiều cao topbar, đồng thời là padding-top của vùng nội dung.
+  --layout-content-top: 4rem;
+  // Cột logo trên topbar luôn bằng bề rộng sidebar để hai khối thẳng cột.
+  --layout-sidebar-width: 17rem;
+  --layout-z-sidebar: 996;
+  --layout-z-topbar: 997;
+
+  --transition-duration: 0.2s;
+  --text-color: var(--p-text-color);
+
+  // Topbar: nền gradient thương hiệu tối (xem --cx-topbar-bg) ⇒ chữ/icon trắng, hover trắng mờ.
+  --topbar-item-text-color: #ffffff;
+  --topbar-item-hover-bg: rgba(255, 255, 255, 0.16);
+  // Nút nổi (Hướng dẫn / Cài ứng dụng): nền trắng, chữ tím thương hiệu ⇒ nổi bật trên gradient.
+  --topbar-menu-button-bg: #ffffff;
+  --topbar-menu-button-hover-bg: rgba(255, 255, 255, 0.88);
+  --topbar-menu-button-text-color: var(--cluvix-primary);
+
+  // Nút icon vuông bo góc trên topbar.
+  --tb-btn-size: 2.5rem;
+  --tb-btn-icon-size: 1.25rem;
+  --tb-btn-radius: 0.625rem;
+  --tb-btn-bg: rgba(255, 255, 255, 0.12);
+  --tb-btn-border: rgba(255, 255, 255, 0.22);
+  --tb-btn-color: #ffffff;
+  --tb-btn-hover-bg: rgba(255, 255, 255, 0.24);
+  --tb-btn-hover-border: rgba(255, 255, 255, 0.42);
+}

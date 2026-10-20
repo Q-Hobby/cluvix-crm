@@ -1,6 +1,6 @@
-// ─── "Powered by" — tên/link hiển thị ở menu profile + trang Home ──────────────
+// ─── "Powered by" — tên/link hiển thị ở menu tài khoản + trang Home ──────────────
 // Self-host: đổi 2 hằng số này sang tên/link thương hiệu của bạn, hoặc để rỗng
-// POWERED_BY_URL để ẩn hẳn link (xem cách dùng ở app.menuprofile.ts/user-account-menu.ts/home.html).
+// POWERED_BY_URL để ẩn hẳn link (xem cách dùng ở user-account-menu.ts/home.html).
 export const POWERED_BY_NAME = 'Cluvix CRM';
 export const POWERED_BY_URL = 'https://example.com';
 

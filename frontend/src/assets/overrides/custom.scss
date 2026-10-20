@@ -82,7 +82,7 @@ table td {
 }
 
 // ⚠ KHÔNG thêm lại `.layout-content { width: unset !important }` (xoá 2026-09-14): nó từng dùng để gỡ
-// `width: 1504px` cứng của Ultima, nhưng nay đè mất `width: 100%` ở `layout/_responsive.scss` (≥1729px)
+// `width: 1504px` cứng của layout cũ, nhưng nay đè mất `width: 100%` ở `layout/_responsive.scss` (≥1729px)
 // ⇒ trang list full-height (wrapper là flex) co giãn theo bảng, tràn ngang cả trang: nội dung trượt
 // dưới sidebar / phân trang bị cắt bên phải. Đo được: bảng 2600px ⇒ document rộng 1884px trên viewport 1397px.
 

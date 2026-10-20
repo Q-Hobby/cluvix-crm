@@ -1,0 +1,119 @@
+// Khung: container, sidebar (vị trí/trượt), vùng nội dung (chừa chỗ cho topbar + sidebar).
+@use 'variables' as *;
+
+html,
+body {
+  background: var(--cx-page, var(--p-surface-50));
+}
+
+.layout-container {
+  min-height: 100vh;
+  background: var(--cx-page, var(--p-surface-50));
+  color: var(--p-text-color);
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────
+// Biến cục bộ của sidebar: menu sáng/tối chỉ khác nhau ở đây. Container luôn mang đúng một trong
+// `layout-menu-light` / `layout-menu-dark`; cả hai dùng token PrimeNG nên tự đúng theo `.app-dark`.
+.layout-menu-light .layout-sidebar,
+.layout-menu-dark .layout-sidebar {
+  --sb-bg: var(--p-content-background);
+  --sb-text: var(--p-text-color);
+  --sb-muted: var(--p-text-muted-color);
+  --sb-border: var(--p-content-border-color);
+  --sb-hover: var(--p-content-hover-background);
+  --sb-accent: var(--p-primary-color);
+  --sb-accent-bg: color-mix(in srgb, var(--p-primary-color) 12%, transparent);
+}
+
+.layout-sidebar {
+  position: fixed;
+  top: var(--layout-content-top);
+  left: 0;
+  bottom: 0;
+  z-index: var(--layout-z-sidebar);
+  display: flex;
+  flex-direction: column;
+  width: var(--layout-sidebar-width);
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  border-right: 1px solid var(--sb-border);
+  transition:
+    transform var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
+}
+
+// Logo/nút ghim ở đầu sidebar: logo đã nằm trên topbar, không có chế độ ghim ⇒ ẩn.
+.layout-sidebar-top,
+.layout-sidebar-anchor {
+  display: none;
+}
+
+.layout-menu-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 0.5rem 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-border) transparent;
+}
+
+// ── Vùng nội dung ──────────────────────────────────────────────────────────
+.layout-content-wrapper {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-top: var(--layout-content-top);
+  transition: margin-left var(--transition-duration) ease;
+}
+
+// Lớp phủ sau sidebar nổi (overlay desktop / mobile): không đẩy nội dung, chỉ che mờ.
+.layout-container::after {
+  content: '';
+  position: fixed;
+  top: var(--layout-content-top);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: calc(var(--layout-z-sidebar) - 1);
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--transition-duration) ease,
+    visibility var(--transition-duration) ease;
+}
+
+// ── Desktop ────────────────────────────────────────────────────────────────
+@media (min-width: $breakpoint-desktop) {
+  .layout-static .layout-content-wrapper {
+    margin-left: var(--layout-sidebar-width);
+  }
+  // Thu sidebar: trượt ra ngoài, nội dung giãn full.
+  .layout-static.layout-static-inactive {
+    .layout-sidebar {
+      transform: translateX(-100%);
+    }
+    .layout-content-wrapper {
+      margin-left: 0;
+    }
+  }
+
+  // Overlay (vd chi tiết khách hàng): sidebar nổi, không đẩy nội dung.
+  .layout-overlay .layout-sidebar {
+    transform: translateX(-100%);
+  }
+  .layout-overlay.layout-overlay-active {
+    .layout-sidebar {
+      transform: translateX(0);
+      box-shadow: 0 0 2rem rgba(0, 0, 0, 0.22);
+    }
+    &::after {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}

@@ -1,0 +1,123 @@
+// Topbar: thanh cố định trên cùng. Cột trái (logo + nút menu) rộng bằng sidebar; phần còn lại là
+// gradient thương hiệu chứa cụm nút phải.
+@use 'variables' as *;
+
+.layout-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--layout-z-topbar);
+  display: flex;
+  align-items: center;
+  height: var(--layout-content-top);
+  color: var(--topbar-item-text-color);
+}
+
+.layout-topbar-start {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--layout-sidebar-width);
+  height: 100%;
+  padding: 0 1rem;
+  // File logo (chữ đỏ) chỉ đọc được trên nền sáng ⇒ cột logo giữ nền trắng ở cả theme tối.
+  background: #ffffff;
+  border-right: 1px solid color-mix(in srgb, #000000 8%, transparent);
+}
+
+.layout-topbar-logo {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+// Nút thu/mở sidebar: nút tròn đè lên đường biên giữa cột logo và vùng gradient.
+.layout-menu-button {
+  position: absolute;
+  top: 50%;
+  right: -1.125rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  color: var(--p-primary-color);
+  background: var(--p-content-background);
+  border: 1px solid var(--p-content-border-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transform: translateY(-50%);
+  transition:
+    background-color var(--transition-duration),
+    box-shadow var(--transition-duration);
+
+  &:hover {
+    background: var(--p-content-hover-background);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.24);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--cluvix-primary);
+    outline-offset: 2px;
+  }
+
+  i {
+    font-size: 0.875rem;
+    transition: transform var(--transition-duration) ease;
+  }
+}
+
+// Icon gốc là chevron-right (sidebar đang đóng). Sidebar đang mở ⇒ xoay thành chevron-left.
+@media (min-width: $breakpoint-desktop) {
+  .layout-static:not(.layout-static-inactive) .layout-menu-button i,
+  .layout-overlay-active .layout-menu-button i {
+    transform: rotate(180deg);
+  }
+}
+
+.layout-topbar-end {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 1rem 0 1.75rem;
+  background: var(--cx-topbar-bg, linear-gradient(90deg, var(--cluvix-primary), var(--cluvix-gradient)));
+}
+
+.layout-topbar-actions-start,
+.layout-topbar-actions-end {
+  display: flex;
+  align-items: center;
+}
+
+.layout-topbar-actions-end {
+  margin-left: auto;
+}
+
+.layout-topbar-items {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// Panel menu tài khoản (absolute right-0 top-full) neo theo li này.
+.tb-user-li {
+  position: relative;
+}

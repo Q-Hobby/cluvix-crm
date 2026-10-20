@@ -1,0 +1,53 @@
+// Vùng nội dung: `.card` dùng chung và chuỗi flex "full-height" (FillHeightDirective).
+.layout-content-wrapper {
+  background: var(--cx-page, var(--p-surface-50));
+}
+
+.layout-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.5rem;
+}
+
+.card {
+  background: var(--p-content-background);
+  color: var(--p-text-color);
+  border: 1px solid var(--p-content-border-color);
+  border-radius: var(--p-content-border-radius, 0.75rem);
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// ── Full-height (app/share/directive/fill-height.directive.ts) ─────────────
+// `cx-fill-page` nằm trên .layout-content-wrapper: khung cao đúng viewport, bảng chiếm phần còn lại.
+.layout-content-wrapper.cx-fill-page {
+  height: 100dvh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
+  > .layout-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+}
+
+// ⚠ `:not([hidden])` BẮT BUỘC: thiếu thì tab PrimeNG đã ẩn (`[hidden]`) hiện đè lên tab đang mở,
+// vì CSS tác giả luôn thắng `[hidden]{display:none}` của trình duyệt (bug thật 2026-08-07).
+.cx-fill-chain:not([hidden]) {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.cx-fill-chain-stack:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}

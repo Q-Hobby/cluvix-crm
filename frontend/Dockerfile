@@ -4,7 +4,7 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json package-lock.json .npmrc ./
 # HUSKY=0: script `prepare` (husky install) cần .git, container không có.
 RUN HUSKY=0 npm ci
 

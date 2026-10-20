@@ -1,0 +1,32 @@
+// Thanh breadcrumb ngay dưới topbar, đầu vùng nội dung. Nút phải (đổi tiền tệ...) ở `-buttons`.
+.layout-breadcrumb-container {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.5rem;
+  background: var(--p-content-background);
+  border-bottom: 1px solid var(--p-content-border-color);
+  color: var(--p-text-color);
+}
+
+// display/align do template quyết định (flex items-center trên desktop, hidden trên mobile) — không đặt ở đây.
+.layout-breadcrumb {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.layout-breadcrumb-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}

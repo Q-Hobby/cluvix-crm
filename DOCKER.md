@@ -38,16 +38,10 @@ openssl rand -hex 32   # → TOKEN_SECRET
 openssl rand -hex 32   # → TOTP_ENC_KEY (đúng 64 ký tự hex)
 ```
 
-### 1.2. Gói layout Ultima (BẮT BUỘC cho frontend)
+### 1.2. License + key PrimeUI
 
-Frontend dựa trên template **Ultima** (trả phí, gói layout dẫn xuất là **private**, không có trong
-repo). Chưa đặt gói này vào `frontend/src/` thì `ng serve` báo lỗi thiếu file `assets/layout/**`,
-`app/layout/**`… và frontend **không build được** (backend vẫn chạy bình thường). Xem
-[README.md](README.md) §2 để biết cách xin gói và vị trí giải nén. Làm bước đó **trước** khi `up`.
-
-Vì `./frontend` được mount vào container, file bạn đặt trên máy host có hiệu lực ngay.
-
-### 1.3. License + key PrimeUI
+Layout (sidebar, topbar, menu…) là mã nguồn mở của dự án, có sẵn trong repo — không cần template
+trả phí. Chỉ cần license key PrimeNG.
 
 Mỗi dev làm frontend cần license PrimeUI riêng (Community miễn phí nếu đủ điều kiện, còn lại mua
 Commercial) — cách đăng ký và lấy key: [README.md](README.md) §2.1–2.2.
@@ -134,7 +128,6 @@ docker compose --env-file .env.docker down -v
 
 | Triệu chứng | Nguyên nhân / cách xử lý |
 |---|---|
-| Frontend lỗi `Could not resolve ... assets/layout/...` hoặc thiếu `app/layout/...` | Chưa đặt gói layout Ultima — mục 1.2 |
 | `port is already allocated` | Port host bị chiếm — đổi `*_HOST_PORT` trong `.env.docker` |
 | Backend `TOKEN_SECRET is required` | `.env.docker` thiếu hoặc chạy thiếu `--env-file .env.docker` |
 | Backend `TOTP_ENC_KEY must be 64 hex chars` | Giá trị khác rỗng nhưng không phải 64 ký tự hex — `openssl rand -hex 32` hoặc để rỗng |

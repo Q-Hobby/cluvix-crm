@@ -15,13 +15,13 @@
         [placeholder]="'utilities.switch_language.placeholder' | translate">
         <ng-template #selectedItem let-item>
           <div class="flex items-center gap-2">
-            <img [class]="flagClass(item.value)" src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [alt]="item.value" />
+            <img [class]="flagClass(item.value)" src="/assets/overrides/images/flag-placeholder.svg" [alt]="item.value" />
             <span>{{ item.label }}</span>
           </div>
         </ng-template>
         <ng-template #item let-item>
           <div class="flex items-center gap-2">
-            <img [class]="flagClass(item.value)" src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [alt]="item.value" />
+            <img [class]="flagClass(item.value)" src="/assets/overrides/images/flag-placeholder.svg" [alt]="item.value" />
             <span>{{ item.label }}</span>
           </div>
         </ng-template>

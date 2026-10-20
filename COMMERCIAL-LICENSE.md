@@ -41,9 +41,9 @@ The exact terms are agreed case by case and set out in a written agreement. Typi
 - Optional trademark license (for example, co-branding or "Powered by Cluvix CRM").
 
 A commercial license for Cluvix CRM does **not** include licenses for third-party components
-such as PrimeNG / PrimeUI or the Ultima template (see [`NOTICE`](./NOTICE)) unless the agreement
-says so explicitly. You remain responsible for holding the licenses those components require,
-including your own PrimeUI license key.
+such as PrimeNG / PrimeUI (see [`NOTICE`](./NOTICE)) unless the agreement says so explicitly.
+You remain responsible for holding the licenses those components require, including your own
+PrimeUI license key.
 
 ## Contributions and the commercial license
 

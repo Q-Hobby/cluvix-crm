@@ -1,0 +1,56 @@
+// Mobile / tablet hẹp (< 992px): sidebar luôn là bảng nổi, không đẩy nội dung.
+@use 'variables' as *;
+
+@media (max-width: #{$breakpoint-desktop - 1px}) {
+  .layout-sidebar {
+    transform: translateX(-100%);
+  }
+  .layout-content-wrapper {
+    margin-left: 0;
+  }
+
+  .layout-mobile-active {
+    .layout-sidebar {
+      transform: translateX(0);
+      box-shadow: 0 0 2rem rgba(0, 0, 0, 0.3);
+    }
+    &::after {
+      opacity: 1;
+      visibility: visible;
+    }
+    // Đang mở: nút xoay thành chevron-left (đóng).
+    .layout-menu-button i {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Cột logo co theo nội dung, nút menu nằm ngay sau logo (không còn đường biên sidebar để đè lên).
+  .layout-topbar-start {
+    width: auto;
+    padding: 0 0.5rem 0 0.75rem;
+    gap: 0.5rem;
+  }
+  .layout-menu-button {
+    position: static;
+    flex-shrink: 0;
+    transform: none;
+    box-shadow: none;
+    width: 2rem;
+    height: 2rem;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+  // Topbar mỏng hơn (rem theo cỡ chữ gốc nhỏ trên mobile) ⇒ logo không được cao hơn thanh.
+  .layout-topbar .layout-topbar-logo .logo-custom {
+    max-height: calc(var(--layout-content-top) - 0.75rem);
+  }
+
+  .layout-topbar-end {
+    padding: 0 0.5rem;
+  }
+  .layout-topbar-items {
+    gap: 0.25rem;
+  }
+}

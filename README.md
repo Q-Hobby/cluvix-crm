@@ -12,8 +12,8 @@ payments & debt, reminders, dashboard & revenue reports, Excel import/export, pr
 templates, staff & role-based permissions (with 2FA) and audit log.*
 
 > 🇻🇳 **Tóm tắt nhanh**: clone repo → đăng ký license PrimeUI + lấy key (§2: Community miễn phí nếu đủ
-> điều kiện, còn lại / cần template Ultima thì mua Commercial) → đặt gói layout dẫn xuất từ Ultima
-> (gói private, chỉ cấp cho người có license Commercial — liên hệ chủ dự án; KHÔNG có trong repo này) → tạo cert local bằng `mkcert` → copy
+> điều kiện, còn lại mua Commercial; layout là mã nguồn mở có sẵn trong repo, không cần template trả
+> phí) → tạo cert local bằng `mkcert` → copy
 > `backend/.env.example` → `backend/.env` và điền giá trị → tạo database MySQL rỗng → chạy
 > migration → chạy backend (cổng 8011) + frontend (cổng 4211) → đăng nhập `admin` /
 > `ChangeMe@2026` — hệ thống bắt đổi mật khẩu ngay ở lần đăng nhập đầu. Chi tiết từng bước ở dưới (tiếng Anh).
@@ -36,16 +36,18 @@ git clone <this-repo-url> cluvix-crm
 cd cluvix-crm
 ```
 
-## 2. PrimeUI licensing, the Ultima layout package and your license key
+## 2. PrimeUI licensing and your license key
 
-The frontend depends on two commercial products from **PrimeTek Informatics**. Neither is
-included in this repository, and **each developer who builds or modifies the frontend needs
-their own license** — the Cluvix license and key are **not** transferable to you.
+The admin layout (sidebar, topbar, menu, breadcrumb, layout service and its styles) is this
+project's own open-source code and ships in this repository — **no paid template is needed**.
+The only commercial dependency is the **PrimeNG** component library from **PrimeTek
+Informatics**, which needs a **PrimeUI license key** (the **Community** tier is free if you are
+eligible). **Each developer who builds or modifies the frontend needs their own license** — the
+Cluvix license and key are **not** transferable to you.
 
 | What | Why this project needs it | License you need |
 |---|---|---|
 | **PrimeNG 22** (`primeng`, `@primeuix/*`, `@primeicons/*` from npm) | All UI components. Since v22 these packages are distributed under the *PrimeUI License* (not open source — see `frontend/node_modules/primeng/LICENSE.md`) and expect a **license key**. | **Community** (free, if eligible) **or Commercial** |
-| **Ultima** application template | The admin layout (sidebar, topbar, menu, layout service). It is part of PrimeUI's **Template Catalog**, which is included only in the Commercial license. | **Commercial** |
 
 > Terms below are summarised from https://primeui.dev/licenses/community,
 > https://primeui.dev/licenses/commercial and https://primeui.dev/pricing as of 2026-10-19.
@@ -62,11 +64,10 @@ their own license** — the Cluvix license and key are **not** transferable to y
   qualify, and there is **no separate open-source program**.
 
 Community covers PrimeNG/PrimeReact/PrimeVue and PrimeIcons (up to 4 developer seats) but **not**
-templates such as Ultima, PrimeBlocks or the Theme Designer. You may still build and sell
-commercial apps with it.
+PrimeTek's templates, PrimeBlocks or the Theme Designer — this project needs none of those. You
+may still build and sell commercial apps with it.
 
-**Commercial (paid, per developer, perpetual)** — required for everyone else, and for anyone who
-needs the Ultima template. One seat per developer who writes or maintains frontend code (backend
+**Commercial (paid, per developer, perpetual)** — required for everyone else. One seat per developer who writes or maintains frontend code (backend
 developers, QA, designers and CI servers do not need a seat); seats can be reassigned when people
 leave. The license is perpetual and includes 1 year of updates; renewal is optional and only
 needed for newer versions. Larger teams can ask for a **Site License** (organization-wide, annual).
@@ -83,33 +84,14 @@ Current prices: https://primeui.dev/pricing.
 3. After registration/purchase, copy your **PrimeUI license key** from your PrimeStore account.
    The key is a long signed string; it is verified **offline** (no network call, no telemetry).
 4. **Community keys expire after 12 months** (30-day grace period). Renew for free in the
-   PrimeStore by re-confirming eligibility, then replace the key (section 2.4). For Commercial,
+   PrimeStore by re-confirming eligibility, then replace the key (section 2.3). For Commercial,
    apps built while your license was valid keep running without a notice even after the 1-year
    update period ends.
 
 The key is not a secret (it ends up in the JS bundle), but the license forbids **publishing it
 for others to use** — never commit it to this public repository.
 
-### 2.3 Get the private Ultima-derived layout package
-
-This project's layout files are **not** the stock Ultima template: they were adapted from Ultima
-(extra methods/fields), so an unmodified Ultima download will not build. Because of Ultima's
-license they are excluded from this repository via `.gitignore` (section "Template Ultima") and
-distributed separately as a **private Ultima-derived layout package**, only to Ultima licensees.
-
-1. Hold a **Commercial** PrimeUI license (section 2.1) — that is what gives you Ultima rights.
-2. Request the package from the project maintainer: **<contact the project maintainer — channel to
-   be announced>**, with proof of your license (PrimeStore order / license owner).
-3. Extract it into `frontend/src/` so every file lands on the exact paths listed under
-   "Template Ultima" in the root `.gitignore` (`assets/layout/**`, `assets/demo/**`,
-   `assets/overrides/…`, `app/layout/components/*.ts`, `app/layout/service/layout.service.ts`,
-   and a few files under `app/modules/auth/` and `app/modules/utilities/`). Those paths stay
-   git-ignored, so the package never gets committed back.
-
-Without the package the frontend does not build (missing `assets/layout/**`, `app/layout/**`);
-the backend runs fine on its own.
-
-### 2.4 Put the key into the app
+### 2.3 Put the key into the app
 
 The key is passed to PrimeNG through `providePrimeNG({ license })` in `frontend/src/app.config.ts`
 (read via `frontend/src/app/share/utils/primeui-license.util.ts`). Every tracked
@@ -143,18 +125,18 @@ without a valid license is a breach of PrimeTek's terms, not just a cosmetic iss
 
 > 🇻🇳 **Tóm tắt đăng ký PrimeUI**: (1) Vào https://primeui.store/primeui → *Sign Up*. (2) Đủ điều
 > kiện Community (cá nhân, hoặc tổ chức < 5 dev, < 10 nhân sự, doanh thu < 1M USD, gọi vốn < 3M USD,
-> không phải cơ quan nhà nước/trường học) → **Apply** (miễn phí, gia hạn mỗi 12 tháng). Không đủ,
-> hoặc cần template **Ultima** → mua **Commercial** theo số dev (**Buy Now**, vĩnh viễn + 1 năm cập
-> nhật). (3) Copy license key trong tài khoản PrimeStore. (4) Dán vào `primeuiLicense` của file
-> environment **không theo dõi git** (`environment.local.ts` khi dev, `environment.cluvix.ts` khi
-> build prod) — tuyệt đối không commit key. (5) Có license Commercial thì liên hệ chủ dự án xin gói
-> layout dẫn xuất Ultima (mục 2.3). Mỗi dev tự có license riêng, không dùng chung key của Cluvix.
+> không phải cơ quan nhà nước/trường học) → **Apply** (miễn phí, gia hạn mỗi 12 tháng). Không đủ
+> → mua **Commercial** theo số dev (**Buy Now**, vĩnh viễn + 1 năm cập nhật). (3) Copy license key
+> trong tài khoản PrimeStore. (4) Dán vào `primeuiLicense` của file environment **không theo dõi
+> git** (`environment.local.ts` khi dev, `environment.cluvix.ts` khi build prod) — tuyệt đối không
+> commit key. Layout là mã nguồn mở của dự án, có sẵn trong repo — không cần template trả phí. Mỗi
+> dev tự có license riêng, không dùng chung key của Cluvix.
 
 ## Chạy bằng Docker / Run with Docker (dev)
 
 A one-command Docker dev environment (MySQL 9.7, Redis, Go backend, Angular dev server) is
-available — see [DOCKER.md](DOCKER.md) (Vietnamese). It still needs the private Ultima layout
-package from this section. Host ports: frontend 14211, backend 18011, MySQL 13306, Redis 16379.
+available — see [DOCKER.md](DOCKER.md) (Vietnamese). It still needs your own PrimeUI license key
+(section 2.3). Host ports: frontend 14211, backend 18011, MySQL 13306, Redis 16379.
 
 ## 3. Generate a local TLS certificate (mkcert)
 
@@ -236,9 +218,15 @@ HTTPS if `TLS_CERT`/`TLS_KEY` are both set (see step 3-4), otherwise plain HTTP.
 From `frontend/`:
 
 ```bash
-npm install
+npm ci
 npm start
 ```
+
+`npm ci` installs the exact versions from `package-lock.json`. It works out of the box because
+`frontend/.npmrc` sets `legacy-peer-deps=true`: one dependency (`ngx-device-detector`) still
+declares a peer range for Angular 21 while this project uses Angular 22, and without that setting
+npm stops with an `ERESOLVE` peer-dependency error. Keep `.npmrc` when you copy the frontend
+elsewhere.
 
 `npm start` runs `ng serve --port 4211 --ssl true --ssl-cert ./localhost.pem --ssl-key
 ./localhost-key.pem` — open **https://localhost:4211**.
@@ -338,14 +326,13 @@ empty).
 
 **Additional permission (AGPL section 7).** [`NOTICE`](./NOTICE) grants additional permission to
 combine Cluvix CRM with **PrimeNG / PrimeUI** (`primeng`, `@primeuix/*`, `@primeicons/*`, under
-the PrimeUI License) and with the **private Ultima-derived layout package** from section 2, and
-to convey the result, without those components becoming subject to the AGPL and without
-having to publish their source. The rest of the program stays under the AGPL.
+the PrimeUI License) and to convey the result, without those components becoming subject to the
+AGPL and without having to publish their source. The rest of the program, including the
+frontend layout, stays under the AGPL.
 
-**Third-party components.** The **Ultima** PrimeNG template and the **PrimeUI** license key
-referenced in section 2 are third-party commercial products from PrimeTek, licensed separately
-and **not included** in this repository; the private layout package stays subject to Ultima's
-license terms. PrimeNG and the related packages are installed from npm under PrimeTek's own
+**Third-party components.** The **PrimeUI** license key referenced in section 2 is a
+third-party commercial product from PrimeTek, licensed separately and **not included** in this
+repository. PrimeNG and the related packages are installed from npm under PrimeTek's own
 *PrimeUI License* (free Community tier for eligible organizations, paid Commercial tier
 otherwise — see section 2); anyone running or developing this frontend must hold a PrimeUI
 license that fits them. The PrimeUI key that Cluvix serves from its own CDN
@@ -366,6 +353,6 @@ vulnerabilities: see [`SECURITY.md`](./SECURITY.md).
 > Solutions (mô hình kép). Dùng AGPL miễn phí, nhưng nếu SỬA ĐỔI và cho người khác dùng qua mạng
 > (SaaS) thì phải công bố mã nguồn bản sửa (đặt `SOURCE_CODE_URL` để hiện link "Mã nguồn"); không
 > muốn thế → mua license thương mại (`COMMERCIAL-LICENSE.md`). Ngoại lệ §7 trong `NOTICE` cho phép
-> kết hợp với PrimeNG/PrimeUI và gói layout Ultima mà không kéo chúng vào AGPL. Key PrimeUI trên
+> kết hợp với PrimeNG/PrimeUI mà không kéo chúng vào AGPL. Key PrimeUI trên
 > CDN riêng của Cluvix KHÔNG cấp cho bên thứ ba — tự dùng key của mình. Tên/logo "Cluvix" là thương hiệu,
 > không cấp theo AGPL (`TRADEMARK.md`). Đóng góp code phải ký CLA (`CLA.md`).

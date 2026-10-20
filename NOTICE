@@ -22,19 +22,13 @@ and are not licensed under the GNU AGPL. See TRADEMARK.md.
 
 Additional permission under GNU AGPL version 3 section 7
 
-If you modify this Program, or any covered work, by linking or combining it with
-
-  (a) the PrimeNG, PrimeUI and related libraries published by PrimeTek Informatics
-      (including the npm packages "primeng", "@primeuix/*" and "@primeicons/*"), or a
-      modified version of those libraries, distributed under the PrimeUI License; or
-
-  (b) a layout package derived from the "Ultima" PrimeNG application template published
-      by PrimeTek Informatics (the private layout package described in README.md), or a
-      modified version of such a package, licensed under the terms of the Ultima license,
-
-(each such library or package, together with its license terms, a "Non-AGPL Component"),
-containing parts covered by the terms of the PrimeUI License or the Ultima license, the
-licensors of this Program grant you additional permission to convey the resulting work.
+If you modify this Program, or any covered work, by linking or combining it with the
+PrimeNG, PrimeUI and related libraries published by PrimeTek Informatics (including the npm
+packages "primeng", "@primeuix/*" and "@primeicons/*"), or a modified version of those
+libraries, distributed under the PrimeUI License (each such library, together with its
+license terms, a "Non-AGPL Component"), containing parts covered by the terms of the PrimeUI
+License, the licensors of this Program grant you additional permission to convey the
+resulting work.
 
 Corresponding Source for a non-source form of such a combination shall include the source
 code for the parts of this Program used as well as that of the covered work, but is NOT
@@ -50,20 +44,16 @@ conveyable in combination with the Non-AGPL Components listed above.
 
 --------------------------------------------------------------------------------
 
-Third-party notice — Ultima template and PrimeUI license key
+Third-party notice — PrimeUI license key
 
-This project's frontend layout is built on top of "Ultima", a commercial PrimeNG
-application template published by PrimeTek Informatics, and references a "PrimeUI" license
-key (community or commercial tier) issued by PrimeTek Informatics.
+The frontend references a "PrimeUI" license key (Community or Commercial tier) issued by
+PrimeTek Informatics. A PrimeUI license key is a separate, independently-licensed
+third-party product. It is NOT covered by the GNU AGPL-3.0 that applies to this repository
+and is NOT included in this repository. See README.md for how to obtain your own key.
 
-Both the Ultima template source files and any PrimeUI license key are separate,
-independently-licensed third-party products. They are:
-
-  * NOT covered by the GNU AGPL-3.0 that applies to this repository (see the additional
-    permission above), and
-  * NOT included in this repository.
-
-See README.md for instructions on how to obtain your own copy of each.
+The frontend layout (sidebar, topbar, menu, breadcrumb, layout service and its styles) is
+original code of this project and is licensed under the GNU AGPL-3.0-only like the rest of
+this repository.
 
 PrimeUI license key: any PrimeUI license key that Cluvix Solutions serves from its own CDN
 is owned by Cluvix Solutions and is NOT licensed or sublicensed to any third party, neither by
@@ -137,3 +127,32 @@ for any other purpose. See https://github.com/bmad-code-org/BMAD-METHOD/blob/mai
 for detailed guidelines. (This TRADEMARK.md refers to BMad Code, LLC's file, not to this
 repository's TRADEMARK.md.)
 
+--------------------------------------------------------------------------------
+
+Third-party notice — flag-icons
+
+flag-icons 7.6.0 (https://github.com/lipis/flag-icons) provides the country flag SVG images.
+They are installed from npm and copied into the frontend build at assets/flags/4x3. flag-icons
+is licensed under the MIT License reproduced below:
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Panayiotis Lipiridis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
