@@ -29,7 +29,8 @@ phải set đúng (xem mục 3).
 | `TOKEN_MAX_SESSIONS` | `3` | (default) | Số thiết bị tối đa/user |
 | `TOKEN_IP_BINDING` | `false` | `false` | Bind token vào IP — chỉ bật cho tài khoản IP tĩnh |
 | `TOTP_ENC_KEY` | rỗng | **hex 64 ký tự** | ⚠️ Mã hóa TOTP secret 2FA. PROD BẮT BUỘC set (`openssl rand -hex 32`) — thiếu/sai định dạng ⇒ **từ chối khởi động** khi APP_ENV không phải dev. Đổi key = mọi user setup lại 2FA |
-| `APP_ENV` | `develop` | `prod` | Chỉ `dev`/`develop`/`local` là môi trường dev (CORS phản chiếu mọi Origin). **Mọi giá trị khác (`production`, `staging`…) chạy chế độ prod** (fail-closed, 2026-10-18) |
+| `APP_ENV` | `prod` (không set ⇒ prod) | `prod` | Chỉ `dev`/`develop`/`local` là môi trường dev (CORS phản chiếu mọi Origin). **Mọi giá trị khác (`production`, `staging`…) — kể cả KHÔNG set — chạy chế độ prod** (fail-closed; mặc định đổi từ `develop` sang `prod` ngày 2026-10-20) |
+| `TOKEN_SECRET` | — | `openssl rand -hex 32` | Bắt buộc. Ở prod phải ≥ 32 ký tự và không phải giá trị mẫu `dev-only-token-secret-change-me` ⇒ sai thì **từ chối khởi động** |
 | `EXPORT_FILE_TTL_HOURS` | `24` | (default) | File export trong `storage/export/<userID>/` cũ hơn ngần này giờ bị dọn lúc boot + mỗi giờ. Tải file qua `GET /api/download/export/:name` (có JWT, chỉ người tạo) — static `/download/export` đã bỏ |
 
 ⚠️ Prefix khoá Redis = `{APP_CODE}:{APP_ENV}:{DB_NAME}:` (từ 2026-10-18 có thêm `DB_NAME` để tách khách

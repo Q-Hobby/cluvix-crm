@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -8,7 +9,38 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var validTOTPKey = strings.Repeat("ab", 32)
+var (
+	validTOTPKey      = strings.Repeat("ab", 32)
+	strongTokenSecret = strings.Repeat("cd", 16)
+)
+
+// unsetEnv — giá trị đánh dấu "biến KHÔNG tồn tại" (khác chuỗi rỗng) cho setOrUnsetEnv.
+const unsetEnv = "\x00unset"
+
+// setOrUnsetEnv — t.Setenv, hoặc xoá hẳn biến (khôi phục giá trị cũ khi test xong) nếu val == unsetEnv.
+func setOrUnsetEnv(t *testing.T, key, val string) {
+	t.Helper()
+	t.Setenv(key, "") // đăng ký khôi phục giá trị gốc
+	if val == unsetEnv {
+		os.Unsetenv(key)
+		return
+	}
+	os.Setenv(key, val)
+}
+
+// TestLoad_ThieuAppEnvLaProd — APP_ENV không set ⇒ chế độ prod (fail-closed), không âm thầm chạy dev.
+func TestLoad_ThieuAppEnvLaProd(t *testing.T) {
+	setOrUnsetEnv(t, "APP_ENV", unsetEnv)
+	t.Setenv("TOKEN_SECRET", strongTokenSecret)
+	t.Setenv("TOTP_ENC_KEY", validTOTPKey)
+	cfg, err := Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !cfg.IsProduction() {
+		t.Fatalf("thiếu APP_ENV phải chạy prod, nhận Env=%q", cfg.Env)
+	}
+}
 
 // TestLoad_ProdBootGuards — retro F10 (2026-10-17): production chỉ còn bắt buộc TOKEN_SECRET.
 // JWT_LIVECHAT_KEY / JWT_PARTNER_KEY / EMR_CONFIG_ENCRYPTION_KEY thuộc module đã gỡ — prod boot
@@ -24,19 +56,27 @@ func TestLoad_ProdBootGuards(t *testing.T) {
 	}{
 		{name: "prod thiếu TOKEN_SECRET → error", env: "prod", tokenSecret: "", totpKey: validTOTPKey, wantErr: true},
 		{name: "dev thiếu TOKEN_SECRET → error", env: "dev", tokenSecret: "", wantErr: true},
-		{name: "prod có TOKEN_SECRET + TOTP_ENC_KEY (không key di sản) → ok", env: "prod", tokenSecret: "s", totpKey: validTOTPKey, wantErr: false},
+		{name: "prod có TOKEN_SECRET + TOTP_ENC_KEY (không key di sản) → ok", env: "prod", tokenSecret: strongTokenSecret, totpKey: validTOTPKey, wantErr: false},
 		{name: "dev chỉ có TOKEN_SECRET → ok", env: "dev", tokenSecret: "s", wantErr: false},
 		// O-7: TOTP_ENC_KEY bắt buộc ở prod — thiếu/sai định dạng ⇒ từ chối boot.
-		{name: "prod thiếu TOTP_ENC_KEY → error", env: "prod", tokenSecret: "s", totpKey: "", wantErr: true},
-		{name: "prod TOTP_ENC_KEY không phải hex → error", env: "prod", tokenSecret: "s", totpKey: strings.Repeat("z", 64), wantErr: true},
-		{name: "prod TOTP_ENC_KEY sai độ dài → error", env: "prod", tokenSecret: "s", totpKey: "abcd", wantErr: true},
+		{name: "prod thiếu TOTP_ENC_KEY → error", env: "prod", tokenSecret: strongTokenSecret, totpKey: "", wantErr: true},
+		{name: "prod TOTP_ENC_KEY không phải hex → error", env: "prod", tokenSecret: strongTokenSecret, totpKey: strings.Repeat("z", 64), wantErr: true},
+		{name: "prod TOTP_ENC_KEY sai độ dài → error", env: "prod", tokenSecret: strongTokenSecret, totpKey: "abcd", wantErr: true},
 		// O-8: APP_ENV lạ (staging/production) = prod ⇒ cũng bắt buộc TOTP_ENC_KEY.
-		{name: "staging thiếu TOTP_ENC_KEY → error", env: "staging", tokenSecret: "s", totpKey: "", wantErr: true},
-		{name: "production thiếu TOTP_ENC_KEY → error", env: "production", tokenSecret: "s", totpKey: "", wantErr: true},
+		{name: "staging thiếu TOTP_ENC_KEY → error", env: "staging", tokenSecret: strongTokenSecret, totpKey: "", wantErr: true},
+		{name: "production thiếu TOTP_ENC_KEY → error", env: "production", tokenSecret: strongTokenSecret, totpKey: "", wantErr: true},
+		// TOKEN_SECRET ở prod: đủ dài, không phải giá trị mẫu công khai.
+		{name: "prod TOKEN_SECRET ngắn → error", env: "prod", tokenSecret: "s", totpKey: validTOTPKey, wantErr: true},
+		{name: "prod TOKEN_SECRET 31 ký tự → error", env: "prod", tokenSecret: strongTokenSecret[:31], totpKey: validTOTPKey, wantErr: true},
+		{name: "prod TOKEN_SECRET giá trị mẫu → error", env: "prod", tokenSecret: "dev-only-token-secret-change-me", totpKey: validTOTPKey, wantErr: true},
+		{name: "dev TOKEN_SECRET giá trị mẫu → ok", env: "dev", tokenSecret: "dev-only-token-secret-change-me", wantErr: false},
+		// APP_ENV không set ⇒ prod (fail-closed) ⇒ secret yếu bị chặn.
+		{name: "thiếu APP_ENV + secret yếu → error", env: unsetEnv, tokenSecret: "s", totpKey: validTOTPKey, wantErr: true},
+		{name: "thiếu APP_ENV + secret mạnh + TOTP_ENC_KEY → ok", env: unsetEnv, tokenSecret: strongTokenSecret, totpKey: validTOTPKey, wantErr: false},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			t.Setenv("APP_ENV", tc.env)
+			setOrUnsetEnv(t, "APP_ENV", tc.env)
 			t.Setenv("TOKEN_SECRET", tc.tokenSecret)
 			t.Setenv("TOTP_ENC_KEY", tc.totpKey)
 			t.Setenv("JWT_LIVECHAT_KEY", "")

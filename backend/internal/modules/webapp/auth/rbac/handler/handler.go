@@ -106,6 +106,27 @@ func (h *Handler) UpdatePermissionWithRole(c *gin.Context) {
 			toInsert = append(toInsert, item.NewPer)
 		}
 	}
+	// Chỉ được cấp quyền mình đang có (super bỏ qua) — chặn tự thêm quyền vào role của mình. Quyền
+	// role ĐÃ có (FE gửi lại) không tính là cấp mới.
+	current := make(map[string]bool)
+	for _, p := range h.RbacSvc.GetPermissionsByRole(roleName) {
+		current[p] = true
+	}
+	var granted []string
+	for _, p := range toInsert {
+		if !current[p] {
+			granted = append(granted, p)
+		}
+	}
+	notHeld, err := h.RbacSvc.PermissionsNotHeld(middleware.GetUserID(c), granted)
+	if err != nil {
+		response.ServerError(c, err)
+		return
+	}
+	if len(notHeld) > 0 {
+		response.Validate(c, i18n.TF(c, "permission_grant_not_held", strings.Join(notHeld, ", ")))
+		return
+	}
 
 	if err := h.RbacSvc.UpdatePermissionWithRole(roleName, toDelete, toInsert); err != nil {
 		// Quyền lạ (FE deploy trước BE seed catalog) là lỗi INPUT, không phải lỗi hệ thống:
@@ -229,7 +250,8 @@ func (h *Handler) DeleteRoleName(c *gin.Context) {
 	}
 	// Role gốc — không cho xoá kể cả bởi user có permission deleteRole (chỉ super-user
 	// mới toàn quyền hệ thống thật sự; xoá "admin" là thao tác không thể hoàn tác).
-	if name == define.RoleAdmin {
+	// Các role super khác (develop) cũng chỉ super-user được xoá.
+	if name == define.RoleAdmin || (define.IsSuperRole(name) && !h.RbacSvc.IsSuperUser(middleware.GetUserID(c))) {
 		response.Validate(c, i18n.T(c, "rbac_cannot_delete_admin_role"))
 		return
 	}

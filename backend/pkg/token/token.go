@@ -35,6 +35,26 @@ type Config struct {
 // Handler map về 401 như token invalid; sentinel để phân biệt cho seclog.
 var ErrFingerprintMismatch = fmt.Errorf("device fingerprint mismatch")
 
+// ErrRefreshRaced: refresh token vừa được request khác xoay vòng (≤ refreshReuseGrace) — thường là
+// 2 tab refresh cùng lúc. Handler trả 409 và KHÔNG xoá cookie (cookie mới của request thắng).
+var ErrRefreshRaced = fmt.Errorf("refresh token already rotated by a concurrent request")
+
+// ErrRefreshReused: refresh token đã xoay vòng bị trình lại sau grace ⇒ coi như bị đánh cắp; mọi
+// refresh token + access session của user đã bị thu hồi.
+var ErrRefreshReused = fmt.Errorf("refresh token reuse detected")
+
+// refreshReuseGrace — khoảng sau khi xoay vòng mà trình lại token cũ vẫn coi là race lành tính.
+const refreshReuseGrace = 30 * time.Second
+
+// claimRefreshScript — xoá rt (chỉ request đầu tiên thấy DEL = 1) + ghi dấu "đã xoay vòng" trong
+// CÙNG một bước nguyên tử. KEYS: rt, rtidx, rtused, rts. ARGV: giá trị rtused, TTL ms, rid.
+var claimRefreshScript = redis.NewScript(`
+if redis.call('DEL', KEYS[1]) == 0 then return 0 end
+redis.call('DEL', KEYS[2])
+redis.call('SET', KEYS[3], ARGV[1], 'PX', ARGV[2])
+redis.call('ZREM', KEYS[4], ARGV[3])
+return 1`)
+
 // rtFPSep ngăn cách hash và fingerprint trong value rt:{uid}:{rid}.
 // Value không có separator = token legacy (trước khi có device binding).
 const rtFPSep = ":fp:"
@@ -241,6 +261,11 @@ func (s *Service) DecodeAndValidate(tokenStr string, ip string) (*Claims, error)
 func (s *Service) VerifyAndRotateRefresh(refreshToken string, fingerprint string) (uint, string, error) {
 	userID, rid, storedFP, err := s.verifyRefreshToken(refreshToken)
 	if err != nil {
+		// Token không còn sống: nếu là token ĐÃ xoay vòng bị trình lại ⇒ race (trong grace) hoặc
+		// bị đánh cắp (quá grace — thu hồi mọi phiên của user).
+		if reuseErr := s.checkRefreshReuse(refreshToken); reuseErr != nil {
+			return 0, "", reuseErr
+		}
 		return 0, "", err
 	}
 
@@ -250,8 +275,15 @@ func (s *Service) VerifyAndRotateRefresh(refreshToken string, fingerprint string
 		return 0, "", ErrFingerprintMismatch
 	}
 
-	// Invalidate old
-	s.invalidateRefresh(userID, rid)
+	// Invalidate old — NGUYÊN TỬ: 2 request cùng token chỉ 1 cái thắng (trước đây cả hai qua
+	// verify rồi cùng phát token mới ⇒ token bị trộm "rẽ nhánh" thành phiên song song).
+	claimed, err := s.claimRefresh(userID, rid, refreshToken)
+	if err != nil {
+		return 0, "", err
+	}
+	if !claimed {
+		return 0, "", ErrRefreshRaced
+	}
 
 	// Generate new — giữ fingerprint hiện diện: ưu tiên client gửi (nâng cấp token
 	// legacy), fallback storedFP nếu client refresh không gửi (mode log/off).
@@ -324,6 +356,50 @@ func (s *Service) verifyRefreshToken(refreshToken string) (uint, string, string,
 	}
 
 	return uint(userID), rid, storedFP, nil
+}
+
+// claimRefresh huỷ refresh token (uid, rid) nguyên tử và ghi `rtused:{rid}` = "uid:hash:unix" để
+// nhận ra token này nếu bị trình lại. false = request khác đã huỷ trước (race).
+func (s *Service) claimRefresh(userID uint, rid, refreshToken string) (bool, error) {
+	ctx := context.Background()
+	used := fmt.Sprintf("%d:%s:%d", userID, sha256Hex(refreshToken[len(rid)+1:]), time.Now().Unix())
+	n, err := claimRefreshScript.Run(ctx, s.redis, []string{
+		s.k(fmt.Sprintf("rt:%d:%s", userID, rid)),
+		s.k("rtidx:" + rid),
+		s.k("rtused:" + rid),
+		s.k(fmt.Sprintf("rts:%d", userID)),
+	}, used, s.cfg.RefreshTTL.Milliseconds(), rid).Int()
+	if err != nil {
+		return false, err
+	}
+	return n == 1, nil
+}
+
+// checkRefreshReuse — token không còn sống nhưng trùng một token đã xoay vòng (`rtused`):
+// trong refreshReuseGrace ⇒ ErrRefreshRaced; quá grace ⇒ thu hồi MỌI refresh token + access
+// session của user, trả ErrRefreshReused. nil = không phải token đã xoay vòng (hết hạn/sai/logout).
+func (s *Service) checkRefreshReuse(refreshToken string) error {
+	if len(refreshToken) < 18 {
+		return nil
+	}
+	rid, raw := refreshToken[:16], refreshToken[17:]
+	val, err := s.redis.Get(context.Background(), s.k("rtused:"+rid)).Result()
+	if err != nil {
+		return nil
+	}
+	parts := strings.Split(val, ":")
+	if len(parts) != 3 || parts[1] != sha256Hex(raw) {
+		return nil
+	}
+	uid, _ := strconv.ParseUint(parts[0], 10, 64)
+	rotatedAt, _ := strconv.ParseInt(parts[2], 10, 64)
+	if time.Since(time.Unix(rotatedAt, 0)) <= refreshReuseGrace {
+		return ErrRefreshRaced
+	}
+	s.RevokeAllRefreshTokens(uint(uid))
+	s.RevokeAllSessions(uint(uid))
+	seclog.Event(nil, "refresh_reuse_detected", seclog.UserID(uint(uid)))
+	return ErrRefreshReused
 }
 
 func (s *Service) generateRefreshToken(userID uint, fingerprint string) (string, error) {

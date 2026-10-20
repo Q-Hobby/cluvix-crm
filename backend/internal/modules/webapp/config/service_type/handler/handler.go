@@ -16,6 +16,7 @@ import (
 	exportHandlers "erpCluvix/internal/modules/webapp/export"
 	"erpCluvix/pkg/dexie"
 	"erpCluvix/pkg/errs"
+	pkgExport "erpCluvix/pkg/export"
 	"erpCluvix/pkg/helpers"
 	"erpCluvix/pkg/i18n"
 	"erpCluvix/pkg/pagination"
@@ -230,7 +231,7 @@ func (h *Handler) ImportServiceTypeFromExcel(c *gin.Context) {
 	}
 	defer src.Close()
 
-	f, err := excelize.OpenReader(src)
+	f, err := excelize.OpenReader(src, pkgExport.ImportOpenOptions())
 	if err != nil {
 		response.Validate(c, i18n.TF(c, "excel_read_failed", err.Error()))
 		return

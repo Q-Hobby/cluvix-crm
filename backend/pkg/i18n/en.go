@@ -61,6 +61,7 @@ var en = map[string]string{
 
 	// RBAC
 	"permission_invalid":        "Invalid permission list",
+	"permission_grant_not_held": "You can only grant permissions you hold yourself. Not held: %s",
 	"permission_not_in_catalog": "These permissions do not exist in the system yet, nothing was saved: %s. The backend may not have been restarted after the permission list was updated.",
 
 	// Validation
@@ -220,7 +221,7 @@ var en = map[string]string{
 	"role_name_required":            "roleName is required",
 	"rbac_name_required":            "name is required",
 	"rbac_name_exists":              "Name already exists",
-	"rbac_cannot_delete_admin_role": "Cannot delete the admin role",
+	"rbac_cannot_delete_admin_role": "Cannot delete the admin/super role",
 	"password_confirm_mismatch":     "Password confirmation does not match",
 	"password_old_wrong":            "Old password is incorrect",
 
@@ -288,7 +289,7 @@ var en = map[string]string{
 
 	// HR user contract
 	"branch_id_not_allowed":        "Branch is not within your scope",
-	"role_not_allowed":             "You are not allowed to assign this role",
+	"role_not_allowed":             "You are not allowed to assign this role (super role, or it has permissions you do not hold)",
 	"allowed_ips_invalid":          "Invalid allowed IP/CIDR list",
 	"self_allowed_ips_not_allowed": "You cannot change your own allowed IP list",
 

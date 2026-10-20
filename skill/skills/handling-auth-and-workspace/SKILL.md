@@ -67,12 +67,14 @@ type Claims struct {
 ### UserScope (cached Redis 5 phút)
 - Load từ `user` (driving) LEFT JOIN `user_profile` → branchActive_id, branchIds (JSON), locale, **status**
 - `InvalidateUserScope(userID)` — gọi khi user đổi branch/status
+- `branchActive_id` chỉ được tin khi còn ∈ `branchIds` (`effectiveActiveBranch`, 2026-10-20) — lệch ⇒ về chi nhánh đầu tiên được phép; `branchIds` rỗng = không giới hạn ⇒ giữ nguyên
 - `AuthResponseHeaders` abort 401 nếu `scope.Status != define.UserStatusActive` — enforce per-request, không chỉ lúc login
 - Cache cleared khi admin update user → request ngay sau re-read DB → enforce ngay không cần logout
 
 ### Security
 - **Device limit thật = giới hạn refresh token** (2026-07-04): zset `rts:{uid}` (rid → expiry) index refresh token/user; login vượt `TOKEN_MAX_SESSIONS` (default 3) → evict refresh của thiết bị ít-refresh-nhất (LRU) → thiết bị đó chết trong ≤ AccessTTL. Giới hạn access-session một mình VÔ NGHĨA (bị revoke thì silent-refresh sống lại)
 - **Logout dùng `ConsumeRefresh` KHÔNG `VerifyAndRotateRefresh`** — rotate lúc logout tạo orphan token chiếm 1 slot device đến hết RefreshTTL
+- **Rotation nguyên tử + phát hiện dùng lại (2026-10-20)**: `claimRefresh` (Lua: DEL `rt` + ghi `rtused:{rid}` = uid:hash:unix) — 2 request cùng token chỉ 1 cái thắng; thua ⇒ `ErrRefreshRaced` ⇒ handler trả **409, KHÔNG xoá cookie** (FE coi là lỗi thoáng qua). Token đã xoay vòng bị trình lại sau `refreshReuseGrace` (30s) ⇒ `ErrRefreshReused`: thu hồi MỌI refresh + access của user, seclog `refresh_reuse_detected`
 - Token revocation (jti blacklist), IP binding (optional)
 - **Revocation enforce tại `JWTAuth(tokenSvc)`** (2026-07-04): check `revoked:{jti}` mỗi request — fail-open khi Redis lỗi
 - **TTL blacklist = phần đời còn lại của token** (lấy từ `sess:{uid}` zset score) — TTL cố định ngắn hơn AccessTTL sẽ mở resurrection window (token revoke xong sống lại)

@@ -15,7 +15,7 @@ func TestCORS_AppEnvLaKhongPhanChieuOrigin(t *testing.T) {
 	for _, env := range []string{"staging", "production", "PROD", "demo", "prod"} {
 		t.Run(env, func(t *testing.T) {
 			t.Setenv("APP_ENV", env)
-			t.Setenv("TOKEN_SECRET", "s")
+			t.Setenv("TOKEN_SECRET", strings.Repeat("k", 32))
 			t.Setenv("TOTP_ENC_KEY", strings.Repeat("ab", 32))
 			t.Setenv("CORS_ALLOWED_ORIGINS", "https://app.example.com")
 			cfg, err := config.Load()
@@ -40,7 +40,7 @@ func TestCORS_DevTuongMinhVanPhanChieu(t *testing.T) {
 	const origin = "http://localhost:4211"
 	for _, env := range []string{"dev", "develop", "local"} {
 		t.Setenv("APP_ENV", env)
-		t.Setenv("TOKEN_SECRET", "s")
+		t.Setenv("TOKEN_SECRET", strings.Repeat("k", 32))
 		cfg, err := config.Load()
 		if err != nil {
 			t.Fatal(err)

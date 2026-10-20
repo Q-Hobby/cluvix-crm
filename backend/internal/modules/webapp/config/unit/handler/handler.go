@@ -16,6 +16,7 @@ import (
 	"erpCluvix/internal/modules/webapp/config/unit/dao"
 	exportHandlers "erpCluvix/internal/modules/webapp/export"
 	"erpCluvix/pkg/dexie"
+	pkgExport "erpCluvix/pkg/export"
 	"erpCluvix/pkg/helpers"
 	"erpCluvix/pkg/i18n"
 	"erpCluvix/pkg/pagination"
@@ -232,7 +233,7 @@ func (h *Handler) ImportUnitFromExcel(c *gin.Context) {
 	}
 	defer src.Close()
 
-	f, err := excelize.OpenReader(src)
+	f, err := excelize.OpenReader(src, pkgExport.ImportOpenOptions())
 	if err != nil {
 		response.Validate(c, i18n.TF(c, "excel_read_failed", err.Error()))
 		return

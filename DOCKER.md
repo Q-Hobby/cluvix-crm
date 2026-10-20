@@ -13,6 +13,8 @@ trong `frontend/`.
 
 Port host cố ý lệch port chuẩn để chạy **song song** với bản chạy trực tiếp trên máy
 (air 8011, `ng serve` 4211, MySQL 3306, Redis 6379). Đổi được qua `*_HOST_PORT` trong `.env.docker`.
+MySQL và Redis chỉ bind `127.0.0.1` trên host (máy khác trong mạng LAN không kết nối được) vì
+mật khẩu dev là `root` và Redis không có mật khẩu.
 
 ---
 

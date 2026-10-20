@@ -42,10 +42,21 @@ func ReadImportRows(fh *multipart.FileHeader) ([][]string, error) {
 		return rows, nil
 	}
 
-	f, err := excelize.OpenReader(src)
+	f, err := excelize.OpenReader(src, ImportOpenOptions())
 	if err != nil {
 		return nil, err
 	}
 	defer func() { _ = f.Close() }()
 	return f.GetRows(f.GetSheetName(0), excelize.Options{RawCellValue: true})
+}
+
+// ImportUnzipSizeLimit — trần tổng dung lượng SAU giải nén của file .xlsx upload. File nén ≤ trần
+// body (vài MB) nhưng bung ra được tới hàng GB (zip bomb) — mặc định của excelize là 16 GB ⇒ một
+// request đủ làm tràn RAM/đĩa máy chủ. 100 MB dư cho file import thật (MaxImportRows dòng).
+var ImportUnzipSizeLimit int64 = 100 << 20 // var (không phải const) để test hạ trần
+
+// ImportOpenOptions — options mở file Excel do NGƯỜI DÙNG upload. Mọi chỗ excelize.OpenReader file
+// upload PHẢI truyền options này.
+func ImportOpenOptions() excelize.Options {
+	return excelize.Options{UnzipSizeLimit: ImportUnzipSizeLimit, UnzipXMLSizeLimit: min(16<<20, ImportUnzipSizeLimit)}
 }

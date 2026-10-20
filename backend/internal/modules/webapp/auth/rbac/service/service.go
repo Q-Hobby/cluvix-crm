@@ -175,6 +175,21 @@ func (s *RbacService) GetPermissionsByRole(roleName string) []string {
 	return perms
 }
 
+// PermissionsNotHeld trả các quyền trong `perms` mà user KHÔNG có (rỗng ⇒ user có đủ; super luôn
+// đủ). Chặn leo thang quyền dưới super: người được giao updateRole/updateUser chỉ được cấp cho
+// role/gán cho user những quyền chính mình đang có — nếu không, tự thêm quyền vào role của mình
+// hoặc gán cho mình role "to" hơn là thành có mọi quyền trừ super.
+func (s *RbacService) PermissionsNotHeld(userID uint, perms []string) ([]string, error) {
+	if len(perms) == 0 || s.IsSuperUser(userID) {
+		return nil, nil
+	}
+	held, err := s.GetUserPermissions(userID)
+	if err != nil {
+		return nil, err
+	}
+	return diffUnknown(dedupStrings(perms), held), nil
+}
+
 // ErrUnknownPermissions — FE gửi quyền không có trong catalog `rbac_auth_item` (type=2).
 // Handler map sang 422 kèm tên quyền; KHÔNG phải lỗi hệ thống nên không trả 500.
 type ErrUnknownPermissions struct {

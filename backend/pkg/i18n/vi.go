@@ -61,6 +61,7 @@ var vi = map[string]string{
 
 	// RBAC
 	"permission_invalid":        "Danh sách quyền không hợp lệ",
+	"permission_grant_not_held": "Bạn chỉ được cấp những quyền chính mình đang có. Bạn không có: %s",
 	"permission_not_in_catalog": "Các quyền sau chưa tồn tại trong hệ thống nên KHÔNG lưu được gì: %s. Có thể backend chưa restart sau khi cập nhật danh sách quyền.",
 
 	// Validation
@@ -220,7 +221,7 @@ var vi = map[string]string{
 	"role_name_required":            "roleName là bắt buộc",
 	"rbac_name_required":            "name là bắt buộc",
 	"rbac_name_exists":              "Tên đã tồn tại",
-	"rbac_cannot_delete_admin_role": "Không thể xóa role admin",
+	"rbac_cannot_delete_admin_role": "Không thể xóa role admin/super",
 	"password_confirm_mismatch":     "Mật khẩu xác nhận không khớp",
 	"password_old_wrong":            "Mật khẩu cũ không đúng",
 
@@ -288,7 +289,7 @@ var vi = map[string]string{
 
 	// HR user contract
 	"branch_id_not_allowed":        "Chi nhánh không thuộc phạm vi quyền của bạn",
-	"role_not_allowed":             "Bạn không có quyền gán vai trò này",
+	"role_not_allowed":             "Bạn không có quyền gán vai trò này (vai trò super, hoặc có quyền bạn không có)",
 	"allowed_ips_invalid":          "Danh sách IP/CIDR được phép không hợp lệ",
 	"self_allowed_ips_not_allowed": "Bạn không được tự đổi danh sách IP được phép của chính mình",
 

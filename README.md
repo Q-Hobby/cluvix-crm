@@ -268,9 +268,9 @@ parsed by `backend/config/config.go`):
 
 | Variable | Requirement |
 |---|---|
-| `APP_ENV` | Only `dev`/`develop`/`local` are dev. Any other value (`prod`…) runs fail-closed prod mode. |
+| `APP_ENV` | Only `dev`/`develop`/`local` are dev. Any other value (`prod`…) — or leaving it unset — runs fail-closed prod mode. |
 | `DB_HOST` `DB_PORT` `DB_USER` `DB_PASS` `DB_NAME` | A dedicated database per customer. Never share a database between customers. |
-| `TOKEN_SECRET` | Required; own secret per customer (`openssl rand -hex 32`). |
+| `TOKEN_SECRET` | Required; own secret per customer (`openssl rand -hex 32`). In prod it must be ≥ 32 chars and not the sample value, or the backend refuses to start. |
 | `TOTP_ENC_KEY` | 64 hex chars (`openssl rand -hex 32`). Missing/malformed = the backend refuses to start in prod. Changing it forces every user to re-enrol 2FA. |
 | `CORS_ALLOWED_ORIGINS` | Comma-separated FE origins. Empty in prod = every cross-origin request rejected. |
 | `PERM_ENFORCE` | Defaults to `true` (fail-closed); only the literal `false` disables it. Keep `true`. |

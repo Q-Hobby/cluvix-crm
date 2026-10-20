@@ -94,7 +94,9 @@ type Config struct {
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		Env:                 env("APP_ENV", "develop"),
+		// Thiếu APP_ENV ⇒ prod (fail-closed): quên set biến ở server thật không được âm thầm chạy chế
+		// độ dev (CORS phản chiếu mọi Origin, bỏ check secret). Dev phải ghi APP_ENV=dev tường minh.
+		Env:                 env("APP_ENV", "prod"),
 		Code:                env("APP_CODE", "cluvix"),
 		Host:                env("SERVER_HOST", "127.0.0.1"),
 		Port:                env("SERVER_PORT", "8080"),
@@ -146,6 +148,13 @@ func Load() (*Config, error) {
 
 	if cfg.TokenSecret == "" {
 		return nil, fmt.Errorf("TOKEN_SECRET is required")
+	}
+	// Ở prod TOKEN_SECRET phải đủ dài và không phải giá trị mẫu: secret yếu/công khai ⇒ ai cũng ký
+	// được JWT hợp lệ (giả mạo mọi user, kể cả super). Dev giữ nới lỏng để chạy nhanh.
+	if cfg.IsProduction() {
+		if err := validateTokenSecret(cfg.TokenSecret); err != nil {
+			return nil, err
+		}
 	}
 	if cfg.ExportFileTTL <= 0 {
 		cfg.ExportFileTTL = defaultExportFileTTLHours * time.Hour
@@ -214,7 +223,25 @@ func (c *Config) IsProduction() bool {
 	return !c.IsDevelopment()
 }
 
-// validateTOTPKey — TOTP_ENC_KEY phải đúng 64 ký tự hex (32 byte AES-256).
+// minTokenSecretLen — độ dài tối thiểu TOKEN_SECRET ở prod (khuyến nghị `openssl rand -hex 32`).
+const minTokenSecretLen = 32
+
+// knownTokenSecrets — giá trị mẫu nằm trong repo public (.env.docker.example, docker-compose.yml):
+// ai cũng biết ⇒ cấm ở prod.
+var knownTokenSecrets = map[string]bool{"dev-only-token-secret-change-me": true}
+
+// validateTokenSecret — TOKEN_SECRET ở prod: không phải giá trị mẫu và ≥ minTokenSecretLen ký tự.
+func validateTokenSecret(secret string) error {
+	if knownTokenSecrets[secret] {
+		return fmt.Errorf("TOKEN_SECRET is a public sample value — set your own (openssl rand -hex 32)")
+	}
+	if len(secret) < minTokenSecretLen {
+		return fmt.Errorf("TOKEN_SECRET too short for production (%d chars, need >= %d; openssl rand -hex 32)", len(secret), minTokenSecretLen)
+	}
+	return nil
+}
+
+// validateTOTPKey —TOTP_ENC_KEY phải đúng 64 ký tự hex (32 byte AES-256).
 func validateTOTPKey(key string) error {
 	if len(key) != 64 {
 		return fmt.Errorf("TOTP_ENC_KEY is required in production (64 hex chars, got %d chars)", len(key))

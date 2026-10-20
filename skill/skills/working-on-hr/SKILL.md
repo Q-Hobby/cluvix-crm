@@ -58,7 +58,16 @@ q := h.DB.Table("user u").
 ```
 
 Guard IDOR của Update/Delete/đổi mật khẩu (đi qua chính `BuildUserQuery`) nay là: tồn tại +
-`u.id <> 1` + `targetIsProtectedSuper` — KHÔNG còn lớp company nào để verify thêm.
+`u.id <> 1` + **phạm vi chi nhánh** + `targetIsProtectedSuper` — KHÔNG còn lớp company nào để verify thêm.
+
+**Phạm vi chi nhánh (2026-10-20)**: caller có `branchIds` ≠ rỗng và không phải super chỉ thấy/sửa nhân viên mà
+MỌI chi nhánh nằm trong phạm vi caller (`JSON_LENGTH(u.branchId) > 0 AND JSON_CONTAINS(<branchIds caller>, u.branchId)`).
+Nhân viên chưa gán chi nhánh (= không giới hạn chi nhánh) chỉ caller không giới hạn mới quản lý. Tạo/sửa/import:
+`branchListAllowed` — caller giới hạn chi nhánh không được tạo hoặc để nhân viên có `branchId` rỗng.
+
+**Gán role (2026-10-20)**: `roleAssignBlocked` — non-super chỉ gán được role mà mọi quyền của role ⊆ quyền của
+chính caller (`RbacSvc.PermissionsNotHeld`); role super (`define.SuperRoles`) chỉ super gán. Cùng luật ở
+`UpdatePermissionWithRole` (rbac): non-super chỉ cấp cho role quyền mình đang có.
 
 **Single-record ops (GetUser, UpdateUser, DeleteUser) đều phải qua BuildUserQuery** để prevent IDOR:
 ```go
