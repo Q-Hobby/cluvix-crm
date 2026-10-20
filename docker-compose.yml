@@ -18,7 +18,8 @@ services:
     # Khớp collation chuẩn dự án (utf8mb4_unicode_ci), không dùng mặc định utf8mb4_0900_ai_ci.
     command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
     ports:
-      - "${MYSQL_HOST_PORT:-13306}:3306"
+      # Chỉ bind 127.0.0.1: MySQL root/root + Redis không mật khẩu KHÔNG được lộ ra mạng LAN.
+      - "127.0.0.1:${MYSQL_HOST_PORT:-13306}:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -31,7 +32,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - "${REDIS_HOST_PORT:-16379}:6379"
+      - "127.0.0.1:${REDIS_HOST_PORT:-16379}:6379"
     volumes:
       - redis-data:/data
     healthcheck:
