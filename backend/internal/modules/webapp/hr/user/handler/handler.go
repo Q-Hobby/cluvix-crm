@@ -309,6 +309,41 @@ func (h *Handler) targetIsProtectedSuper(id uint) bool {
 	return isSuper
 }
 
+// sameAllowedIPs: `raw` client gửi có cùng danh sách với allowed_ips đang lưu của user không
+// (null/rỗng/[] coi như nhau). Lỗi đọc/parse ⇒ false (fail-closed: coi như đổi).
+func (h *Handler) sameAllowedIPs(userID uint, raw []byte) bool {
+	var current *string
+	if err := h.DB.Table("user").Select("allowed_ips").Where("id = ?", userID).Scan(&current).Error; err != nil {
+		return false
+	}
+	parse := func(b []byte) ([]string, bool) {
+		s := strings.TrimSpace(string(b))
+		if s == "" || s == "null" {
+			return nil, true
+		}
+		var list []string
+		if err := json.Unmarshal(b, &list); err != nil {
+			return nil, false
+		}
+		return list, true
+	}
+	var cur []byte
+	if current != nil {
+		cur = []byte(*current)
+	}
+	a, okA := parse(cur)
+	b, okB := parse(raw)
+	if !okA || !okB || len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if strings.TrimSpace(a[i]) != strings.TrimSpace(b[i]) {
+			return false
+		}
+	}
+	return true
+}
+
 // roleEscalationBlocked trả true nếu role nằm trong define.SuperRoles (admin/develop) và
 // caller không phải super-user — chặn tự nâng quyền qua Create/Update/Import (xem [H2]).
 func roleEscalationBlocked(role string, callerIsSuper bool) bool {
@@ -330,6 +365,10 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	callerID := middleware.GetUserID(c)
 	if roleEscalationBlocked(input.Role, helpers.IsSuperUser(h.DB, callerID)) {
 		response.Validate(c, i18n.T(c, "role_not_allowed"))
+		return
+	}
+	if !helpers.ValidateIPOrCIDRList(input.AllowedIps) {
+		response.Validate(c, i18n.T(c, "allowed_ips_invalid"))
 		return
 	}
 
@@ -373,6 +412,16 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	}
 	if input.Role != nil && roleEscalationBlocked(*input.Role, callerIsSuper) {
 		response.Validate(c, i18n.T(c, "role_not_allowed"))
+		return
+	}
+	if !helpers.ValidateIPOrCIDRList(input.AllowedIps) {
+		response.Validate(c, i18n.T(c, "allowed_ips_invalid"))
+		return
+	}
+	// Allowlist IP riêng của user GHI ĐÈ allowlist thương hiệu ⇒ tự sửa của chính mình = tự gỡ
+	// giới hạn IP. Chỉ super-user được; FE gửi lại nguyên giá trị cũ thì vẫn cho qua.
+	if uint(id) == callerID && !callerIsSuper && input.AllowedIps != nil && !h.sameAllowedIPs(uint(id), input.AllowedIps) {
+		response.Validate(c, i18n.T(c, "self_allowed_ips_not_allowed"))
 		return
 	}
 

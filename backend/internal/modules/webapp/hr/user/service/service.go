@@ -132,6 +132,31 @@ type UpdateUserInput struct {
 	AllowedIps  json.RawMessage `json:"allowed_ips"`
 }
 
+// hrProfileEditableFields — whitelist cột `user_profile` mà màn quản trị nhân sự (PUT /hr/user/:id)
+// được ghi: các cột self-service (`config/user_profile` userProfileEditableFields) + `code`,
+// `departmentList`, `cover`. CỐ Ý KHÔNG có `user_id` (PK — dời hồ sơ sang user khác),
+// `branchActive_id` (đổi qua /switch-profile có kiểm quyền chi nhánh; ghi thẳng ở đây ⇒ tự nhảy
+// sang chi nhánh ngoài phạm vi), `updated_at` (callback optlock tự bump).
+var hrProfileEditableFields = map[string]bool{
+	"fullname":        true,
+	"nickname":        true,
+	"code":            true,
+	"birthday":        true,
+	"about":           true,
+	"address":         true,
+	"phone":           true,
+	"email":           true,
+	"id_pancake":      true,
+	"facebook":        true,
+	"telegram":        true,
+	"avatar":          true,
+	"cover":           true,
+	"locale":          true,
+	"gender":          true,
+	"departmentList":  true,
+	"branchOffice_id": true,
+}
+
 func (s *UserService) UpdateUser(userID uint, input UpdateUserInput, operatorID uint) (*hrUserDao.User, error) {
 	var user hrUserDao.User
 	if err := s.DB.First(&user, userID).Error; err != nil {
@@ -188,9 +213,13 @@ func (s *UserService) UpdateUser(userID uint, input UpdateUserInput, operatorID 
 			tx.Rollback()
 			return nil, fmt.Errorf("unmarshal user profile: %w", err)
 		}
-		// FE cũ (tới story-43) còn gửi `companyActive_id`; bảng không còn cột. Xoá TƯỜNG MINH khỏi
-		// map: Updates(map) ghi thẳng key thành cột ⇒ để lại là lỗi 1054.
-		delete(profileUpdates, "companyActive_id")
+		// Updates(map) ghi thẳng key thành cột ⇒ CHỈ giữ cột trong whitelist. Key lạ bỏ im lặng
+		// (FE cũ còn gửi `companyActive_id` — bảng không còn cột, để lại là lỗi 1054).
+		for k := range profileUpdates {
+			if !hrProfileEditableFields[k] {
+				delete(profileUpdates, k)
+			}
+		}
 		if len(profileUpdates) > 0 {
 			// Fullname → title case. golang.org/x/text/cases thay strings.Title (Go 1.18+
 			// deprecated cho Unicode handling).

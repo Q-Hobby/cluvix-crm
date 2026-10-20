@@ -216,6 +216,92 @@ func TestS23_S58_NonSuperTarget_Editable(t *testing.T) {
 	}
 }
 
+// userUpdatedAt đọc khoá lạc quan hiện tại của user (mỗi lần update thành công đều bump).
+func userUpdatedAt(t *testing.T, id uint) int64 {
+	t.Helper()
+	var v int64
+	testDB.Raw("SELECT updated_at FROM user WHERE id = ?", id).Scan(&v)
+	return v
+}
+
+// user_profile chỉ ghi cột trong whitelist: `branchActive_id` (đổi qua /switch-profile có kiểm quyền)
+// và `user_id` (PK) gửi kèm bị bỏ — trước đây ghi thẳng ⇒ tự nhảy sang chi nhánh ngoài phạm vi.
+func TestUpdateUser_ProfileWhitelist(t *testing.T) {
+	if testDB == nil {
+		t.Skip("cần TEST_MYSQL_DSN")
+	}
+	seedCaller(t, nonSuperCallerID, "s58staff")
+	self := uint(nonSuperCallerID)
+	body := fmt.Sprintf(`{"updated_at":%d,"user_profile":{"nickname":"wl","branchActive_id":3,"user_id":987654}}`, userUpdatedAt(t, self))
+	w := serve(t, nonSuperCallerID, http.MethodPut, "/hr/user/:id", fmt.Sprintf("/hr/user/%d", self), body,
+		func(h *Handler, c *gin.Context) { h.UpdateUser(c) })
+	if w.Code != http.StatusOK {
+		t.Fatalf("HTTP=%d body=%s — muốn 200 (key ngoài whitelist bị bỏ im lặng)", w.Code, w.Body.String())
+	}
+	var row struct {
+		Nickname       string
+		BranchActiveID *int `gorm:"column:branchActive_id"`
+	}
+	if err := testDB.Raw("SELECT nickname, branchActive_id FROM user_profile WHERE user_id = ?", self).Scan(&row).Error; err != nil {
+		t.Fatalf("đọc profile: %v", err)
+	}
+	if row.Nickname != "wl" {
+		t.Errorf("nickname = %q — phần hợp lệ phải được ghi", row.Nickname)
+	}
+	if row.BranchActiveID != nil {
+		t.Errorf("branchActive_id = %d — không được ghi qua PUT /hr/user/:id", *row.BranchActiveID)
+	}
+	var moved int64
+	testDB.Raw("SELECT COUNT(*) FROM user_profile WHERE user_id = 987654").Scan(&moved)
+	if moved != 0 {
+		t.Errorf("user_profile bị dời sang user_id khác qua payload")
+	}
+}
+
+// allowed_ips: phải là danh sách IP/CIDR hợp lệ; non-super KHÔNG tự đổi allowlist của chính mình
+// (ghi đè allowlist thương hiệu = tự gỡ giới hạn IP), gửi lại nguyên giá trị cũ thì vẫn qua;
+// sửa allowlist của người khác vẫn được.
+func TestUpdateUser_AllowedIPs(t *testing.T) {
+	if testDB == nil {
+		t.Skip("cần TEST_MYSQL_DSN")
+	}
+	seedCaller(t, nonSuperCallerID, "s58staff")
+	self := uint(nonSuperCallerID)
+	target, _ := mkUser(t, "s58ipx", "s58staff")
+	put := func(id uint, ips string) *httptest.ResponseRecorder {
+		body := fmt.Sprintf(`{"updated_at":%d,"allowed_ips":%s}`, userUpdatedAt(t, id), ips)
+		return serve(t, nonSuperCallerID, http.MethodPut, "/hr/user/:id", fmt.Sprintf("/hr/user/%d", id), body,
+			func(h *Handler, c *gin.Context) { h.UpdateUser(c) })
+	}
+	readIPs := func(id uint) string {
+		var s *string
+		testDB.Raw("SELECT CAST(allowed_ips AS CHAR) FROM user WHERE id = ?", id).Scan(&s)
+		if s == nil {
+			return ""
+		}
+		return strings.ReplaceAll(*s, " ", "")
+	}
+
+	if w := put(self, `["0.0.0.0/0"]`); w.Code != http.StatusUnprocessableEntity {
+		t.Errorf("tự nới allowlist: HTTP=%d body=%s — muốn 422", w.Code, w.Body.String())
+	}
+	if got := readIPs(self); got != "" {
+		t.Errorf("allowed_ips của chính mình bị đổi thành %s", got)
+	}
+	if w := put(self, `null`); w.Code != http.StatusOK {
+		t.Errorf("gửi lại giá trị cũ (null): HTTP=%d body=%s — muốn 200", w.Code, w.Body.String())
+	}
+	if w := put(target, `["not-an-ip"]`); w.Code != http.StatusUnprocessableEntity {
+		t.Errorf("IP sai định dạng: HTTP=%d body=%s — muốn 422", w.Code, w.Body.String())
+	}
+	if w := put(target, `["10.0.0.0/8"]`); w.Code != http.StatusOK {
+		t.Errorf("sửa allowlist người khác: HTTP=%d body=%s — muốn 200", w.Code, w.Body.String())
+	}
+	if got := readIPs(target); got != `["10.0.0.0/8"]` {
+		t.Errorf("allowed_ips người khác = %s — muốn [\"10.0.0.0/8\"]", got)
+	}
+}
+
 // Get KHÔNG còn key FE-compat (story-66 gỡ cầu story-62); GetAllUsers thấy user.
 func TestUserReads_S66_KhongConKeyFECompat(t *testing.T) {
 	if testDB == nil {
