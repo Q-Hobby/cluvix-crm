@@ -85,9 +85,21 @@ func (h *Handler) BuildUserQuery(c *gin.Context) *gorm.DB {
 		Joins("LEFT JOIN rbac_auth_item i ON i.name = a.item_name").
 		Where("u.id <> 1")
 
+	// Phạm vi chi nhánh: caller bị giới hạn chi nhánh (branchIds ≠ rỗng, không phải super) chỉ thấy —
+	// và qua các guard dùng chung query này, chỉ sửa/xoá/đặt lại mật khẩu — nhân viên mà MỌI chi
+	// nhánh đều nằm trong phạm vi của caller. Trước đây quản lý chi nhánh A đặt lại được mật khẩu
+	// nhân viên chi nhánh B (hoặc nhân viên A+B / chưa gán chi nhánh = không giới hạn) rồi đăng
+	// nhập bằng tài khoản đó ⇒ vượt phạm vi chi nhánh. Nhân viên chưa gán chi nhánh chỉ caller
+	// không giới hạn chi nhánh mới quản lý được.
+	if ids := middleware.GetBranchIDs(c); len(ids) > 0 && !helpers.IsSuperUser(h.DB, middleware.GetUserID(c)) {
+		allowed, _ := json.Marshal(ids)
+		q = q.Where("JSON_LENGTH(u.branchId) > 0 AND JSON_CONTAINS(CAST(? AS JSON), u.branchId)", string(allowed))
+	}
+
 	// Story-58 (E6/D15, 1 thương hiệu/DB): bỏ lọc JSON `u.companyId` theo company đang active —
 	// mọi nhân viên trong DB thuộc thương hiệu duy nhất. Guard IDOR của Update/Delete/đổi mật khẩu
-	// (đi qua chính query này) nay là: tồn tại + `u.id <> 1` + targetIsProtectedSuper (xem dưới).
+	// (đi qua chính query này) nay là: tồn tại + `u.id <> 1` + phạm vi chi nhánh (ngay trên) +
+	// targetIsProtectedSuper (xem dưới).
 
 	q = query.ApplyKeywordFilter(c, q, "u.username", "p.fullname", "p.phone")
 	q = query.ApplyFilter(c, q, "status", "u.status")
@@ -294,6 +306,26 @@ func jsonIDsAllowed(raw json.RawMessage, allowed []uint) bool {
 	return true
 }
 
+// branchListAllowed — jsonIDsAllowed + caller bị giới hạn chi nhánh (allowed ≠ rỗng, không phải super)
+// không được để nhân viên KHÔNG có chi nhánh: branchId rỗng/null = không giới hạn chi nhánh, rộng
+// hơn phạm vi của chính caller. absentOK: payload không gửi field (Update — giữ giá trị cũ).
+func branchListAllowed(raw json.RawMessage, allowed []uint, callerIsSuper, absentOK bool) bool {
+	if !jsonIDsAllowed(raw, allowed) {
+		return false
+	}
+	if callerIsSuper || len(allowed) == 0 {
+		return true
+	}
+	if len(raw) == 0 {
+		return absentOK
+	}
+	var ids []uint64
+	if err := json.Unmarshal(raw, &ids); err != nil {
+		return false
+	}
+	return len(ids) > 0
+}
+
 // targetIsProtectedSuper — [S2-3] thay `targetHasNullCompany` (story-58).
 //
 // Trước: user `companyId` NULL = tài khoản cấp nền tảng (thấy được ở MỌI thương hiệu qua
@@ -350,6 +382,20 @@ func roleEscalationBlocked(role string, callerIsSuper bool) bool {
 	return role != "" && define.IsSuperRole(role) && !callerIsSuper
 }
 
+// roleAssignBlocked — roleEscalationBlocked + chặn leo thang DƯỚI super: caller không phải super
+// chỉ được gán role mà mọi quyền của role đó chính caller cũng có (nếu không, người có updateUser
+// tự gán cho mình role "to" hơn). Lỗi tra quyền ⇒ chặn (fail-closed).
+func (h *Handler) roleAssignBlocked(role string, callerID uint, callerIsSuper bool) bool {
+	if role == "" || callerIsSuper {
+		return false
+	}
+	if roleEscalationBlocked(role, callerIsSuper) || h.RbacSvc == nil {
+		return true
+	}
+	notHeld, err := h.RbacSvc.PermissionsNotHeld(callerID, h.RbacSvc.GetPermissionsByRole(role))
+	return err != nil || len(notHeld) > 0
+}
+
 // CreateUser POST /hr/user
 func (h *Handler) CreateUser(c *gin.Context) {
 	var input svc.CreateUserInput
@@ -358,12 +404,12 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 	// `companyId` trong payload (FE cũ) bị BỎ QUA — DTO không có field, bảng không còn cột.
-	if !jsonIDsAllowed(input.BranchId, middleware.GetBranchIDs(c)) {
+	if !branchListAllowed(input.BranchId, middleware.GetBranchIDs(c), helpers.IsSuperUser(h.DB, middleware.GetUserID(c)), false) {
 		response.Validate(c, i18n.T(c, "branch_id_not_allowed"))
 		return
 	}
 	callerID := middleware.GetUserID(c)
-	if roleEscalationBlocked(input.Role, helpers.IsSuperUser(h.DB, callerID)) {
+	if h.roleAssignBlocked(input.Role, callerID, helpers.IsSuperUser(h.DB, callerID)) {
 		response.Validate(c, i18n.T(c, "role_not_allowed"))
 		return
 	}
@@ -406,11 +452,11 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 		return
 	}
 	// Story-58: `companyId` trong payload bị BỎ QUA (DTO không còn field) — không đổi cột.
-	if !jsonIDsAllowed(input.BranchId, middleware.GetBranchIDs(c)) {
+	if !branchListAllowed(input.BranchId, middleware.GetBranchIDs(c), callerIsSuper, true) {
 		response.Validate(c, i18n.T(c, "branch_id_not_allowed"))
 		return
 	}
-	if input.Role != nil && roleEscalationBlocked(*input.Role, callerIsSuper) {
+	if input.Role != nil && h.roleAssignBlocked(*input.Role, callerID, callerIsSuper) {
 		response.Validate(c, i18n.T(c, "role_not_allowed"))
 		return
 	}
@@ -1083,7 +1129,7 @@ func (h *Handler) ImportUsers(c *gin.Context) {
 			// giá trị KHÔNG đổi ⇒ export rồi import lại y nguyên cũng bị chặn nhầm.
 			if v, ok := data["branchId"].(string); ok && v != "" &&
 				jsonIDsChanged(v, currentBranchJSON[currentUserID]) &&
-				!jsonIDsAllowed(json.RawMessage(normalizeJSONIDs(v)), middleware.GetBranchIDs(c)) {
+				!branchListAllowed(json.RawMessage(normalizeJSONIDs(v)), middleware.GetBranchIDs(c), callerIsSuper, true) {
 				tx.Rollback()
 				response.Validate(c, fmt.Sprintf("Lỗi dòng %d: %s", rowIdx, i18n.T(c, "branch_id_not_allowed")))
 				return
@@ -1148,7 +1194,7 @@ func (h *Handler) ImportUsers(c *gin.Context) {
 					response.Validate(c, fmt.Sprintf("Lỗi dòng %d: %s", rowIdx, i18n.T(c, "user_import_multi_role")))
 					return
 				}
-				if roleEscalationBlocked(role, callerIsSuper) {
+				if h.roleAssignBlocked(role, userID, callerIsSuper) {
 					tx.Rollback()
 					response.Validate(c, fmt.Sprintf("Lỗi dòng %d: %s", rowIdx, i18n.T(c, "role_not_allowed")))
 					return
@@ -1194,7 +1240,7 @@ func (h *Handler) ImportUsers(c *gin.Context) {
 			if v, ok := data["branchId"].(string); ok && v != "" {
 				branchIdJSON = datatypes.JSON([]byte(strings.ReplaceAll(v, " ", "")))
 			}
-			if !jsonIDsAllowed(json.RawMessage(branchIdJSON), middleware.GetBranchIDs(c)) {
+			if !branchListAllowed(json.RawMessage(branchIdJSON), middleware.GetBranchIDs(c), callerIsSuper, false) {
 				tx.Rollback()
 				response.Validate(c, fmt.Sprintf("Lỗi dòng %d: %s", rowIdx, i18n.T(c, "branch_id_not_allowed")))
 				return
@@ -1237,7 +1283,7 @@ func (h *Handler) ImportUsers(c *gin.Context) {
 			}
 
 			if role, ok := data["role"].(string); ok && role != "" {
-				if roleEscalationBlocked(role, callerIsSuper) {
+				if h.roleAssignBlocked(role, userID, callerIsSuper) {
 					tx.Rollback()
 					response.Validate(c, fmt.Sprintf("Lỗi dòng %d: %s", rowIdx, i18n.T(c, "role_not_allowed")))
 					return

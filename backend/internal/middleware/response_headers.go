@@ -244,6 +244,7 @@ func loadUserScope(db *gorm.DB, ch *cache.RedisCache, userID uint) UserScope {
 			s.BranchIds = ids
 		}
 	}
+	s.BranchActiveId = effectiveActiveBranch(s.BranchActiveId, s.BranchIds)
 	// IP allowlist: user override thắng hồ sơ thương hiệu; rỗng cả hai = không giới hạn.
 	s.AllowedIPs = parseIPList(row.UserAllowedIPs)
 	if len(s.AllowedIPs) == 0 {
@@ -275,6 +276,22 @@ func loadUserScope(db *gorm.DB, ch *cache.RedisCache, userID uint) UserScope {
 	}
 
 	return s
+}
+
+// effectiveActiveBranch — chi nhánh đang chọn (user_profile.branchActive_id) chỉ được tin khi còn
+// thuộc branchIds của user. Admin gỡ user khỏi chi nhánh B nhưng branchActive_id vẫn là B ⇒ trước
+// đây user tiếp tục đọc/ghi dữ liệu B (scope lọc theo active branch). Lệch ⇒ về chi nhánh đầu tiên
+// được phép. branchIds rỗng = không giới hạn chi nhánh ⇒ giữ nguyên.
+func effectiveActiveBranch(active uint, allowed []uint) uint {
+	if active == 0 || len(allowed) == 0 {
+		return active
+	}
+	for _, id := range allowed {
+		if id == active {
+			return active
+		}
+	}
+	return allowed[0]
 }
 
 // parseIPList unmarshal JSON array IP/CIDR, bỏ entry rỗng. NULL/lỗi → nil.
