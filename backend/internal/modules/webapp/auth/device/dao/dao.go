@@ -96,8 +96,10 @@ func (d *Dao) GetOwned(id, userID uint) (*UserDevice, error) {
 // MarkRevoked set status revoked (record giữ lại làm lịch sử; login lại sẽ trust lại).
 func (d *Dao) MarkRevoked(id uint) error {
 	return d.DB.Model(&UserDevice{}).Where("id = ?", id).Updates(map[string]any{
-		"status":     define.UserDeviceRevoked,
-		"updated_at": time.Now().Unix(),
+		"status":             define.UserDeviceRevoked,
+		"totp_trusted_until": nil,
+		"totp_trust_hash":    nil,
+		"updated_at":         time.Now().Unix(),
 	}).Error
 }
 
