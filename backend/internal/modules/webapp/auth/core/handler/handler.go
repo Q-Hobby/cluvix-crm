@@ -6,6 +6,7 @@ import (
 	"crypto/subtle"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -466,6 +467,12 @@ func (h *Handler) RefreshToken(c *gin.Context) {
 	}
 
 	userID, newRefresh, err := h.TokenSvc.VerifyAndRotateRefresh(refreshToken, fingerprint)
+	if errors.Is(err, token.ErrRefreshRaced) {
+		// Request khác (tab khác) vừa xoay vòng chính token này: KHÔNG xoá cookie — cookie đang
+		// giữ là token mới của request thắng. 409 ⇒ FE coi là lỗi thoáng qua, không đăng xuất.
+		c.JSON(http.StatusConflict, gin.H{"ok": false, "message": i18n.T(c, "token_invalid")})
+		return
+	}
 	if err != nil {
 		// Token invalid/expired hoặc fingerprint mismatch (enforce) → xoá cookie cũ.
 		if !isMobileTransport(c) {
