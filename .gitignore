@@ -103,3 +103,6 @@ qodana.*
 /backend/THIRD_PARTY_NOTICES.txt
 # Output build phát hành (make build-linux) — không commit
 /backend/dist/
+
+# File tải về/tạm ở gốc repo — không đưa lên git
+/tmp/
