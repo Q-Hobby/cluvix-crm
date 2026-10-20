@@ -287,8 +287,10 @@ var vi = map[string]string{
 	// Client zalo user
 
 	// HR user contract
-	"branch_id_not_allowed": "Chi nhánh không thuộc phạm vi quyền của bạn",
-	"role_not_allowed":      "Bạn không có quyền gán vai trò này",
+	"branch_id_not_allowed":        "Chi nhánh không thuộc phạm vi quyền của bạn",
+	"role_not_allowed":             "Bạn không có quyền gán vai trò này",
+	"allowed_ips_invalid":          "Danh sách IP/CIDR được phép không hợp lệ",
+	"self_allowed_ips_not_allowed": "Bạn không được tự đổi danh sách IP được phép của chính mình",
 
 	// HR salary advance (tạm ứng lương)
 

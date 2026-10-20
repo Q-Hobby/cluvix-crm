@@ -84,7 +84,7 @@ Customer **được phép có `branch_id = NULL`** (chưa gán chi nhánh). Đâ
 
 Áp dụng cho: `BuildCustomerQuery`, `SearchGlobal`, `LoadCustomerByKeyword`, `ForAffiliate`, `BuildLeadQuery` (sale), `ListPatient` (emr), `ListConvert` (marketing), `GetCustomerDebts` (accountant), `ListCustomerBirthday` (customer-care).
 
-**Read-back sau CREATE:** đọc lại qua CÙNG phạm vi `GetCustomer` — `ScopedDBNullBranchSkipBranch(…, true)` (`crm/customer/handler/customer.go`, sau `LAST_INSERT_ID()`):
+**Read-back sau CREATE:** đọc lại bản vừa tạo bằng `ScopedDBNullBranchSkipBranch(…, true)` (`crm/customer/handler/customer.go`, sau `LAST_INSERT_ID()`; `branch_id` đã qua `customerBranchWriteAllowed` trước khi ghi):
 ```go
 tenant.ScopedDBNullBranchSkipBranch(c, h.DB, "customer", true).Table("customer").
     Where("id = ?", customerID).Take(&item)
@@ -93,6 +93,7 @@ Lý do: scope chi nhánh thường làm khách vừa tạo cho chi nhánh KHÁC 
 
 ## List / Get
 - List: `ScopedDBNullBranch` + filter `status IN CustomerStatuses`, keyword search (phone/code/fullname/nickname/old_code/other_phone/link_message/loai_message)
+- Get/Update theo id: phạm vi `customerByIDScope` — lọc chi nhánh như list (NULL luôn thấy), chỉ bỏ lọc khi user_option cross-branch (id=18) bật, giống SearchGlobal. Trước 2026-10-20 cả hai luôn `SkipBranch(…, true)` ⇒ IDOR xuyên chi nhánh; KHÔNG quay lại. Create/Update/CreateSwitch gửi `branch_id` ⇒ bắt buộc `customerBranchWriteAllowed` (`middleware.IsBranchAllowed`), sai ⇒ 422 `branch_id_not_allowed`.
 - Get: trả đầy đủ fields + `helpers.ParseJSONFieldForTable(item, "customer")` cho JSON columns (tags, relatives, medicalHistory...)
 - SearchGlobal: phone suffix matching (9 digits) khi keyword 10-11 ký tự số
 - LoadByKeyword: limit 10, label = `fullname - nickname`

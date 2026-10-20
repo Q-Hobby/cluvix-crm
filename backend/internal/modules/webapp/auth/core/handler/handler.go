@@ -2,8 +2,12 @@ package handler
 
 import (
 	"context"
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -52,6 +56,10 @@ const (
 
 	refreshCookieName = "refresh_token"
 	refreshCookiePath = "/api/auth"
+
+	// deviceTrustCookiePrefix + userID — token remember-device (HttpOnly, cùng path refresh).
+	// Tách theo user để nhiều tài khoản trên cùng trình duyệt không ghi đè nhau.
+	deviceTrustCookiePrefix = "device_trust_"
 
 	// mobileTransportKey — mobile v1 (/api/mobile/v1/auth/*) set flag này trước khi
 	// delegate vào Login/Login2FA/RefreshToken/Logout: refresh token đi trong JSON
@@ -111,6 +119,35 @@ func clearRefreshCookie(c *gin.Context) {
 	c.SetCookie(refreshCookieName, "", -1, refreshCookiePath, "", isSecureRequest(c), true)
 }
 
+func deviceTrustCookieName(userID uint) string {
+	return deviceTrustCookiePrefix + strconv.FormatUint(uint64(userID), 10)
+}
+
+// setDeviceTrustCookie lưu token remember-device dạng HttpOnly — JS không đọc được, giống refresh.
+func setDeviceTrustCookie(c *gin.Context, userID uint, trustToken string, trustUntil int64) {
+	maxAge := int(trustUntil - time.Now().Unix())
+	if maxAge < 0 {
+		maxAge = 0
+	}
+	c.SetSameSite(cookieSameSite(c))
+	c.SetCookie(deviceTrustCookieName(userID), trustToken, maxAge, refreshCookiePath, "", isSecureRequest(c), true)
+}
+
+// deviceTrustToken lấy token remember-device client trình ra: web từ cookie HttpOnly,
+// mobile từ body (cùng quy ước transport với refresh token).
+func deviceTrustToken(c *gin.Context, userID uint, fromBody string) string {
+	if isMobileTransport(c) {
+		return fromBody
+	}
+	v, _ := c.Cookie(deviceTrustCookieName(userID))
+	return v
+}
+
+func hashDeviceTrustToken(t string) string {
+	sum := sha256.Sum256([]byte(t))
+	return hex.EncodeToString(sum[:])
+}
+
 // --- Login ---
 
 type LoginRequest struct {
@@ -123,6 +160,8 @@ type LoginRequest struct {
 	// khác locale đang lưu trong user_profile → đồng bộ NGAY tại đây trước khi trả
 	// response, để FE luôn nhận đúng locale mới nhất (loadUserData đọc SAU update này).
 	Locale string `json:"locale"`
+	// DeviceTrustToken CHỈ đọc khi mobile transport — web dùng cookie HttpOnly.
+	DeviceTrustToken string `json:"device_trust_token"`
 }
 
 func (h *Handler) deviceDao() *devdao.Dao { return &devdao.Dao{DB: h.DB} }
@@ -215,7 +254,8 @@ func (h *Handler) Login(c *gin.Context) {
 
 	// 2FA challenge: user đã bật 2FA + thiết bị chưa được tin (hết hạn/mới) → yêu cầu
 	// nhập mã. CHƯA cấp token. Ép-setup (policy bắt mà chưa bật) do AuthResponseHeaders lo.
-	if h.TwoFASvc != nil && h.TwoFASvc.IsEnabled(user.ID) && !h.deviceTrustedFor2FA(user.ID, fingerprint) {
+	trustToken := deviceTrustToken(c, user.ID, req.DeviceTrustToken)
+	if h.TwoFASvc != nil && h.TwoFASvc.IsEnabled(user.ID) && !h.deviceTrustedFor2FA(user.ID, fingerprint, trustToken) {
 		challenge, err := h.TokenSvc.IssueChallengeToken(user.ID, fingerprint)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": i18n.T(c, "token_create_error")})
@@ -230,9 +270,10 @@ func (h *Handler) Login(c *gin.Context) {
 }
 
 // issueLoginSuccess: device upsert + seclog + cấp token + set cookie + response.
-// Dùng chung cho login không-2FA và login sau khi verify 2FA. trustUntil > 0 → set
-// totp_trusted_until cho thiết bị (remember device) SAU khi upsert đã tạo row.
+// Dùng chung cho login không-2FA và login sau khi verify 2FA. trustUntil > 0 → cấp token
+// remember-device ngẫu nhiên, lưu hash + totp_trusted_until SAU khi upsert đã tạo row.
 func (h *Handler) issueLoginSuccess(c *gin.Context, userID uint, fingerprint, ip string, trustUntil int64) {
+	var trustToken string
 	if fingerprint != "" {
 		devName := helpers.DeviceNameFromUA(c.GetHeader("User-Agent"))
 		if _, isNew, devErr := h.deviceDao().Upsert(userID, fingerprint, devName, ip, 0); devErr != nil {
@@ -240,10 +281,19 @@ func (h *Handler) issueLoginSuccess(c *gin.Context, userID uint, fingerprint, ip
 		} else if isNew {
 			seclog.Event(c, "new_device", seclog.UserID(userID), seclog.FP(fingerprint), zap.String("device", devName))
 		}
-		// Row device đã tồn tại (vừa upsert) → set trust an toàn.
+		// Row device đã tồn tại (vừa upsert) → set trust an toàn. Lỗi sinh/ghi token chỉ
+		// làm mất "nhớ thiết bị" (lần sau hỏi 2FA lại), không chặn đăng nhập.
 		if trustUntil > 0 {
-			h.DB.Table("user_device").Where("user_id = ? AND fingerprint = ?", userID, fingerprint).
-				Update("totp_trusted_until", trustUntil)
+			t, err := token.RandomHex(32)
+			if err == nil {
+				err = h.DB.Table("user_device").Where("user_id = ? AND fingerprint = ?", userID, fingerprint).
+					Updates(map[string]any{"totp_trusted_until": trustUntil, "totp_trust_hash": hashDeviceTrustToken(t)}).Error
+			}
+			if err != nil {
+				middleware.GetLogger(c).Error("set device trust failed", zap.Error(err))
+			} else {
+				trustToken = t
+			}
 		}
 	} else {
 		seclog.Event(c, "login_no_fingerprint", seclog.UserID(userID))
@@ -269,21 +319,36 @@ func (h *Handler) issueLoginSuccess(c *gin.Context, userID uint, fingerprint, ip
 	}
 	if isMobileTransport(c) {
 		resp["refreshToken"] = result.RefreshToken
+		if trustToken != "" {
+			resp["deviceTrustToken"] = trustToken
+		}
 	} else {
 		setRefreshCookie(c, result.RefreshToken, result.RefreshExpiresAt)
+		if trustToken != "" {
+			setDeviceTrustCookie(c, userID, trustToken, trustUntil)
+		}
 	}
 	c.JSON(http.StatusOK, resp)
 }
 
-// deviceTrustedFor2FA: thiết bị còn trong hạn skip 2FA (remember device).
-func (h *Handler) deviceTrustedFor2FA(userID uint, fingerprint string) bool {
-	if fingerprint == "" {
+// deviceTrustedFor2FA: thiết bị còn trong hạn skip 2FA (remember device). Fingerprint do client
+// tự tính từ thông tin trình duyệt đoán được ⇒ KHÔNG đủ để bỏ 2FA; bắt buộc kèm token ngẫu nhiên
+// server đã cấp lúc verify 2FA (so hash, constant-time). Thiết bị đã thu hồi không được tin.
+func (h *Handler) deviceTrustedFor2FA(userID uint, fingerprint, trustToken string) bool {
+	if fingerprint == "" || trustToken == "" {
 		return false
 	}
-	var until *int64
-	h.DB.Table("user_device").Select("totp_trusted_until").
-		Where("user_id = ? AND fingerprint = ?", userID, fingerprint).Scan(&until)
-	return until != nil && *until > time.Now().Unix()
+	var row struct {
+		TotpTrustedUntil *int64
+		TotpTrustHash    *string
+	}
+	h.DB.Table("user_device").Select("totp_trusted_until, totp_trust_hash").
+		Where("user_id = ? AND fingerprint = ? AND status <> ?", userID, fingerprint, define.UserDeviceRevoked).
+		Scan(&row)
+	if row.TotpTrustedUntil == nil || *row.TotpTrustedUntil <= time.Now().Unix() || row.TotpTrustHash == nil {
+		return false
+	}
+	return subtle.ConstantTimeCompare([]byte(*row.TotpTrustHash), []byte(hashDeviceTrustToken(trustToken))) == 1
 }
 
 // syncUserLocale: locale FE gửi kèm lúc login (đang chọn ở màn login) khác locale đang lưu

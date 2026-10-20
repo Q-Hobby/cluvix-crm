@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -82,14 +83,34 @@ func newLoginEnv(t *testing.T, maxSessions int) *loginEnv {
 
 func (e *loginEnv) post(t *testing.T, path string, body any) (int, map[string]any) {
 	t.Helper()
+	code, out, _ := e.postCookies(t, path, body, nil)
+	return code, out
+}
+
+// postCookies gửi kèm cookie và trả cookie response set (remember-device dùng cookie HttpOnly).
+func (e *loginEnv) postCookies(t *testing.T, path string, body any, cookies []*http.Cookie) (int, map[string]any, []*http.Cookie) {
+	t.Helper()
 	b, _ := json.Marshal(body)
 	req := httptest.NewRequest(http.MethodPost, path, bytes.NewReader(b))
 	req.Header.Set("Content-Type", "application/json")
+	for _, ck := range cookies {
+		req.AddCookie(ck)
+	}
 	w := httptest.NewRecorder()
 	e.r.ServeHTTP(w, req)
 	var out map[string]any
 	_ = json.Unmarshal(w.Body.Bytes(), &out)
-	return w.Code, out
+	return w.Code, out, w.Result().Cookies()
+}
+
+// cookieNamed lấy cookie theo tên (nil nếu không có).
+func cookieNamed(cookies []*http.Cookie, name string) *http.Cookie {
+	for _, ck := range cookies {
+		if ck.Name == name {
+			return ck
+		}
+	}
+	return nil
 }
 
 // setTrustDays đặt totp_trust_days trên hồ sơ thương hiệu (khôi phục 30 khi xong).
@@ -204,28 +225,47 @@ func TestLogin_DeviceLimit(t *testing.T) {
 	}
 }
 
-// 2FA: user đã bật 2FA + thiết bị chưa tin ⇒ challenge, KHÔNG token; thiết bị còn hạn tin ⇒ token.
+// 2FA: user đã bật 2FA + thiết bị chưa tin ⇒ challenge, KHÔNG token. Fingerprint còn hạn tin
+// nhưng KHÔNG kèm token remember-device (kẻ có mật khẩu đoán fingerprint) ⇒ vẫn challenge.
+// Kèm đúng cookie token đã cấp sau 2FA ⇒ token; token sai ⇒ challenge.
 func TestLogin_2FAChallenge(t *testing.T) {
 	if testDB == nil {
 		t.Skip("cần TEST_MYSQL_DSN")
 	}
+	setTrustDays(t, 30)
 	e := newLoginEnv(t, 3)
 	seedLoginUser(t, 885, "s58login885", 10, 1)
-	code, out := e.post(t, "/api/auth/login", map[string]any{
-		"username": "s58login885", "password": loginPassword, "device_fingerprint": "fpTrust885x"})
+	login := func(cookies []*http.Cookie) (int, map[string]any) {
+		code, out, _ := e.postCookies(t, "/api/auth/login", map[string]any{
+			"username": "s58login885", "password": loginPassword, "device_fingerprint": "fpTrust885x"}, cookies)
+		return code, out
+	}
+	code, out := login(nil)
 	if code != http.StatusOK || out["requires_2fa"] != true || out["accessToken"] != nil || out["challenge_token"] == nil {
 		t.Fatalf("thiết bị chưa tin: HTTP=%d out=%v — muốn requires_2fa, không token", code, out)
 	}
 
+	// Fingerprint đã từng được tin (dữ liệu cũ, chưa có hash) — chỉ fingerprint thì KHÔNG được bỏ 2FA.
 	future := time.Now().Add(time.Hour).Unix()
 	if err := testDB.Exec("INSERT INTO user_device (user_id, fingerprint, status, totp_trusted_until, created_at, updated_at) "+
 		"VALUES (?, 'fpTrust885x', 1, ?, 0, 0)", 885, future).Error; err != nil {
 		t.Fatalf("seed device: %v", err)
 	}
-	code, out = e.post(t, "/api/auth/login", map[string]any{
-		"username": "s58login885", "password": loginPassword, "device_fingerprint": "fpTrust885x"})
-	if code != http.StatusOK || out["accessToken"] == nil || out["requires_2fa"] == true {
-		t.Fatalf("thiết bị đã tin: HTTP=%d out=%v — muốn token, không challenge", code, out)
+	if code, out = login(nil); code != http.StatusOK || out["requires_2fa"] != true || out["accessToken"] != nil {
+		t.Fatalf("chỉ fingerprint: HTTP=%d out=%v — muốn requires_2fa", code, out)
+	}
+
+	cookies := login2FAFlow(t, e, "s58login885", "fpTrust885x")
+	trust := cookieNamed(cookies, deviceTrustCookieName(885))
+	if trust == nil || trust.Value == "" || !trust.HttpOnly {
+		t.Fatalf("thiếu cookie remember-device HttpOnly: %v", cookies)
+	}
+	if code, out = login([]*http.Cookie{trust}); code != http.StatusOK || out["accessToken"] == nil || out["requires_2fa"] == true {
+		t.Fatalf("thiết bị đã tin + cookie: HTTP=%d out=%v — muốn token, không challenge", code, out)
+	}
+	forged := &http.Cookie{Name: trust.Name, Value: strings.Repeat("0", len(trust.Value))}
+	if code, out = login([]*http.Cookie{forged}); code != http.StatusOK || out["requires_2fa"] != true {
+		t.Fatalf("cookie sai: HTTP=%d out=%v — muốn requires_2fa", code, out)
 	}
 }
 
@@ -240,8 +280,8 @@ func trustedUntil(t *testing.T, uid int, fp string) *int64 {
 	return until
 }
 
-// login2FAFlow: login ⇒ challenge ⇒ verify backup code (remember_device) ⇒ token.
-func login2FAFlow(t *testing.T, e *loginEnv, username, fp string) {
+// login2FAFlow: login ⇒ challenge ⇒ verify backup code (remember_device) ⇒ token. Trả cookie bước 2.
+func login2FAFlow(t *testing.T, e *loginEnv, username, fp string) []*http.Cookie {
 	t.Helper()
 	code, out := e.post(t, "/api/auth/login", map[string]any{
 		"username": username, "password": loginPassword, "device_fingerprint": fp})
@@ -249,11 +289,12 @@ func login2FAFlow(t *testing.T, e *loginEnv, username, fp string) {
 	if code != http.StatusOK || ch == "" {
 		t.Fatalf("bước 1: HTTP=%d out=%v", code, out)
 	}
-	code, out = e.post(t, "/api/auth/login/2fa", map[string]any{
-		"challenge_token": ch, "code": backupCode, "remember_device": true})
+	code, out, cookies := e.postCookies(t, "/api/auth/login/2fa", map[string]any{
+		"challenge_token": ch, "code": backupCode, "remember_device": true}, nil)
 	if code != http.StatusOK || out["accessToken"] == nil {
 		t.Fatalf("bước 2: HTTP=%d out=%v", code, out)
 	}
+	return cookies
 }
 
 // AC2(d) — trust-days = giá trị của hồ sơ thương hiệu.

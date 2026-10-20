@@ -1,11 +1,10 @@
 //go:build integration
 
-// Story-41 (E6/D15) — CHỐT hành vi HIỆN TẠI (kế thừa HEAD/ERP) của GetCustomer + UpdateCustomer
-// với khách ở chi nhánh KHÁC chi nhánh của người gọi. KHÔNG đổi hành vi, chỉ neo bằng test để
-// retro hỏi user (deferred-work story-36 QA): cả hai đi `ScopedDBNullBranchSkipBranch(..., true)`
-// ⇒ user chi nhánh A đọc/sửa được khách chi nhánh B theo id; scope telesale (scope.Apply) của
-// GetCustomer vẫn chặn khách không phải của mình. Nếu user quyết chặn theo chi nhánh ⇒ sửa test
-// này cùng lúc với handler (đổi expected có giải trình), không xoá.
+// Story-41 (E6/D15) — phạm vi chi nhánh của GetCustomer + UpdateCustomer với khách ở chi nhánh KHÁC
+// chi nhánh của người gọi. Trước đây cả hai đi `ScopedDBNullBranchSkipBranch(..., true)` (neo bằng
+// test chờ quyết) ⇒ user chi nhánh A đọc/sửa được khách chi nhánh B theo id. Đã quyết chặn (fix IDOR
+// xuyên chi nhánh, 2026-10-20): lọc chi nhánh như list, chỉ bỏ lọc khi user_option cross-branch
+// (id=18) bật — giống SearchGlobal. Scope telesale (scope.Apply) của GetCustomer vẫn áp như cũ.
 package handler
 
 import (
@@ -103,34 +102,41 @@ func s41Update(t *testing.T, branchID, userID, customerID uint, body map[string]
 	return w
 }
 
-func TestS41GetCustomer_CrossBranchByID_KeThuaHEAD(t *testing.T) {
+func TestS41GetCustomer_CrossBranchByID_ChanTheoChiNhanh(t *testing.T) {
 	if testDB == nil {
 		t.Fatal("TEST_MYSQL_DSN chưa set — integration test này KHÔNG được skip")
 	}
 	testDB.Exec("DELETE FROM user_option WHERE id = 5") // OPTION_VIEW_LEAD_OF_TELE OFF
+	setCrossBranchOption(t, 0)
 	tn := testhelpers.FreshTenant(t, testDB)
 	branchB := testhelpers.CreateBranch(t, testDB)
 	custB := s41SeedCustomerInBranch(t, tn, branchB, nil)
 
-	// User thường ở chi nhánh A (không thuộc Telesale) đọc khách chi nhánh B theo id ⇒ 200.
+	// Đổi hành vi (fix IDOR xuyên chi nhánh): user chi nhánh A đọc khách chi nhánh B theo id ⇒ 404.
 	w := s41Get(t, tn.BranchID, 999999, custB)
-	require.Equal(t, http.StatusOK, w.Code,
-		"hành vi kế thừa: GetCustomer skipBranch=true ⇒ đọc được khách chi nhánh khác. body=%s", w.Body.String())
+	require.Equal(t, http.StatusNotFound, w.Code,
+		"GetCustomer phải lọc chi nhánh như list. body=%s", w.Body.String())
 
-	// Scope telesale vẫn áp: telesale chi nhánh A đọc khách chi nhánh B KHÔNG phải của mình ⇒ 404,
-	// khách chi nhánh B CỦA MÌNH ⇒ 200.
+	// Scope telesale vẫn áp trong chi nhánh của mình: khách không phải của mình ⇒ 404, của mình ⇒ 200.
 	tele := s41SeedTelesaleUser(t)
-	require.Equal(t, http.StatusNotFound, s41Get(t, tn.BranchID, tele, custB).Code,
-		"telesale scope phải chặn khách không phải của mình (kể cả cross-branch)")
-	mine := s41SeedCustomerInBranch(t, tn, branchB, &tele)
+	custA := s41SeedCustomerInBranch(t, tn, tn.BranchID, nil)
+	require.Equal(t, http.StatusNotFound, s41Get(t, tn.BranchID, tele, custA).Code,
+		"telesale scope phải chặn khách không phải của mình")
+	mine := s41SeedCustomerInBranch(t, tn, tn.BranchID, &tele)
 	require.Equal(t, http.StatusOK, s41Get(t, tn.BranchID, tele, mine).Code,
-		"telesale đọc khách của mình ở chi nhánh khác ⇒ 200")
+		"telesale đọc khách của mình ở chi nhánh mình ⇒ 200")
+
+	// user_option cross-branch (id=18) bật ⇒ mở được khách chi nhánh khác (giống SearchGlobal).
+	setCrossBranchOption(t, 1)
+	require.Equal(t, http.StatusOK, s41Get(t, tn.BranchID, 999999, custB).Code,
+		"cross-branch bật ⇒ đọc được khách chi nhánh khác")
 }
 
-func TestS41UpdateCustomer_CrossBranchByID_KeThuaHEAD(t *testing.T) {
+func TestS41UpdateCustomer_CrossBranchByID_ChanTheoChiNhanh(t *testing.T) {
 	if testDB == nil {
 		t.Fatal("TEST_MYSQL_DSN chưa set — integration test này KHÔNG được skip")
 	}
+	setCrossBranchOption(t, 0)
 	tn := testhelpers.FreshTenant(t, testDB)
 	branchB := testhelpers.CreateBranch(t, testDB)
 	custB := s41SeedCustomerInBranch(t, tn, branchB, nil)
@@ -138,21 +144,31 @@ func TestS41UpdateCustomer_CrossBranchByID_KeThuaHEAD(t *testing.T) {
 	var before int64
 	require.NoError(t, testDB.Table("customer").Where("id = ?", custB).Pluck("updated_at", &before).Error)
 
-	// User chi nhánh A sửa khách chi nhánh B theo id từ URL ⇒ 200 + DB đổi thật.
+	// User chi nhánh A sửa khách chi nhánh B theo id từ URL ⇒ 404, DB không đổi.
 	w := s41Update(t, tn.BranchID, 999999, custB, map[string]any{
 		"updated_at": before,
 		"nickname":   "s41-cross-branch",
 	})
-	require.Equal(t, http.StatusOK, w.Code,
-		"hành vi kế thừa: UpdateCustomer SkipBranch ⇒ sửa được khách chi nhánh khác. body=%s", w.Body.String())
+	require.Equal(t, http.StatusNotFound, w.Code,
+		"UpdateCustomer phải lọc chi nhánh như GetCustomer. body=%s", w.Body.String())
 	var nick string
-	require.NoError(t, testDB.Table("customer").Where("id = ?", custB).Pluck("nickname", &nick).Error)
-	require.Equal(t, "s41-cross-branch", nick)
-	var branchAfter uint
-	require.NoError(t, testDB.Table("customer").Where("id = ?", custB).Pluck("branch_id", &branchAfter).Error)
-	require.Equal(t, branchB, branchAfter, "Update không được tự đổi chi nhánh của khách")
+	require.NoError(t, testDB.Table("customer").Where("id = ?", custB).Pluck("COALESCE(nickname, '')", &nick).Error)
+	require.NotEqual(t, "s41-cross-branch", nick, "khách chi nhánh khác không được bị sửa")
 
-	// Id không tồn tại vẫn 404 (không phải "sửa gì cũng được").
+	// Khách chi nhánh A: sửa được, nhưng KHÔNG được kéo sang chi nhánh ngoài phạm vi (B) ⇒ 422.
+	custA := s41SeedCustomerInBranch(t, tn, tn.BranchID, nil)
+	var beforeA int64
+	require.NoError(t, testDB.Table("customer").Where("id = ?", custA).Pluck("updated_at", &beforeA).Error)
+	w = s41Update(t, tn.BranchID, 999999, custA, map[string]any{"updated_at": beforeA, "branch_id": branchB})
+	require.Equal(t, http.StatusUnprocessableEntity, w.Code, "đổi branch_id ngoài phạm vi phải bị chặn. body=%s", w.Body.String())
+	var branchAfter uint
+	require.NoError(t, testDB.Table("customer").Where("id = ?", custA).Pluck("branch_id", &branchAfter).Error)
+	require.Equal(t, tn.BranchID, branchAfter)
+
+	w = s41Update(t, tn.BranchID, 999999, custA, map[string]any{"updated_at": beforeA, "nickname": "s41-own-branch"})
+	require.Equal(t, http.StatusOK, w.Code, "sửa khách chi nhánh mình ⇒ 200. body=%s", w.Body.String())
+
+	// Id không tồn tại vẫn 404.
 	require.Equal(t, http.StatusNotFound, s41Update(t, tn.BranchID, 999999, 987654321,
 		map[string]any{"updated_at": 1, "nickname": "x"}).Code)
 }

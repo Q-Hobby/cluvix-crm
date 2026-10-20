@@ -287,8 +287,10 @@ var en = map[string]string{
 	// ZNS Campaign
 
 	// HR user contract
-	"branch_id_not_allowed": "Branch is not within your scope",
-	"role_not_allowed":      "You are not allowed to assign this role",
+	"branch_id_not_allowed":        "Branch is not within your scope",
+	"role_not_allowed":             "You are not allowed to assign this role",
+	"allowed_ips_invalid":          "Invalid allowed IP/CIDR list",
+	"self_allowed_ips_not_allowed": "You cannot change your own allowed IP list",
 
 	// HR salary advance
 

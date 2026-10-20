@@ -237,7 +237,7 @@ clientGroup := api.Group("/client", middleware.PartnerAuth())           // Clien
 
 ### 2FA — TOTP (Hướng 3)
 - **Login 2 bước**: `POST /auth/login` → nếu user bật 2FA + thiết bị chưa trusted → trả `{requires_2fa, challenge_token}` (CHƯA cấp token). `POST /auth/login/2fa {challenge_token, code, remember_device}` → verify TOTP/backup → cấp token. `challenge_token` = JWT 5 phút aud=`2fa-challenge` (proof đã qua password).
-- **Device-aware skip**: `user_device.totp_trusted_until > now` → bỏ qua 2FA. `remember_device` set = now + `company.totp_trust_days` (0 = luôn hỏi, cho máy dùng chung).
+- **Device-aware skip**: bỏ qua 2FA CHỈ khi `user_device.totp_trusted_until > now` **VÀ** client trình đúng token remember-device (cookie HttpOnly `device_trust_<userID>` path `/api/auth`; mobile transport: body `device_trust_token`) khớp `user_device.totp_trust_hash` (SHA-256, so constant-time), thiết bị chưa revoked. `remember_device` ⇒ server sinh token ngẫu nhiên 32 byte, hạn = now + `business_profile.totp_trust_days` (0 = luôn hỏi, cho máy dùng chung). ⚠ KHÔNG bao giờ tin riêng `device_fingerprint` — client tự tính từ UA/ngôn ngữ/múi giờ/CPU, đoán được (lỗ hổng vá 2026-10-20). Revoke thiết bị xoá trust.
 - **Secret mã hóa** AES-GCM bằng `TOTP_ENC_KEY` (env riêng); backup codes hash sha256, 1 lần. Rate-limit verify 5 lần/5 phút.
 - **Endpoints** (authed): `/auth/2fa/status|setup|verify-setup|disable`, `/auth/2fa/reset/:userId` (super-user).
 - **Policy per-company + per-role**: `company.require_2fa=1` HOẶC role ∈ `company.require_2fa_roles`. Bắt buộc mà chưa enroll → `UserScope.MustSetup2FA=true` → **AuthResponseHeaders chặn mọi API (trừ `/auth/2fa/*`, `/auth/me`, `/auth/permission`) với 403 code=`2fa_setup_required`** → FE interceptor redirect `/2fa-setup`.
