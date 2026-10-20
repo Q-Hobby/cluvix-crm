@@ -13,29 +13,15 @@ export type MenuMode =
 
 /** Cấu hình giao diện lưu ở localStorage (`layout_config`). Chỉ `darkTheme` được đọc lại khi tải. */
 export interface layoutConfig {
-  primary: string;
-  surface: string | undefined | null;
   darkTheme: boolean;
   menuMode: MenuMode;
-  menuTheme: string;
-  topbarTheme: string;
-  menuProfilePosition: string;
 }
 
 /** Trạng thái tạm thời của khung (không lưu). Sidebar/topbar cập nhật theo tên field bằng spread. */
 export interface LayoutState {
   staticMenuDesktopInactive: boolean;
   overlayMenuActive: boolean;
-  configSidebarVisible: boolean;
   staticMenuMobileActive: boolean;
-  menuHoverActive: boolean;
-  rightMenuActive: boolean;
-  topbarMenuActive: boolean;
-  sidebarActive: boolean;
-  activeMenuItem: any;
-  overlaySubmenuActive: boolean;
-  anchored: boolean;
-  menuProfileActive: boolean;
 }
 
 /** Sự kiện mở một nhánh menu. `routeEvent` = mở do route hiện tại khớp (mở cả chuỗi cha). */
@@ -44,38 +30,20 @@ export interface MenuChangeEvent {
   routeEvent?: boolean;
 }
 
-/** Bề rộng tối đa coi là mobile — khớp media query `991px` trong `styles.scss`. */
+/** Bề rộng tối đa coi là mobile — khớp `$breakpoint-desktop` (992px) trong `assets/layout/_variables.scss`. */
 const MOBILE_MAX_WIDTH = 991;
 const DARK_CLASS = 'app-dark';
 
 const DEFAULT_CONFIG: layoutConfig = {
-  primary: 'indigo',
-  surface: null,
   darkTheme: false,
   menuMode: 'static',
-  menuTheme: 'light',
-  topbarTheme: 'cluvix',
-  menuProfilePosition: 'end',
 };
 
 const DEFAULT_STATE: LayoutState = {
   staticMenuDesktopInactive: false,
   overlayMenuActive: false,
-  configSidebarVisible: false,
   staticMenuMobileActive: false,
-  menuHoverActive: false,
-  rightMenuActive: false,
-  topbarMenuActive: false,
-  sidebarActive: false,
-  activeMenuItem: null,
-  overlaySubmenuActive: false,
-  anchored: false,
-  menuProfileActive: false,
 };
-
-function menuThemeFor(dark: boolean): string {
-  return dark ? 'dark' : 'light';
-}
 
 /** Đặt/bỏ class tối trên `<html>` — theme PrimeNG dùng `darkModeSelector: '.app-dark'`. */
 function applyDarkClass(dark: boolean): void {
@@ -104,11 +72,6 @@ export class LayoutService {
   readonly isDarkTheme = computed(() => this.layoutConfig().darkTheme);
 
   readonly isOverlay = computed(() => this.effectiveMenuMode() === 'overlay');
-
-  /** Giữ cho code cũ — khung không dựng các chế độ này. */
-  readonly isSlim = computed(() => false);
-  readonly isSlimPlus = computed(() => false);
-  readonly isHorizontal = computed(() => false);
 
   private readonly overlayOpen = new Subject<void>();
   private readonly menuSource = new Subject<MenuChangeEvent>();
@@ -172,7 +135,6 @@ export class LayoutService {
     this.layoutConfig.update((c) => ({
       ...c,
       darkTheme: !c.darkTheme,
-      menuTheme: menuThemeFor(!c.darkTheme),
     }));
   }
 
@@ -196,7 +158,7 @@ export class LayoutService {
   private loadConfig(): layoutConfig {
     const saved = this.storage.loadStorage<Partial<layoutConfig>>(STORAGE_KEY_SELECT.LayoutConfig);
     const dark = typeof saved === 'object' && saved !== null && saved.darkTheme === true;
-    return { ...DEFAULT_CONFIG, darkTheme: dark, menuTheme: menuThemeFor(dark) };
+    return { ...DEFAULT_CONFIG, darkTheme: dark };
   }
 
   private switchTheme(dark: boolean): void {

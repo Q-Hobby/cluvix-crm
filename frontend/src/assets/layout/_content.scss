@@ -1,8 +1,4 @@
 // Vùng nội dung: `.card` dùng chung và chuỗi flex "full-height" (FillHeightDirective).
-.layout-content-wrapper {
-  background: var(--cx-page, var(--p-surface-50));
-}
-
 .layout-content {
   flex: 1 1 auto;
   min-width: 0;

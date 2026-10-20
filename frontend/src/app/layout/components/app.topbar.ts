@@ -176,13 +176,6 @@ export class AppTopbar extends BaseApp {
     }
   }
 
-  onTopbarMenuToggle() {
-    this.layoutService.layoutState.update((val: any) => ({
-      ...val,
-      topbarMenuActive: !val.topbarMenuActive,
-    }));
-  }
-
   /**
    * Mở hộp thoại lời nhắc
    */

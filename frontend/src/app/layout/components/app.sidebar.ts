@@ -9,11 +9,7 @@ import { LayoutService } from '@/layout/service/layout.service';
   selector: '[app-sidebar]',
   standalone: true,
   imports: [AppMenu],
-  template: ` <div
-    class="layout-sidebar"
-    (mouseenter)="onMouseEnter()"
-    (mouseleave)="onMouseLeave()"
-  >
+  template: ` <div class="layout-sidebar">
     <div class="layout-sidebar-top">
       <a href="/">
         <img
@@ -24,7 +20,6 @@ import { LayoutService } from '@/layout/service/layout.service';
           fetchpriority="low"
         />
       </a>
-      <button pButton class="layout-sidebar-anchor" type="button" (click)="anchor()"></button>
     </div>
     <!-- Khối tài khoản (app-menu-profile) đã gỡ khỏi sidebar (user chốt 2026-10-19): menu tài khoản
          trên topbar (user-account-menu) là lối vào DUY NHẤT và có đủ mọi mục. -->
@@ -44,43 +39,10 @@ export class AppSidebar implements OnDestroy {
 
   overlayMenuActive = computed(() => this.layoutService.layoutState().overlayMenuActive);
 
-  anchored = computed(() => this.layoutService.layoutState().anchored);
-
-  timeout!: any;
-
   resetOverlay() {
     if (this.overlayMenuActive()) {
       this.layoutService.layoutState.update((val: any) => ({ ...val, overlayMenuActive: false }));
     }
-  }
-
-  onMouseEnter() {
-    if (!this.anchored()) {
-      if (this.timeout) {
-        clearTimeout(this.timeout);
-        this.timeout = null;
-      }
-      this.layoutService.layoutState.update((val: any) => ({ ...val, sidebarActive: true }));
-    }
-  }
-
-  onMouseLeave() {
-    if (!this.anchored()) {
-      if (!this.timeout) {
-        this.timeout = setTimeout(
-          () =>
-            this.layoutService.layoutState.update((val: any) => ({
-              ...val,
-              sidebarActive: false,
-            })),
-          300,
-        );
-      }
-    }
-  }
-
-  anchor() {
-    this.layoutService.layoutState.update((val: any) => ({ ...val, anchored: !val.anchored }));
   }
 
   ngOnDestroy() {

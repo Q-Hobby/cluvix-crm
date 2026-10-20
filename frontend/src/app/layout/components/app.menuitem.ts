@@ -152,25 +152,6 @@ const ICON_BORDER_ALPHA = '30';
       }
     }
   `,
-  styles: [
-    `
-      .layout-menuitem-icon-box {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        width: 1.75rem;
-        height: 1.75rem;
-        margin-right: 0.5rem;
-        border: 1px solid transparent;
-        border-radius: 0.5rem;
-      }
-
-      .layout-menuitem-icon-box > i {
-        font-size: 0.875rem;
-      }
-    `,
-  ],
 })
 export class AppMenuitem implements OnInit {
   readonly item = input.required<AppMenuItemModel>();

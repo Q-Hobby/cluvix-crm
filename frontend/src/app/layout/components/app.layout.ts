@@ -62,7 +62,6 @@ export class AppLayout {
   readonly containerClass = computed(() => {
     const mode = this.layoutService.effectiveMenuMode();
     const state = this.layoutService.layoutState();
-    const config = this.layoutService.layoutConfig();
     const overlay = mode === 'overlay';
     return {
       'layout-static': !overlay,
@@ -70,13 +69,7 @@ export class AppLayout {
       'layout-static-inactive': !overlay && state.staticMenuDesktopInactive,
       'layout-overlay-active': state.overlayMenuActive,
       'layout-mobile-active': state.staticMenuMobileActive,
-      'layout-sidebar-active': state.sidebarActive,
-      'layout-sidebar-anchored': state.anchored,
-      'layout-topbar-menu-active': state.topbarMenuActive,
       'layout-topbar-cluvix': true,
-      'layout-menu-light': config.menuTheme !== 'dark',
-      'layout-menu-dark': config.menuTheme === 'dark',
-      'layout-sidebar-dark': config.darkTheme,
     };
   });
 
@@ -138,7 +131,6 @@ export class AppLayout {
       ...s,
       overlayMenuActive: false,
       staticMenuMobileActive: false,
-      menuHoverActive: false,
     }));
     this.layoutService.reset();
     this.unbindDocumentClick();

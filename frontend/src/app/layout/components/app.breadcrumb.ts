@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { filter, firstValueFrom } from 'rxjs';
 
-import { LayoutService } from '@/layout/service/layout.service';
 import { CurrencyComponent } from '@/modules/utilities/currency/currency.component';
 import { BaseApp } from '@/share/base/BaseApp';
 import { BreadcrumbLabelService } from '@/share/services/breadcrumb-label.service';
@@ -32,7 +31,7 @@ const CURRENCY_DIALOG_WIDTH = '700px';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'layout-breadcrumb-container' },
   template: `
-    <nav class="layout-breadcrumb items-center" [class.flex]="layoutService.isDesktop()" [class.hidden]="!layoutService.isDesktop()">
+    <nav class="layout-breadcrumb">
       <a routerLink="/" class="flex items-center text-primary" [attr.aria-label]="'auth.notfound.home_label' | translate">
         <i class="pi pi-home"></i>
       </a>
@@ -60,7 +59,6 @@ const CURRENCY_DIALOG_WIDTH = '700px';
   `,
 })
 export class AppBreadcrumb extends BaseApp {
-  protected readonly layoutService = inject(LayoutService);
   private readonly labelService = inject(BreadcrumbLabelService);
   private readonly destroyRef = inject(DestroyRef);
 

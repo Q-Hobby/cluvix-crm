@@ -80,12 +80,30 @@
   color: var(--sb-accent, var(--p-primary-color));
 }
 
-.layout-menuitem-icon {
+// Icon mục menu: trần (`-icon`) hoặc nằm trong ô màu (`-icon-box`, khi mục có `iconColor`) — cùng cột rộng.
+.layout-menuitem-icon,
+.layout-menuitem-icon-box {
   flex-shrink: 0;
   width: 1.75rem;
   margin-right: 0.5rem;
+}
+
+.layout-menuitem-icon {
   font-size: 1rem;
   text-align: center;
+}
+
+.layout-menuitem-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+
+  > i {
+    font-size: 0.875rem;
+  }
 }
 
 .layout-menuitem-text {

@@ -1,6 +1,7 @@
 // Khung: container, sidebar (vị trí/trượt), vùng nội dung (chừa chỗ cho topbar + sidebar).
 @use 'variables' as *;
 
+// Nền trang khai MỘT lần ở đây; container/vùng nội dung để trong suốt nên tự lộ nền này.
 html,
 body {
   background: var(--cx-page, var(--p-surface-50));
@@ -8,15 +9,12 @@ body {
 
 .layout-container {
   min-height: 100vh;
-  background: var(--cx-page, var(--p-surface-50));
   color: var(--p-text-color);
 }
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
-// Biến cục bộ của sidebar: menu sáng/tối chỉ khác nhau ở đây. Container luôn mang đúng một trong
-// `layout-menu-light` / `layout-menu-dark`; cả hai dùng token PrimeNG nên tự đúng theo `.app-dark`.
-.layout-menu-light .layout-sidebar,
-.layout-menu-dark .layout-sidebar {
+// Biến cục bộ của sidebar: dùng token PrimeNG nên tự đúng theo sáng/tối (`.app-dark`).
+.layout-sidebar {
   --sb-bg: var(--p-content-background);
   --sb-text: var(--p-text-color);
   --sb-muted: var(--p-text-muted-color);
@@ -43,9 +41,8 @@ body {
     box-shadow var(--transition-duration) ease;
 }
 
-// Logo/nút ghim ở đầu sidebar: logo đã nằm trên topbar, không có chế độ ghim ⇒ ẩn.
-.layout-sidebar-top,
-.layout-sidebar-anchor {
+// Logo ở đầu sidebar: logo đã nằm trên topbar ⇒ ẩn.
+.layout-sidebar-top {
   display: none;
 }
 

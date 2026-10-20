@@ -20,7 +20,7 @@
   <div class="p-fluid note__list mt-2">
     @if (loading() && !listNotes.length) {
       @for (_ of skeletons; track $index) {
-        <div class="box p-shadow-custom custom-card-detail mb-3">
+        <div class="box custom-card-detail mb-3">
           <div class="flex flex-column pl-2">
             <p-skeleton class="mb-3" width="25rem"></p-skeleton>
             <p-skeleton class="mb-0" width="7rem"></p-skeleton>

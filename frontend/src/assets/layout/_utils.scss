@@ -1,7 +1,8 @@
 // Tiện ích dùng chung của khung layout.
+@use 'variables' as *;
 
 // Body khoá cuộn khi sidebar mobile đang mở.
-@media (max-width: 991px) {
+@media (max-width: #{$breakpoint-desktop - 1px}) {
   body.blocked-scroll {
     overflow: hidden;
   }
