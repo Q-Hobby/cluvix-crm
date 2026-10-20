@@ -256,15 +256,32 @@ func (h *Handler) GetCustomerByCode(c *gin.Context) {
 	response.Data(c, item)
 }
 
+// customerByIDScope — phạm vi GET/UPDATE khách theo id: lọc chi nhánh như list (khách chưa gán chi
+// nhánh — branch_id NULL — luôn thấy), chỉ bỏ lọc khi user_option cross-branch (id=18) bật, GIỐNG
+// SearchGlobal — để khách tìm thấy qua tìm kiếm toàn cục vẫn mở được. GET và UPDATE PHẢI dùng chung.
+// Trước đây cả hai luôn skipBranch=true ⇒ ai có viewCustomer/updateCustomer dò id là đọc/sửa được
+// khách của mọi chi nhánh (IDOR xuyên chi nhánh).
+func (h *Handler) customerByIDScope(c *gin.Context) *gorm.DB {
+	return tenant.ScopedDBNullBranchSkipBranch(c, h.DB, "customer", tenant.IsCrossBranchEnabled(c, h.DB))
+}
+
+// customerBranchWriteAllowed — branch_id client gửi khi tạo/sửa khách phải nằm trong phạm vi chi
+// nhánh của user (rỗng/NULL = chưa gán ⇒ cho qua). Thiếu bước này user kéo được khách sang chi nhánh mình.
+func customerBranchWriteAllowed(c *gin.Context, fields map[string]interface{}) bool {
+	if v := helpers.ToInt64(fields["branch_id"]); v > 0 {
+		return middleware.IsBranchAllowed(c, uint(v))
+	}
+	return true
+}
+
 func (h *Handler) GetCustomer(c *gin.Context) {
-	// Scope GIỐNG UpdateCustomer: skipBranch=true để khách chưa gán chi nhánh vẫn mở được — GET và
-	// UPDATE phải cùng một phạm vi. Phạm vi người phụ trách áp qua scope.Apply.
+	// Scope GIỐNG UpdateCustomer (customerByIDScope). Phạm vi người phụ trách áp qua scope.Apply.
 	// Story-36 (D15 — 1 thương hiệu/DB): bỏ nhánh fail-closed theo company (không còn vế company).
 	id, ok := parseCustomerID(c)
 	if !ok {
 		return
 	}
-	q := tenant.ScopedDBNullBranchSkipBranch(c, h.DB, "customer", true).Table("customer").
+	q := h.customerByIDScope(c).Table("customer").
 		Select("customer.*").
 		Where("customer.id = ?", id)
 	q, err := applyTelesaleScope(c, h.DB, q)
@@ -373,6 +390,10 @@ func (h *Handler) CreateCustomer(c *gin.Context) {
 	filtered := h.CustomerSvc.FilterAllowed(body)
 	if err := h.CustomerSvc.ValidateFromMap(filtered, true); err != nil {
 		respondCustomerSvcError(c, err)
+		return
+	}
+	if !customerBranchWriteAllowed(c, filtered) {
+		response.Validate(c, i18n.T(c, "branch_id_not_allowed"))
 		return
 	}
 	helpers.SerializeJSONFieldsForTable(filtered, "customer")
@@ -617,6 +638,10 @@ func (h *Handler) CreateCustomerSwitch(c *gin.Context) {
 		respondCustomerSvcError(c, err)
 		return
 	}
+	if !customerBranchWriteAllowed(c, filtered) {
+		response.Validate(c, i18n.T(c, "branch_id_not_allowed"))
+		return
+	}
 	helpers.SerializeJSONFieldsForTable(filtered, "customer")
 
 	tx := h.DB.Begin()
@@ -715,15 +740,15 @@ func (h *Handler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	// Check exists + get updated_at (khoá lạc quan D6) — scope theo company để chống IDOR.
-	// Dùng CompanyOnly (không filter branch) để customer chưa assign branch (branch_id=0) vẫn update được.
+	// Check exists + get updated_at (khoá lạc quan D6) — cùng phạm vi chi nhánh với GetCustomer
+	// (customerByIDScope) để chống IDOR xuyên chi nhánh.
 	var current struct {
 		UpdatedAt  int64  `gorm:"column:updated_at"`
 		Phone      string `gorm:"column:phone"`
 		OtherPhone string `gorm:"column:other_phone"`
 		Avatar     string `gorm:"column:avatar"`
 	}
-	if err := tenant.ScopedDBNullBranchSkipBranch(c, h.DB, "customer", true).Table("customer").
+	if err := h.customerByIDScope(c).Table("customer").
 		Select("updated_at, phone, other_phone, avatar").Where("id = ?", id).First(&current).Error; err != nil {
 		response.NotFound(c)
 		return
@@ -789,6 +814,11 @@ func (h *Handler) UpdateCustomer(c *gin.Context) {
 	delete(body, "created_by")
 	delete(body, "code")
 	delete(body, "created_day")
+
+	if !customerBranchWriteAllowed(c, body) {
+		response.Validate(c, i18n.T(c, "branch_id_not_allowed"))
+		return
+	}
 
 	item, err := h.CustomerSvc.Update(id, body, expectedUpdatedAt, uid)
 	if err != nil {
