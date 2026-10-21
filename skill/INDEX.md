@@ -146,6 +146,7 @@ Chi tiết + lý do từng rule: `skill/skills/backend-hard-rules/SKILL.md`.
 | Viết/sửa test Go, integration test đụng DB | `skill/skills/testing-backend/SKILL.md` |
 | Không biết code nằm đâu · tech stack · routing · S3 · dev tooling | `skill/skills/navigating-backend-architecture/SKILL.md` |
 | **Gia hạn/nạp SSL · cert hết hạn · sửa vhost nginx · deploy host** | `skill/skills/navigating-backend-architecture/reference/tls-certificates-and-nginx.md` |
+| **Deploy production · tạo instance mới · script deploy · sửa `.env`/storage instance** | `skill/skills/deploying-to-production/SKILL.md` |
 | Tạo/sửa migration, đổi schema, thêm cột/FK, backfill | `skill/skills/writing-mysql-migrations/SKILL.md` |
 | Khách hàng · lịch hẹn · liệu trình · đơn hàng · thanh toán | `skill/skills/working-on-crm/SKILL.md` |
 | Nhân sự · chấm công · lương · hợp đồng · OT | `skill/skills/working-on-hr/SKILL.md` |
