@@ -65,6 +65,7 @@ Ghi bài học FE → ghi vào `frontend/skill/skills/`. Ghi bài học mobile �
 | Nghiệp vụ CRM (customer/appointment/order/treatment/payment) | `skills/working-on-crm/` |
 | Nghiệp vụ HR (user/role/RBAC/OT/payroll/chấm công/hợp đồng) | `skills/working-on-hr/` |
 | Kế toán, dashboard CRM, export, import khách hàng/Lead | `skills/working-on-ops/` |
+| Deploy production, setup instance, script deploy, cấu hình `.env`/storage instance | `skills/deploying-to-production/` |
 | FE rule bắt buộc (XSS, OnPush, subscribe cleanup, HTTP error, token) | `frontend/skill/skills/frontend-hard-rules/` |
 | FE Signal Forms (BaseSignalForm, gotcha #1-52) | `frontend/skill/skills/building-angular-signal-forms/` |
 | FE list/export/report/print (BaseListV2, BaseReport, BasePrint) | `frontend/skill/skills/building-list-and-export-views/` |
